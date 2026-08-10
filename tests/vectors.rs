@@ -55,15 +55,15 @@ fn conformance_vectors_are_bit_stable() {
     for v in &vectors {
         let (canonical, hash) = match (&v.input.payload, &v.input.provenance) {
             (Some(payload), None) => {
-                let canonical = snag_core::content_canonical(payload)
+                let canonical = tt_core::content_canonical(payload)
                     .unwrap_or_else(|e| panic!("vector {}: content_canonical failed: {e}", v.name));
-                let hash = snag_core::content_hash(payload)
+                let hash = tt_core::content_hash(payload)
                     .unwrap_or_else(|e| panic!("vector {}: content_hash failed: {e}", v.name));
                 (canonical, hash)
             }
             (None, Some(provenance)) => (
-                snag_core::canonicalize(provenance),
-                snag_core::provenance_hash(provenance),
+                tt_core::canonicalize(provenance),
+                tt_core::provenance_hash(provenance),
             ),
             _ => panic!(
                 "vector {}: input must hold exactly one of payload|provenance",

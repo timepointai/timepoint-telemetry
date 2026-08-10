@@ -1,15 +1,15 @@
 //! The ontology bundle: parse + validate at load. All check families from
 //! genesis/snag/validate.py are ported as loader-time assertions — loading an invalid
-//! bundle is an error and MUST fail boot. Contract: CONTRACTS.md §6, SNAG-SPEC §2.
+//! bundle is an error and MUST fail boot. Contract: CONTRACTS.md §6, TT-SPEC §2.
 
 use std::collections::{BTreeSet, HashMap};
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::SnagError;
+use crate::TtError;
 
-/// The closed set of bridge relations (SNAG-SPEC §2 / validate.py check 5).
+/// The closed set of bridge relations (TT-SPEC §2 / validate.py check 5).
 pub const RELATIONS: [&str; 4] = ["constitutes", "scales-up-to", "recorded-as", "unrecorded"];
 
 const LEVELS: [&str; 3] = ["branch", "species", "subspecies"];
@@ -92,6 +92,21 @@ pub struct Metric {
 pub struct Bundle {
     pub schema: String,
     pub version: String,
+    /// The release immediately behind this one, `"<schema> v<version>"`, e.g.
+    /// `"snag-ontology/1.0 v1.1.0"`. `None` on the first release of a chain.
+    ///
+    /// This was carried in `raw` only and modelled nowhere, which made the
+    /// supersession chain — the mechanism that lets a record written under an
+    /// older schema id still be read — invisible to every consumer of this
+    /// crate. It went unnoticed while the chain had only ever been walked by a
+    /// person reading the JSON. Renaming the format to TT is the second link
+    /// (Clockchain → SNAG → TT), so it is now load-bearing.
+    ///
+    /// A bundle names ONE step back, so resolving a record older than one
+    /// release means walking a version at a time. That is a deliberate
+    /// limitation of the format and not an oversight here.
+    #[serde(default)]
+    pub supersedes: Option<String>,
     pub metric: Metric,
     pub lenses: Lenses,
     pub nodes: Vec<Node>,
@@ -99,13 +114,13 @@ pub struct Bundle {
     pub bridges: Vec<Bridge>,
     pub kernel: Vec<String>,
     /// The full bundle document as parsed, kept verbatim so a server can hand it out
-    /// unchanged (fields the typed struct does not model — supersedes, governance,
+    /// unchanged (fields the typed struct does not model — governance,
     /// design_principles — are not lost). `Value::Null` only on hand-built bundles.
     #[serde(skip)]
     pub raw: Value,
     /// All-pairs shortest paths over this bundle's graph, solved on first use.
     ///
-    /// The metric SNAG-SPEC §5 defines was implemented and never called, because
+    /// The metric TT-SPEC §5 defines was implemented and never called, because
     /// `distance()` rebuilt the whole graph per call — too expensive to put in a
     /// request path, so the 151 lateral edges that feed it stayed dead. Solving
     /// once and hanging the result off the bundle makes it free to ask.
@@ -115,13 +130,13 @@ pub struct Bundle {
 
 impl Bundle {
     /// Load and validate a bundle from a file path. An invalid bundle is an error.
-    pub fn load_from_file(path: &str) -> Result<Self, SnagError> {
+    pub fn load_from_file(path: &str) -> Result<Self, TtError> {
         let raw = std::fs::read_to_string(path)?;
         Self::load_from_str(&raw)
     }
 
     /// Load and validate a bundle from raw JSON text. An invalid bundle is an error.
-    pub fn load_from_str(raw: &str) -> Result<Self, SnagError> {
+    pub fn load_from_str(raw: &str) -> Result<Self, TtError> {
         let raw_value: Value = serde_json::from_str(raw)?;
         let mut bundle: Bundle = serde_json::from_value(raw_value.clone())?;
         bundle.raw = raw_value;
@@ -135,9 +150,18 @@ impl Bundle {
         self.distances.get_or_init(|| crate::distance::DistanceIndex::build(self))
     }
 
-    /// `"<schema> v<version>"`, e.g. `"snag-ontology/1.0 v1.1.0"`. Doubles as the ETag.
+    /// `"<schema> v<version>"`, e.g. `"tt-ontology/1.0 v2.0.0"`. Doubles as the ETag.
     pub fn version_string(&self) -> String {
         format!("{} v{}", self.schema, self.version)
+    }
+
+    /// Whether `version_string` names this release or any release it supersedes,
+    /// one step back. A record stamped with the previous schema id still belongs
+    /// to this bundle; one stamped two releases back does not, and the caller
+    /// needs the intervening bundle to say so rather than being told "no".
+    pub fn is_this_release(&self, version_string: &str) -> bool {
+        version_string == self.version_string()
+            || self.supersedes.as_deref() == Some(version_string)
     }
 
     pub fn is_valid_id(&self, id: &str) -> bool {
@@ -158,7 +182,7 @@ impl Bundle {
     ///
     /// Cycles are DETECTED rather than survived. A chain that loops is a broken
     /// bundle, and looping quietly would hang whatever asked.
-    pub fn resolve(&self, id: &str) -> Result<Option<&Node>, SnagError> {
+    pub fn resolve(&self, id: &str) -> Result<Option<&Node>, TtError> {
         let mut seen: Vec<&str> = Vec::new();
         let mut cur = match self.node(id) {
             Some(n) => n,
@@ -167,7 +191,7 @@ impl Bundle {
         loop {
             if seen.contains(&cur.id.as_str()) {
                 seen.push(&cur.id);
-                return Err(SnagError::Invalid(format!(
+                return Err(TtError::Invalid(format!(
                     "supersession cycle: {}",
                     seen.join(" -> ")
                 )));
@@ -211,7 +235,7 @@ impl Bundle {
 
     /// Every check family from genesis/snag/validate.py, all failures collected — the
     /// error message lists each failed check by its validate.py name.
-    pub fn validate(&self) -> Result<(), SnagError> {
+    pub fn validate(&self) -> Result<(), TtError> {
         let mut failures: Vec<String> = Vec::new();
 
         // Retirement rules (GOVERNANCE.md §3). Checked at LOAD, because a
@@ -241,7 +265,7 @@ impl Bundle {
             // A successor that is itself retired is fine (chains are allowed);
             // a chain that closes is not.
             for n in self.nodes.iter().filter(|n| n.is_deprecated()) {
-                if let Err(SnagError::Invalid(e)) = self.resolve(&n.id) {
+                if let Err(TtError::Invalid(e)) = self.resolve(&n.id) {
                     failures.push(e);
                 }
             }
@@ -547,7 +571,7 @@ impl Bundle {
         if failures.is_empty() {
             Ok(())
         } else {
-            Err(SnagError::Invalid(failures.join("; ")))
+            Err(TtError::Invalid(failures.join("; ")))
         }
     }
 }

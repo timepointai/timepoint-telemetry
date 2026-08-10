@@ -3,11 +3,11 @@
 //! behave per the bundle.
 
 use serde_json::{Value, json};
-use snag_core::{Bundle, SnagError};
+use tt_core::{Bundle, TtError};
 
 fn bundle_path() -> String {
     format!(
-        "{}/bundle/taxonomy-v1.1.json",
+        "{}/bundle/taxonomy-v2.0.json",
         env!("CARGO_MANIFEST_DIR")
     )
 }
@@ -24,7 +24,7 @@ fn raw_value() -> Value {
 /// Mutate the raw bundle, reload, and require a validation failure naming the check.
 fn assert_invalid(mutated: &Value, expect_substring: &str) {
     match Bundle::load_from_str(&mutated.to_string()) {
-        Err(SnagError::Invalid(msg)) => assert!(
+        Err(TtError::Invalid(msg)) => assert!(
             msg.contains(expect_substring),
             "expected failure mentioning {expect_substring:?}, got: {msg}"
         ),
@@ -48,9 +48,13 @@ fn node_index(v: &Value, id: &str) -> usize {
 fn vendored_bundle_loads_with_exact_validate_py_counts() {
     let b = load_real();
 
-    assert_eq!(b.version_string(), "snag-ontology/1.0 v1.1.0");
-    assert_eq!(b.schema, "snag-ontology/1.0");
-    assert_eq!(b.version, "1.1.0");
+    assert_eq!(b.version_string(), "tt-ontology/1.0 v2.0.0");
+    assert_eq!(b.schema, "tt-ontology/1.0");
+    assert_eq!(b.version, "2.0.0");
+    // The rename is a MAJOR bump carrying no structural change, and the chain
+    // records the step behind it. Every count below is asserted unchanged from
+    // v1.1.0 — that identity holding across the bump is the whole claim.
+    assert_eq!(b.supersedes.as_deref(), Some("snag-ontology/1.0 v1.1.0"));
 
     assert_eq!(b.nodes.len(), 149, "nodes total");
     assert_eq!(b.lateral_edges.len(), 151, "lateral edges total");
@@ -110,8 +114,19 @@ fn vendored_bundle_loads_with_exact_validate_py_counts() {
     assert_eq!(b.metric.lateral_edge_weight, 1.6);
 
     // The verbatim document survives loading (servers hand it out unchanged).
-    assert_eq!(b.raw["schema"], "snag-ontology/1.0");
+    assert_eq!(b.raw["schema"], "tt-ontology/1.0");
+    assert_eq!(b.raw["supersedes"], "snag-ontology/1.0 v1.1.0");
     assert!(b.raw.get("design_principles").is_some());
+
+    // The chain is now typed, so it can be asked rather than eyeballed: this
+    // release answers to its own id AND to the one it replaced.
+    assert!(b.is_this_release("tt-ontology/1.0 v2.0.0"));
+    assert!(b.is_this_release("snag-ontology/1.0 v1.1.0"), "the step behind counts");
+    assert!(
+        !b.is_this_release("clockchain-taxonomy/1.0 v1.1.0-alpha.1"),
+        "two steps back does NOT — walking further needs the intervening bundle, \
+         and answering yes here would claim a reach the format does not have"
+    );
 
     b.validate().expect("re-validating a loaded bundle passes");
 }
@@ -376,11 +391,11 @@ fn rejects_empty_definitions_and_labels() {
 #[test]
 fn parse_errors_are_typed_not_validation_failures() {
     match Bundle::load_from_str("{ not json") {
-        Err(SnagError::Parse(_)) => {}
+        Err(TtError::Parse(_)) => {}
         other => panic!("expected Parse error, got {other:?}"),
     }
     match Bundle::load_from_file("/no/such/path/taxonomy.json") {
-        Err(SnagError::Io(_)) => {}
+        Err(TtError::Io(_)) => {}
         other => panic!("expected Io error, got {other:?}"),
     }
 }

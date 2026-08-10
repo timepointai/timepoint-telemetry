@@ -45,27 +45,39 @@ lying in the more flattering direction.
 
 | | |
 |---|---|
-| `bundle/taxonomy-v1.1.json` | the versioned taxonomy — 149 nodes, 2 lenses, 151 lateral edges, 26 bridges, the kernel, metric weights, design principles |
+| `bundle/taxonomy-v2.0.json` | the versioned taxonomy — 149 nodes, 2 lenses, 151 lateral edges, 26 bridges, the kernel, metric weights, design principles |
 | `src/bundle.rs` | load + validate a bundle; parent chains, bridge lookup, id validity |
 | `src/envelope.rs` | RFC 8785 canonicalisation, `content_hash`, `provenance_hash` |
 | `src/distance.rs` | node-to-node and distribution-to-distribution distance |
 | `GOVERNANCE.md` | how this changes — classes, pacing, retirement, migrations |
 | `vectors/` | conformance vectors — the hashes an implementation must reproduce |
-| `tests/` | the suite the reference implementation passes (40 tests) |
+| `tests/` | the suite the reference implementation passes (42 tests) |
 
-The crate is named `snag-core` — SNAG is the ontology's schema id
-(`snag-ontology/1.0`) and the name the reference implementation has carried
-since before this repository existed. Keeping it means the code here is
-*literally* the code Timepoint runs, not a re-typing of it.
+The crate is named `tt-core`, after the ontology's schema id
+(`tt-ontology/1.0`). It is *literally* the code Timepoint runs, not a
+re-typing of it.
 
-Its lineage is **Clockchain**; the bundle declares the succession itself:
+Its lineage is **Clockchain → SNAG → TT**, and the bundle declares the step
+immediately behind it:
 
 ```json
-"schema":     "snag-ontology/1.0",
-"version":    "1.1.0",
-"supersedes": "clockchain-taxonomy/1.0 v1.1.0-alpha.1",
+"schema":     "tt-ontology/1.0",
+"version":    "2.0.0",
+"supersedes": "snag-ontology/1.0 v1.1.0",
 "governance": "structure fluid, identity frozen — ids never change; structural change = semver bump"
 ```
+
+**v2.0.0 renames the format and changes nothing else.** The counts are
+identical to v1.1.0 — 149 nodes, 151 lateral edges, 26 bridges, the same three
+kernel members — and **no node id moved**, which is the guarantee that makes a
+rename safe to ship at all. It is a major bump because every consumer keying on
+the schema string has to change, not because any record changed meaning.
+
+The format was called **SNAG** through v1.1.0. That name is retired; the chain
+records it so nothing written under it is orphaned. A bundle names one step
+back, so reading a record more than one release old means walking the chain a
+version at a time — `Bundle::is_this_release` answers for one step, and
+resolving further needs the intervening bundle.
 
 ## The model in five minutes
 
@@ -139,11 +151,11 @@ separately, so who said it never changes what was said.
 
 ```toml
 [dependencies]
-snag-core = { git = "https://github.com/timepointai/timepoint-telemetry" }
+tt-core = { git = "https://github.com/timepointai/timepoint-telemetry" }
 ```
 
 ```rust
-let bundle = snag_core::Bundle::load_from_file("bundle/taxonomy-v1.1.json")?;
+let bundle = tt_core::Bundle::load_from_file("bundle/taxonomy-v2.0.json")?;
 
 // Is this id real, and what does it mean?
 let node = bundle.node("courtship-and-falling-in-love").unwrap();
@@ -210,7 +222,7 @@ Proposals use [the change request template](.github/CHANGE_REQUEST.md).
 
 ## Status
 
-**Early and honest about it.** The taxonomy is at `1.1.0` and its identity
+**Early and honest about it.** The taxonomy is at `2.0.0` and its identity
 guarantee is real — ids will not change meaning. The surrounding spec prose is
 still being written down; this README and the tests are currently the
 normative description, and where they disagree, **the tests and the bundle
