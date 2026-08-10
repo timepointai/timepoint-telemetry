@@ -1,0 +1,14 @@
+{
+  "name": "numbers-precision-edge-provenance",
+  "input": {
+    "provenance": {
+      "two_pow_53": 9007199254740992,
+      "two_pow_53_plus_2": 9007199254740994,
+      "u64_max_loses_precision": 18446744073709551615,
+      "min_subnormal": 5e-324,
+      "max_double": 1.7976931348623157e308
+    }
+  },
+  "expected_canonical": "{\"max_double\":1.7976931348623157e+308,\"min_subnormal\":5e-324,\"two_pow_53\":9007199254740992,\"two_pow_53_plus_2\":9007199254740994,\"u64_max_loses_precision\":18446744073709552000}",
+  "expected_hash": "sha256:c1c5577dbd99c592ffed89e805b63d222656a306381faf96153442a0eae164d5"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "empty-participants-payload",
+  "input": {
+    "payload": {
+      "label": "An unwitnessed hour passes in the village",
+      "occurs_at": "1737-06-01",
+      "participants": [],
+      "grounding": "DESIGNED_SILENCE",
+      "basis_note": "designed silence; no participants recorded"
+    }
+  },
+  "expected_canonical": "{\"label\":\"An unwitnessed hour passes in the village\",\"occurs_at\":\"1737-06-01\",\"participants\":[]}",
+  "expected_hash": "sha256:e05824a4771a136876cc8e88eee95ce90240aea3c1da434ef6afa291e26d4842"
+}

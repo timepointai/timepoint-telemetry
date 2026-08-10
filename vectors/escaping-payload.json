@@ -1,0 +1,12 @@
+{
+  "name": "escaping-payload",
+  "input": {
+    "payload": {
+      "label": "He said: \"deal\\done\" \u0000\u0001\u001f \b\f\n\r\t slash / stays \u007f",
+      "occurs_at": "2026-01-01",
+      "participants": ["/person/o'brien \"the fixer\"", "/organization/back\\slash&co"]
+    }
+  },
+  "expected_canonical": "{\"label\":\"He said: \\\"deal\\\\done\\\" \\u0000\\u0001\\u001f \\b\\f\\n\\r\\t slash / stays \",\"occurs_at\":\"2026-01-01\",\"participants\":[\"/person/o'brien \\\"the fixer\\\"\",\"/organization/back\\\\slash&co\"]}",
+  "expected_hash": "sha256:1864fb2ca52763204fd6b636114684eed28f4d6b7d5c769bb3786b95ea0f730d"
+}

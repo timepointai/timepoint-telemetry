@@ -1,0 +1,12 @@
+{
+  "name": "nested-arrays-provenance",
+  "input": {
+    "provenance": {
+      "zeta": [[1, 2], [3, [4, 5]], []],
+      "alpha": {"nested": {"deep": [true, false, null]}, "empty_obj": {}},
+      "list": [{"b": 2, "a": 1}, [], [[]], "s", null, 0.5]
+    }
+  },
+  "expected_canonical": "{\"alpha\":{\"empty_obj\":{},\"nested\":{\"deep\":[true,false,null]}},\"list\":[{\"a\":1,\"b\":2},[],[[]],\"s\",null,0.5],\"zeta\":[[1,2],[3,[4,5]],[]]}",
+  "expected_hash": "sha256:49c576e341a7df8d7da008864f76d376710547b5388216ffafd0373da44828b5"
+}

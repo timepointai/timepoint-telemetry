@@ -1,0 +1,13 @@
+{
+  "name": "unicode-payload",
+  "input": {
+    "payload": {
+      "label": "Café ☕ — naïve éclair goes global 🌍",
+      "occurs_at": "1926-05-12",
+      "participants": ["/person/józef-piłsudski", "/organization/大阪-ironworks"],
+      "grounding": "INFERRED"
+    }
+  },
+  "expected_canonical": "{\"label\":\"Café ☕ — naïve éclair goes global 🌍\",\"occurs_at\":\"1926-05-12\",\"participants\":[\"/person/józef-piłsudski\",\"/organization/大阪-ironworks\"]}",
+  "expected_hash": "sha256:4937f12f443077884a5aec38feae392b53a1d1a2e83b93b052695e2ec419d710"
+}
