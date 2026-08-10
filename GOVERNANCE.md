@@ -46,23 +46,46 @@ differently than it was written?*
   answer. That is why lateral edges are Growth, not Correction, and why they
   carry a migration.
 
-## 2. Pacing brackets
+## 2. Release windows
 
-The pace follows the class. Nothing else sets it — not urgency, not who asked.
+There are **two windows and no others**, both anchored to the close of the New
+York Stock Exchange:
 
-| Class | Ships | Notice | Version |
+| Window | When | Carries |
+|---|---|---|
+| **Daily** | every trading day, at the close | Correction, Growth |
+| **Weekly** | Friday, at the close | Structure |
+
+| Class | Window | Notice | Version |
 |---|---|---|---|
-| **Correction** | **daily**, as merged | none | patch — `1.1.0` → `1.1.1` |
-| **Growth** | **monthly**, on a fixed release day | in the release notes | minor — `1.1.0` → `1.2.0` |
-| **Structure** | **quarterly at most** | **one full release cycle before it ships** | major — `1.1.0` → `2.0.0` |
+| **Correction** | daily | none | patch — `1.1.0` → `1.1.1` |
+| **Growth** | daily | in the release notes | minor — `1.1.0` → `1.2.0` |
+| **Structure** | weekly | **announced at the previous weekly window — one full week** | major — `1.1.0` → `2.0.0` |
 
-Corrections move fast because they cannot hurt anyone: no record changes
-meaning, so a consumer who never upgrades loses nothing. Structure moves slowly
-because the opposite is true, and the kernel — the part of the taxonomy that
-says which human actions leave no public record — moves slowest of all.
+### Why an exchange close
 
-A consumer who pins a major version and ignores everything else must still be
-correct. That is the promise the brackets exist to keep.
+Because it is a real instant the world already coordinates on, and this is a
+reference system for the real world. It resolves holidays and half-days without
+anyone maintaining a calendar — "the close" is whatever the close was that day,
+including the early ones. A schedule that is itself a reference beats a schedule
+somebody has to remember to keep.
+
+Nothing ships between windows. An urgent correction waits for the next daily
+close, which is never more than a day away; if something is too urgent for that,
+the honest response is a security advisory, not a surprise release.
+
+### Why the two are different
+
+Corrections and Growth cannot make an existing record mean something new, so a
+consumer who never upgrades loses nothing by them — they can move at the speed
+of the work.
+
+Structure can. It gets the weekly window and a full week of announced notice,
+and the kernel — the part of the taxonomy that says which human actions leave no
+public record — is the slowest thing inside the slowest window.
+
+A consumer who pins a major version and ignores every window must still be
+correct. That is the promise the windows exist to keep.
 
 ## 3. Deprecation, because identity is frozen
 
@@ -143,8 +166,10 @@ Every proposal reports, for each node it touches:
 
 Utilization does not change a proposal's class — effect does that. It changes
 the **work required to land it**: a heavily-used node demands a migration with
-a rehearsal, and a notice period at the top of its bracket rather than the
-bottom.
+a rehearsal, and — where the class allows a choice — more notice rather than
+less. It can also push a change up a class: if reconciling the records is
+substantial enough that a consumer could be surprised, that is Structure and
+belongs in the weekly window.
 
 Utilization is reported, not authoritative. No single deployment can see the
 whole ecosystem, and a figure of zero means *nobody told us*, never *nobody
@@ -161,7 +186,7 @@ part that matters:
 | Stage | Decision rule | Trigger to leave it |
 |---|---|---|
 | **Steward** (now) | Timepoint decides; every change is public, with its reasoning | a second independent implementation passes the conformance vectors |
-| **Steward + comment** | proposals open for a full bracket cycle before they land; Timepoint still decides, and answers objections in writing | three or more parties classifying in production against a pinned version |
+| **Steward + comment** | proposals open for a full week before they land; Timepoint still decides, and answers objections in writing | three or more parties classifying in production against a pinned version |
 | **Stewards** | a small group; Growth needs a majority, Structure needs consensus or an explicit, recorded override | — |
 
 Decision rights cover **the taxonomy**. The specification prose and the
@@ -171,7 +196,7 @@ document.
 ## 7. The gate
 
 Deliberately light while this is young. A release is a release when it can
-say yes to all of these, and the brackets are where they are enforced:
+say yes to all of these, and the windows are where they are enforced:
 
 - the bundle validates;
 - every existing conformance vector still produces its recorded hash;

@@ -192,8 +192,11 @@ governance is not something anyone can build on.
 - Changes come in three classes — **Correction**, **Growth**, **Structure** —
   decided by *effect*, not intent: could this cause a record to be read
   differently than it was written?
-- Pace follows class. Corrections ship **daily**, Growth **monthly**, Structure
-  **quarterly at most and always with notice**. The kernel moves slowest.
+- There are **two release windows and no others**, both at the close of the New
+  York Stock Exchange: a **daily** one carrying Corrections and Growth, and a
+  **Friday** one carrying Structure with a full week of announced notice. An
+  exchange close is a real instant the world already coordinates on, and it
+  resolves holidays and half-days without anyone keeping a calendar.
 - **An id never changes meaning and is never deleted.** Retirement happens
   through deprecation: the id stays readable forever and resolution carries you
   to whatever replaces it.
