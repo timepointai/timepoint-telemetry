@@ -22,6 +22,31 @@ pub struct Node {
     pub parent: Option<String>,
     pub label: String,
     pub definition: String,
+    // ── RETIREMENT (GOVERNANCE.md §3) ───────────────────────────────────────
+    //
+    // An id never changes meaning and is never deleted. Without a way to retire
+    // one, the taxonomy could only ever grow, and would eventually collapse
+    // under its own history. A deprecated node stays in the bundle, stays
+    // readable forever, and stops being a target for new classification.
+    //
+    // All three default to absent, so every bundle written before this existed
+    // still parses unchanged.
+    /// The version that retired this node. Its presence IS the deprecation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecated_in: Option<String>,
+    /// The node that replaces it. Absent only when nothing does — and then
+    /// `deprecation_note` has to say why.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub superseded_by: Option<String>,
+    /// One sentence a stranger can act on.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecation_note: Option<String>,
+}
+
+impl Node {
+    pub fn is_deprecated(&self) -> bool {
+        self.deprecated_in.is_some()
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -123,6 +148,43 @@ impl Bundle {
         self.nodes.iter().find(|n| n.id == id)
     }
 
+    /// Follow supersession to the node that should be used TODAY.
+    ///
+    /// Reading a retired id must still give an answer — that is the whole point
+    /// of never deleting one. `Ok(None)` means the id is unknown; a retired id
+    /// with no successor resolves to ITSELF, because "this was retired and
+    /// nothing replaces it" is a real answer and must not be confused with
+    /// "never existed".
+    ///
+    /// Cycles are DETECTED rather than survived. A chain that loops is a broken
+    /// bundle, and looping quietly would hang whatever asked.
+    pub fn resolve(&self, id: &str) -> Result<Option<&Node>, SnagError> {
+        let mut seen: Vec<&str> = Vec::new();
+        let mut cur = match self.node(id) {
+            Some(n) => n,
+            None => return Ok(None),
+        };
+        loop {
+            if seen.contains(&cur.id.as_str()) {
+                seen.push(&cur.id);
+                return Err(SnagError::Invalid(format!(
+                    "supersession cycle: {}",
+                    seen.join(" -> ")
+                )));
+            }
+            seen.push(&cur.id);
+            match cur.superseded_by.as_deref().and_then(|next| self.node(next)) {
+                Some(next) => cur = next,
+                None => return Ok(Some(cur)),
+            }
+        }
+    }
+
+    /// Every node retired as of this bundle.
+    pub fn deprecated(&self) -> Vec<&Node> {
+        self.nodes.iter().filter(|n| n.is_deprecated()).collect()
+    }
+
     pub fn bridge_for(&self, action_id: &str) -> Option<&Bridge> {
         self.bridges.iter().find(|b| b.action == action_id)
     }
@@ -151,6 +213,40 @@ impl Bundle {
     /// error message lists each failed check by its validate.py name.
     pub fn validate(&self) -> Result<(), SnagError> {
         let mut failures: Vec<String> = Vec::new();
+
+        // Retirement rules (GOVERNANCE.md §3). Checked at LOAD, because a
+        // dangling successor is the kind of thing that reads fine in a diff and
+        // strands every record pointing at it.
+        {
+            let ids: std::collections::HashSet<&str> =
+                self.nodes.iter().map(|n| n.id.as_str()).collect();
+            for n in self.nodes.iter().filter(|n| n.is_deprecated()) {
+                match n.superseded_by.as_deref() {
+                    Some(sup) if !ids.contains(sup) => failures.push(format!(
+                        "node {} superseded_by unknown id {sup}",
+                        n.id
+                    )),
+                    Some(sup) if sup == n.id => {
+                        failures.push(format!("node {} supersedes itself", n.id))
+                    }
+                    // Retired with no successor is legal — a node that should
+                    // never have existed has none — but it must say why.
+                    None if n.deprecation_note.is_none() => failures.push(format!(
+                        "node {} is deprecated with neither superseded_by nor deprecation_note",
+                        n.id
+                    )),
+                    _ => {}
+                }
+            }
+            // A successor that is itself retired is fine (chains are allowed);
+            // a chain that closes is not.
+            for n in self.nodes.iter().filter(|n| n.is_deprecated()) {
+                if let Err(SnagError::Invalid(e)) = self.resolve(&n.id) {
+                    failures.push(e);
+                }
+            }
+        }
+
 
         // Index + duplicate detection.
         let mut by_id: HashMap<&str, &Node> = HashMap::with_capacity(self.nodes.len());

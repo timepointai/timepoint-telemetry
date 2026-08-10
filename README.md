@@ -49,8 +49,9 @@ lying in the more flattering direction.
 | `src/bundle.rs` | load + validate a bundle; parent chains, bridge lookup, id validity |
 | `src/envelope.rs` | RFC 8785 canonicalisation, `content_hash`, `provenance_hash` |
 | `src/distance.rs` | node-to-node and distribution-to-distribution distance |
+| `GOVERNANCE.md` | how this changes — classes, pacing, retirement, migrations |
 | `vectors/` | conformance vectors — the hashes an implementation must reproduce |
-| `tests/` | the suite the reference implementation passes (33 tests) |
+| `tests/` | the suite the reference implementation passes (40 tests) |
 
 The crate is named `snag-core` — SNAG is the ontology's schema id
 (`snag-ontology/1.0`) and the name the reference implementation has carried
@@ -159,7 +160,7 @@ let d = bundle.distances().between(&profile_a, &profile_b); // Option<f64>
 ```
 
 ```
-cargo test    # 33 tests, including every conformance vector
+cargo test    # 40 tests, including every conformance vector
 ```
 
 ## Being compatible
@@ -180,6 +181,30 @@ A system is compatible when:
 The product. Rooms, pricing, ledgers, simulation pipelines, anything belonging
 to anyone's record. Timepoint is built on this; this is not Timepoint.
 
+## How this changes
+
+The update process is part of the format. People trust the format because they
+trust the process, and a vocabulary with excellent structure and unpredictable
+governance is not something anyone can build on.
+
+**[GOVERNANCE.md](GOVERNANCE.md)** is the whole of it. In short:
+
+- Changes come in three classes — **Correction**, **Growth**, **Structure** —
+  decided by *effect*, not intent: could this cause a record to be read
+  differently than it was written?
+- Pace follows class. Corrections ship **daily**, Growth **monthly**, Structure
+  **quarterly at most and always with notice**. The kernel moves slowest.
+- **An id never changes meaning and is never deleted.** Retirement happens
+  through deprecation: the id stays readable forever and resolution carries you
+  to whatever replaces it.
+- **A proposal carries its solution** — the edit, the evidence, and a migration
+  that reconciles records already classified under the old shape, declaring
+  Prune / Synthesize / **Store** (the default) for every divergence it creates
+  or exposes.
+- Timepoint decides today. The triggers for opening that up are written down.
+
+Proposals use [the change request template](.github/CHANGE_REQUEST.md).
+
 ## Status
 
 **Early and honest about it.** The taxonomy is at `1.1.0` and its identity
@@ -192,6 +217,27 @@ Issues and disagreements are welcome, particularly about the taxonomy itself. A
 vocabulary is worth exactly as much as the number of parties willing to
 classify against it.
 
+This is not only a taxonomy. It is a reference system for the real world — the
+shared ground that lets independent agents, platforms and parties coordinate
+about what happened without sharing a database or an employer. That is why
+identity is frozen, why the process is written down before it is needed, and
+why the kernel is stated rather than hidden.
+
 ## Licence
 
-Apache-2.0. See [LICENSE](LICENSE).
+**Business Source License 1.1** — see [LICENSE](LICENSE).
+
+Source-available, not open source, and the difference is worth stating plainly:
+
+- **You may use it in production.** Classify your own records against the
+  taxonomy, store the classifications, exchange them with anyone. That is the
+  point of the thing.
+- **You may not** offer it to third parties as a hosted or managed service whose
+  primary value is classification against, resolution of, or distribution of
+  this taxonomy, in competition with Timepoint.
+- **Publishing a bundle version, an implementation, or conformance results is
+  never a competing offering.**
+- **On the Change Date — four years after publication — each version converts
+  to Apache-2.0** automatically and permanently. Every version carries its own
+  clock, so what you adopt today is permissively licensed on a date you can
+  read off the calendar.

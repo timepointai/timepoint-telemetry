@@ -2,7 +2,7 @@
 name = "snag-core"
 version = "0.1.0"
 edition = "2024"
-license = "Apache-2.0"
+license-file = "LICENSE"
 description = "Timepoint Telemetry — the SNAG ontology, envelope and distance metric: a shared, frozen-identity vocabulary for recording what happened."
 repository = "https://github.com/timepointai/timepoint-telemetry"
 readme = "README.md"
