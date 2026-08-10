@@ -1,10 +1,10 @@
-//! snag-core — the SNAG envelope (RFC 8785/JCS canonicalization + the content/provenance
+//! tt-core — the TT envelope (RFC 8785/JCS canonicalization + the content/provenance
 //! hash pair) and the ontology bundle loader with load-time validation.
 //!
-//! OWNED BY: snag-core agent (gate G1). Contract: CONTRACTS.md §6, SNAG-SPEC §2/§3,
+//! OWNED BY: tt-core agent (gate G1). Contract: CONTRACTS.md §6, TT-SPEC §2/§3,
 //! genesis/snag/validate.py (all check families ported as loader-time assertions).
 //!
-//! The load-bearing rule (SNAG-SPEC §3 hash coverage): `content_hash` covers EXACTLY
+//! The load-bearing rule (TT-SPEC §3 hash coverage): `content_hash` covers EXACTLY
 //! `{label, occurs_at, participants}` — the claim. `classification`, `grounding`,
 //! `basis_note` and the whole `provenance` object are OUTSIDE it, so a re-grounded or
 //! re-classified moment keeps its identity. `provenance_hash` covers the full provenance
@@ -27,7 +27,7 @@ pub use envelope::{
 /// Typed errors. Unknown/absent are representable states — a payload missing a claim
 /// field is a `MissingPayloadField`, never a silently hashed hole.
 #[derive(Debug, thiserror::Error)]
-pub enum SnagError {
+pub enum TtError {
     #[error("bundle io: {0}")]
     Io(#[from] std::io::Error),
     #[error("bundle parse: {0}")]

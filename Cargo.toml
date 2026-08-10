@@ -1,9 +1,9 @@
 [package]
-name = "snag-core"
-version = "0.1.0"
+name = "tt-core"
+version = "2.0.0"
 edition = "2024"
 license-file = "LICENSE"
-description = "Timepoint Telemetry — the SNAG ontology, envelope and distance metric: a shared, frozen-identity vocabulary for recording what happened."
+description = "Timepoint Telemetry — the TT ontology, envelope and distance metric: a shared, frozen-identity vocabulary for recording what happened."
 repository = "https://github.com/timepointai/timepoint-telemetry"
 readme = "README.md"
 keywords = ["ontology", "taxonomy", "provenance", "events", "classification"]

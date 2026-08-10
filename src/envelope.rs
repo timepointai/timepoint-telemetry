@@ -1,15 +1,15 @@
 //! RFC 8785 (JCS) canonicalization, the content/provenance hash pair, and the Envelope.
-//! Contract: CONTRACTS.md §6, SNAG-SPEC §3.
+//! Contract: CONTRACTS.md §6, TT-SPEC §3.
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sha2::{Digest, Sha256};
 
-use crate::SnagError;
+use crate::TtError;
 
 /// The exact payload fields covered by `content_hash` — the claim, nothing else.
 /// classification, grounding, basis_note, and provenance are OUTSIDE by design
-/// (SNAG-SPEC §3 hash-coverage table).
+/// (TT-SPEC §3 hash-coverage table).
 pub const CONTENT_HASH_FIELDS: [&str; 3] = ["label", "occurs_at", "participants"];
 
 /// RFC 8785 (JCS) canonical form of a JSON value.
@@ -36,13 +36,13 @@ fn sha256_prefixed(canonical: &str) -> String {
 /// Extract the hash-covered subset of a payload: exactly `{label, occurs_at, participants}`.
 /// A field that is present-but-null hashes as null (representable absence); a field that is
 /// missing entirely is a typed error — a claim needs all three.
-fn claim_subset(payload: &Value) -> Result<Value, SnagError> {
-    let obj = payload.as_object().ok_or(SnagError::PayloadNotObject)?;
+fn claim_subset(payload: &Value) -> Result<Value, TtError> {
+    let obj = payload.as_object().ok_or(TtError::PayloadNotObject)?;
     let mut subset = serde_json::Map::new();
     for field in CONTENT_HASH_FIELDS {
         let v = obj
             .get(field)
-            .ok_or(SnagError::MissingPayloadField(field))?;
+            .ok_or(TtError::MissingPayloadField(field))?;
         subset.insert(field.to_owned(), v.clone());
     }
     Ok(Value::Object(subset))
@@ -50,13 +50,13 @@ fn claim_subset(payload: &Value) -> Result<Value, SnagError> {
 
 /// The canonical (JCS) form of the hash-covered payload subset — the exact bytes that
 /// `content_hash` digests. Exposed so conformance tooling can assert on the bytes.
-pub fn content_canonical(payload: &Value) -> Result<String, SnagError> {
+pub fn content_canonical(payload: &Value) -> Result<String, TtError> {
     Ok(canonicalize(&claim_subset(payload)?))
 }
 
 /// `"sha256:" + hex` over the canonicalized `{label, occurs_at, participants}` — exactly
 /// those three payload fields, nothing else.
-pub fn content_hash(payload: &Value) -> Result<String, SnagError> {
+pub fn content_hash(payload: &Value) -> Result<String, TtError> {
     Ok(sha256_prefixed(&content_canonical(payload)?))
 }
 
@@ -65,7 +65,7 @@ pub fn provenance_hash(provenance: &Value) -> String {
     sha256_prefixed(&canonicalize(provenance))
 }
 
-/// One moment, exactly as stored (SNAG-SPEC §3).
+/// One moment, exactly as stored (TT-SPEC §3).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Envelope {
     pub id: String,
@@ -83,7 +83,7 @@ impl Envelope {
         provenance: Value,
         payload: Value,
         entity_ids: Vec<String>,
-    ) -> Result<Self, SnagError> {
+    ) -> Result<Self, TtError> {
         let content_hash = content_hash(&payload)?;
         let provenance_hash = provenance_hash(&provenance);
         Ok(Self {
@@ -98,10 +98,10 @@ impl Envelope {
 
     /// Recompute both hashes from the stored payload/provenance and compare against the
     /// stored values. A mismatch is a typed error naming which hash disagreed.
-    pub fn verify(&self) -> Result<(), SnagError> {
+    pub fn verify(&self) -> Result<(), TtError> {
         let recomputed_content = content_hash(&self.payload)?;
         if recomputed_content != self.content_hash {
-            return Err(SnagError::HashMismatch {
+            return Err(TtError::HashMismatch {
                 which: "content_hash",
                 stored: self.content_hash.clone(),
                 recomputed: recomputed_content,
@@ -109,7 +109,7 @@ impl Envelope {
         }
         let recomputed_provenance = provenance_hash(&self.provenance);
         if recomputed_provenance != self.provenance_hash {
-            return Err(SnagError::HashMismatch {
+            return Err(TtError::HashMismatch {
                 which: "provenance_hash",
                 stored: self.provenance_hash.clone(),
                 recomputed: recomputed_provenance,

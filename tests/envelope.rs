@@ -1,9 +1,9 @@
-//! Hash-coverage property tests (SNAG-SPEC §3): mutating classification/grounding/
+//! Hash-coverage property tests (TT-SPEC §3): mutating classification/grounding/
 //! basis_note/provenance never changes content_hash; mutating label/occurs_at/participants
 //! always does; provenance mutation changes only provenance_hash.
 
 use serde_json::{Value, json};
-use snag_core::{Envelope, SnagError, content_hash, provenance_hash};
+use tt_core::{Envelope, TtError, content_hash, provenance_hash};
 
 fn worked_payload() -> Value {
     json!({
@@ -145,12 +145,12 @@ fn missing_claim_field_is_a_typed_error_not_a_fabrication() {
     let mut p = worked_payload();
     p.as_object_mut().unwrap().remove("occurs_at");
     match content_hash(&p) {
-        Err(SnagError::MissingPayloadField(f)) => assert_eq!(f, "occurs_at"),
+        Err(TtError::MissingPayloadField(f)) => assert_eq!(f, "occurs_at"),
         other => panic!("expected MissingPayloadField(occurs_at), got {other:?}"),
     }
 
     match content_hash(&json!(["not", "an", "object"])) {
-        Err(SnagError::PayloadNotObject) => {}
+        Err(TtError::PayloadNotObject) => {}
         other => panic!("expected PayloadNotObject, got {other:?}"),
     }
 
@@ -166,14 +166,14 @@ fn verify_detects_tampering_with_typed_mismatch() {
     let mut env = envelope();
     env.payload["label"] = json!("A different claim entirely");
     match env.verify() {
-        Err(SnagError::HashMismatch { which, .. }) => assert_eq!(which, "content_hash"),
+        Err(TtError::HashMismatch { which, .. }) => assert_eq!(which, "content_hash"),
         other => panic!("expected content_hash mismatch, got {other:?}"),
     }
 
     let mut env = envelope();
     env.provenance["source"] = json!("someone.else");
     match env.verify() {
-        Err(SnagError::HashMismatch { which, .. }) => assert_eq!(which, "provenance_hash"),
+        Err(TtError::HashMismatch { which, .. }) => assert_eq!(which, "provenance_hash"),
         other => panic!("expected provenance_hash mismatch, got {other:?}"),
     }
 }

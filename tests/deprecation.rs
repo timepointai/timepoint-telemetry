@@ -6,12 +6,12 @@
 //! follows supersession to the node in use today, and a bundle that would strand
 //! a record refuses to load at all.
 
-use snag_core::Bundle;
+use tt_core::Bundle;
 use serde_json::json;
 
 /// A minimal but structurally valid bundle, so each test states only the thing
 /// it is about.
-fn bundle_with(nodes: serde_json::Value) -> Result<Bundle, snag_core::SnagError> {
+fn bundle_with(nodes: serde_json::Value) -> Result<Bundle, tt_core::TtError> {
     bundle_with_branches(nodes, a_branches(), b_branches())
 }
 
@@ -19,10 +19,10 @@ fn bundle_with_branches(
     nodes: serde_json::Value,
     a: Vec<String>,
     b: Vec<String>,
-) -> Result<Bundle, snag_core::SnagError> {
+) -> Result<Bundle, tt_core::TtError> {
     Bundle::load_from_str(
         &json!({
-            "schema": "snag-ontology/1.0",
+            "schema": "tt-ontology/1.0",
             "version": "9.9.9",
             "metric": {
                 "hierarchy_edge_weight": 1.0,
@@ -175,7 +175,7 @@ fn a_supersession_cycle_is_caught_at_load_not_survived() {
 fn the_shipped_bundle_parses_unchanged_and_retires_nothing() {
     let b = Bundle::load_from_file(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/bundle/taxonomy-v1.1.json"
+        "/bundle/taxonomy-v2.0.json"
     ))
     .expect("the shipped bundle still loads with the new fields absent");
     assert!(

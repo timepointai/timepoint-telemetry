@@ -46,6 +46,37 @@ differently than it was written?*
   answer. That is why lateral edges are Growth, not Correction, and why they
   carry a migration.
 
+### The one change the effect test does not classify: renaming the format
+
+v2.0.0 renamed the schema id from `snag-ontology/1.0` to `tt-ontology/1.0` and
+touched nothing else. By the effect test that is a **Correction** — no record
+can be read differently, because no id moved and no weight changed. It
+nevertheless shipped as a **major** version, and that is not an exception to the
+rule so much as a second question the rule does not ask.
+
+The effect test asks whether a RECORD changes meaning. A rename does not. But
+every consumer that pinned the schema string stops matching, which breaks them
+just as thoroughly as a re-parenting would — at the door instead of at the
+answer.
+
+So the version is decided by **both** questions, and the wider one wins:
+
+| | Does a record change meaning? | Does a consumer have to change? |
+|---|---|---|
+| Correction | no | no |
+| Growth | no (existing records keep their node) | no — additive |
+| Structure | **yes** | yes |
+| **Identity** (schema id, envelope shape) | no | **yes** |
+
+An **Identity** change ships in the weekly window with the same full week of
+notice Structure gets, carries a major bump, and MUST set `supersedes` to the
+release it replaces so nothing written under the old id is orphaned. It carries
+no data migration, because there is no divergence to prune, synthesize or store
+— the migration a consumer performs is to their own code.
+
+This class was written down after v2.0.0 shipped it, which is the wrong order.
+It is recorded here so the second one is not improvised too.
+
 ## 2. Release windows
 
 There are **two windows and no others**, both anchored to the close of the New
@@ -58,9 +89,10 @@ York Stock Exchange:
 
 | Class | Window | Notice | Version |
 |---|---|---|---|
-| **Correction** | daily | none | patch — `1.1.0` → `1.1.1` |
-| **Growth** | daily | in the release notes | minor — `1.1.0` → `1.2.0` |
-| **Structure** | weekly | **announced at the previous weekly window — one full week** | major — `1.1.0` → `2.0.0` |
+| **Correction** | daily | none | patch — `2.0.0` → `2.0.1` |
+| **Growth** | daily | in the release notes | minor — `2.0.0` → `2.1.0` |
+| **Structure** | weekly | **announced at the previous weekly window — one full week** | major — `2.0.0` → `3.0.0` |
+| **Identity** | weekly | **one full week** | major — `2.0.0` → `3.0.0` |
 
 ### Why an exchange close
 

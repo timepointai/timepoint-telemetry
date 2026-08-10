@@ -1,5 +1,5 @@
-//! SNAG distance — the query utility of SNAG-SPEC §5, made operative (PLAN B2.5d).
-//! OWNED BY: SNAG-surfaces agent. Contract: CONTRACTS.md §11.6 "SNAG surfaces".
+//! TT distance — the query utility of TT-SPEC §5, made operative (PLAN B2.5d).
+//! OWNED BY: TT-surfaces agent. Contract: CONTRACTS.md §11.6 "TT surfaces".
 //!
 //! "How alike are two moments? Weighted shortest path in the bundle graph (hierarchy
 //! 1.0, lateral 1.6) between their mass-weighted profiles." The graph is the loaded
@@ -44,7 +44,7 @@ impl Ord for Cost {
 }
 
 /// Mass-weighted distance between two classification profiles (id → mass maps, the
-/// SNAG-SPEC §4 lens shape) over the bundle graph. See the module doc for the exact
+/// TT-SPEC §4 lens shape) over the bundle graph. See the module doc for the exact
 /// metric. `None` is typed absence: empty or weightless profile, unknown id, or no
 /// path between the profiles' supports (e.g. profiles from different lenses).
 pub fn distance(
@@ -156,7 +156,7 @@ impl DistanceIndex {
 
 /// Undirected weighted adjacency over node indices: hierarchy edges (child↔parent)
 /// at `metric.hierarchy_edge_weight`, lateral edges at `metric.lateral_edge_weight`.
-/// Weights are read from the loaded bundle (SNAG-SPEC: no consumer compiles them in).
+/// Weights are read from the loaded bundle (TT-SPEC: no consumer compiles them in).
 fn build_adjacency(bundle: &Bundle, index: &HashMap<&str, usize>) -> Vec<Vec<(usize, f64)>> {
     let mut adjacency = vec![Vec::new(); bundle.nodes.len()];
     let hier = bundle.metric.hierarchy_edge_weight;
@@ -210,7 +210,7 @@ mod tests {
     fn real_bundle() -> Bundle {
         Bundle::load_from_file(concat!(
             env!("CARGO_MANIFEST_DIR"),
-            "/bundle/taxonomy-v1.1.json"
+            "/bundle/taxonomy-v2.0.json"
         ))
         .expect("vendored bundle loads")
     }
