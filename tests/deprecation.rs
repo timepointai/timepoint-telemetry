@@ -12,6 +12,14 @@ use serde_json::json;
 /// A minimal but structurally valid bundle, so each test states only the thing
 /// it is about.
 fn bundle_with(nodes: serde_json::Value) -> Result<Bundle, snag_core::SnagError> {
+    bundle_with_branches(nodes, a_branches(), b_branches())
+}
+
+fn bundle_with_branches(
+    nodes: serde_json::Value,
+    a: Vec<String>,
+    b: Vec<String>,
+) -> Result<Bundle, snag_core::SnagError> {
     Bundle::load_from_str(
         &json!({
             "schema": "snag-ontology/1.0",
@@ -23,9 +31,9 @@ fn bundle_with(nodes: serde_json::Value) -> Result<Bundle, snag_core::SnagError>
             },
             "lenses": {
                 "A": {"label": "Recorded Public Events", "question": "what did the record keep?",
-                      "branches": a_branches()},
+                      "branches": a},
                 "B": {"label": "Human Action & Behavior", "question": "what were people doing?",
-                      "branches": b_branches()}
+                      "branches": b}
             },
             "nodes": nodes,
             "lateral_edges": [],
@@ -181,4 +189,54 @@ fn the_shipped_bundle_parses_unchanged_and_retires_nothing() {
             "with nothing retired, every id resolves to itself"
         );
     }
+}
+
+/// THE ONE THAT WOULD HAVE BRICKED A DEPLOY.
+///
+/// Retirement shipped with the branch counts still counting ROWS. Deprecating a
+/// branch and adding its successor leaves seven Lens-A branch nodes though six
+/// are in service, so the bundle refused to load — and loading is how a consumer
+/// starts. Not a degraded surface: a process that will not boot, on the first
+/// Structure release that touched a branch. The counts are over LIVE branches.
+#[test]
+fn retiring_a_branch_and_naming_its_successor_still_loads() {
+    let mut nodes = base();
+    // Seven Lens-A branch NODES; six of them in service.
+    let mut retired = node("a-branch-6", "A", "branch", None);
+    retired["deprecated_in"] = json!("2.0.0");
+    retired["superseded_by"] = json!("a-branch-6b");
+    nodes.retain(|n| n["id"] != "a-branch-6");
+    nodes.push(retired);
+    nodes.push(node("a-branch-6b", "A", "branch", None));
+
+    let b = bundle_with_branches(
+        json!(nodes),
+        // The lens list declares every branch node, retired ones included —
+        // they are still nodes and still readable.
+        vec![
+            "a-branch-1".into(), "a-branch-2".into(), "a-branch-3".into(),
+            "a-branch-4".into(), "a-branch-5".into(), "a-branch-6".into(),
+            "a-branch-6b".into(),
+        ],
+        b_branches(),
+    )
+    .expect("a retired branch plus its successor is six LIVE branches, and must load");
+
+    assert_eq!(b.resolve("a-branch-6").expect("no cycle").expect("known").id, "a-branch-6b");
+    assert_eq!(b.deprecated().len(), 1);
+}
+
+/// And the frozen number still means something: retiring a branch WITHOUT a
+/// successor drops service to five and is refused.
+#[test]
+fn retiring_a_branch_with_no_successor_is_refused() {
+    let mut nodes = base();
+    let mut retired = node("a-branch-6", "A", "branch", None);
+    retired["deprecated_in"] = json!("2.0.0");
+    retired["deprecation_note"] = json!("no successor");
+    nodes.retain(|n| n["id"] != "a-branch-6");
+    nodes.push(retired);
+    let err = bundle_with_branches(json!(nodes), a_branches(), b_branches())
+        .expect_err("five live Lens-A branches is not a taxonomy this code knows");
+    assert!(format!("{err}").contains("Lens A live branch count"), "{err}");
 }

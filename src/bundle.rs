@@ -362,11 +362,30 @@ impl Bundle {
             .filter(|n| n.lens == "B" && n.level == "branch")
             .map(|n| n.id.as_str())
             .collect();
-        if a_branches.len() != 6 {
-            failures.push(format!("Lens A branch count == 6: got {}", a_branches.len()));
+        // THE COUNTS ARE OVER LIVE BRANCHES, NOT ALL OF THEM.
+        //
+        // Retirement (GOVERNANCE.md §3) keeps a node in the bundle forever, so
+        // deprecating a branch and adding its successor leaves SEVEN Lens-A
+        // branch nodes even though six are in service. Counting rows would
+        // therefore refuse to load — and because loading a bundle is how a
+        // consumer starts, that is not a degraded surface, it is a process that
+        // will not boot. Retirement shipped without this and would have bricked
+        // the first Structure release that touched a branch.
+        //
+        // The frozen numbers stay frozen: adding a branch to SERVICE is still a
+        // code change here as well as a bundle change, which is exactly why
+        // branches sit in the slowest window.
+        let live = |ids: &[&str]| -> usize {
+            ids.iter()
+                .filter(|id| self.node(id).is_none_or(|n| !n.is_deprecated()))
+                .count()
+        };
+        let (live_a, live_b) = (live(&a_branches), live(&b_branches));
+        if live_a != 6 {
+            failures.push(format!("Lens A live branch count == 6: got {live_a}"));
         }
-        if b_branches.len() != 9 {
-            failures.push(format!("Lens B branch count == 9: got {}", b_branches.len()));
+        if live_b != 9 {
+            failures.push(format!("Lens B live branch count == 9: got {live_b}"));
         }
         if self.lenses.a.branches != a_branches {
             failures.push("lenses.A.branches matches nodes".to_owned());
