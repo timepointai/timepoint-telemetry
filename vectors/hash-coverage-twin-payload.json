@@ -1,0 +1,22 @@
+{
+  "name": "hash-coverage-twin-payload",
+  "input": {
+    "payload": {
+      "basis_note": "re-grounded 2026-08-02 after the wire was observed",
+      "grounding": "GROUNDED",
+      "classification": {
+        "bundle": "snag-ontology/1.0 v1.1.0",
+        "classifier": "cls-2026-08-b",
+        "lens_b": { "negotiation-and-agreement": 0.7 },
+        "lens_a": { "banking-and-exchange": 0.6 },
+        "shadow": { "relation": "scales-up-to", "event": "treaty-alliance-and-peace-accord" }
+      },
+      "participants": ["/person/sofia-almeida", "/organization/novabloom", "/organization/harborline-capital"],
+      "occurs_at": "2026-11-14",
+      "label": "Novabloom signs with Harborline; the wire lands at an $18M cap",
+      "dialog": [{"speaker": "/person/sofia-almeida", "line": "Send it."}]
+    }
+  },
+  "expected_canonical": "{\"label\":\"Novabloom signs with Harborline; the wire lands at an $18M cap\",\"occurs_at\":\"2026-11-14\",\"participants\":[\"/person/sofia-almeida\",\"/organization/novabloom\",\"/organization/harborline-capital\"]}",
+  "expected_hash": "sha256:ef343955332eb0d77e66955034c93353034afefbb4c1f792d0a68c91b076b5c9"
+}

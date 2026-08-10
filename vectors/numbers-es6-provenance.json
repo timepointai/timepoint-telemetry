@@ -1,0 +1,21 @@
+{
+  "name": "numbers-es6-provenance",
+  "input": {
+    "provenance": {
+      "int_zero": 0,
+      "neg_zero": -0,
+      "int": 42,
+      "neg_int": -7,
+      "frac": 0.1,
+      "neg_frac": -1.5,
+      "trailing_zero_frac": 56.0,
+      "micro": 0.000001,
+      "nano": 1e-7,
+      "big_exp": 1e21,
+      "big_noexp": 100000000000000000000,
+      "long_frac": 333333333.33333329
+    }
+  },
+  "expected_canonical": "{\"big_exp\":1e+21,\"big_noexp\":100000000000000000000,\"frac\":0.1,\"int\":42,\"int_zero\":0,\"long_frac\":333333333.3333333,\"micro\":0.000001,\"nano\":1e-7,\"neg_frac\":-1.5,\"neg_int\":-7,\"neg_zero\":0,\"trailing_zero_frac\":56}",
+  "expected_hash": "sha256:fa7c38ca80d77615ea663ac69d848f9777c923100d7918cdcce27f9d243454d5"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "worked-moment-provenance",
+  "input": {
+    "provenance": {
+      "source": "pro.deep_sim",
+      "run_id": "run_meridian_9f2",
+      "branch": 3,
+      "timepoint": 9,
+      "producer_version": "pro-api 0.4.1",
+      "created_at": "2026-07-28T17:04:11Z"
+    }
+  },
+  "expected_canonical": "{\"branch\":3,\"created_at\":\"2026-07-28T17:04:11Z\",\"producer_version\":\"pro-api 0.4.1\",\"run_id\":\"run_meridian_9f2\",\"source\":\"pro.deep_sim\",\"timepoint\":9}",
+  "expected_hash": "sha256:7dd42dd5f5993daed6d619ff89ffb8376b3c13dfe700a96cb9e20c4ecc4c2f14"
+}
