@@ -256,3 +256,14 @@ Source-available, not open source, and the difference is worth stating plainly:
   to Apache-2.0** automatically and permanently. Every version carries its own
   clock, so what you adopt today is permissively licensed on a date you can
   read off the calendar.
+
+### If you adopted this when it was Apache-2.0
+
+The format was published as [`snag-core`](https://github.com/timepointai/snag-core)
+under Apache-2.0 through v1.1.0. That repository is archived and frozen, and
+**everything released there stays Apache-2.0** — the grant is irrevocable and
+nothing here changes it. v1.1.0 remains available on those terms.
+
+This repository, from v2.0.0, is BSL 1.1. Said plainly rather than left to be
+discovered: the licence changed at the same moment the name did. The taxonomy
+itself did not — no node id moved between v1.1.0 and v2.0.0.
