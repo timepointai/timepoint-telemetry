@@ -49,9 +49,16 @@ lying in the more flattering direction.
 | `src/bundle.rs` | load + validate a bundle; parent chains, bridge lookup, id validity |
 | `src/envelope.rs` | RFC 8785 canonicalisation, `content_hash`, `provenance_hash` |
 | `src/distance.rs` | node-to-node and distribution-to-distribution distance |
+| `TT-SPEC.md` | **the normative description** — what a conforming implementation must do. Written from this implementation, not ahead of it |
 | `GOVERNANCE.md` | how this changes — classes, pacing, retirement, migrations |
 | `vectors/` | conformance vectors — the hashes an implementation must reproduce |
-| `tests/` | the suite the reference implementation passes (42 tests) |
+| `tests/` | the suite the reference implementation passes (51 tests) |
+| `.github/workflows/ci.yml` | build · tests · clippy `-D warnings` · conformance as its own job, on every push |
+
+**Where TT-SPEC and the vectors disagree, the vectors win.** A specification can
+be read two ways; a hash cannot. Every figure TT-SPEC prints about the bundle is
+asserted by `tests/spec.rs`, so the document cannot drift from the thing it
+describes without the suite going red.
 
 The crate is named `tt-core`, after the ontology's schema id
 (`tt-ontology/1.0`). It is *literally* the code Timepoint runs, not a
