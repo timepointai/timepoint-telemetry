@@ -223,10 +223,13 @@ Proposals use [the change request template](.github/CHANGE_REQUEST.md).
 ## Status
 
 **Early and honest about it.** The taxonomy is at `2.0.0` and its identity
-guarantee is real — ids will not change meaning. The surrounding spec prose is
-still being written down; this README and the tests are currently the
-normative description, and where they disagree, **the tests and the bundle
-win**.
+guarantee is real — ids will not change meaning.
+
+[TT-SPEC.md](TT-SPEC.md) is the normative description, written from the
+implementation rather than ahead of it. Where it and the committed conformance
+vectors disagree, **the vectors win and the spec is a bug** — and a test suite
+asserts every figure the spec prints about the bundle, so it cannot drift
+silently.
 
 Issues and disagreements are welcome, particularly about the taxonomy itself. A
 vocabulary is worth exactly as much as the number of parties willing to
