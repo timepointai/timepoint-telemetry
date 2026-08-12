@@ -240,3 +240,67 @@ fn retiring_a_branch_with_no_successor_is_refused() {
         .expect_err("five live Lens-A branches is not a taxonomy this code knows");
     assert!(format!("{err}").contains("Lens A live branch count"), "{err}");
 }
+
+// ---------------------------------------------------------------------------
+// PLAN 3.1 — the property the forecast sweep depends on.
+//
+// `register.rs` scores a forecast HIT by asking whether the forecast's anchor
+// appears on the observed moment's parent chain. It compared RAW STRINGS, so a
+// retirement broke the comparison silently: after a Structure release the
+// anchor and the observation can be the same concept under two ids, the match
+// fails, a real HIT scores 0.0 as a MISS — and because that write is guarded
+// `WHERE resolved_at IS NULL`, THE VERDICT NEVER REOPENS. 459 anchored
+// predicates sit behind it.
+//
+// The fix resolves both sides first. These pin what `resolve()` has to
+// guarantee for that to work.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn a_retired_id_and_its_successor_resolve_to_one_node() {
+    // The exact shape of the bug: two ids, one concept, after a retirement.
+    let mut nodes = base();
+    nodes.push(node("old-species", "A", "species", Some("a-branch-1")));
+    nodes.push(node("new-species", "A", "species", Some("a-branch-1")));
+    let mut retired = node("old-species", "A", "species", Some("a-branch-1"));
+    retired["deprecated_in"] = json!("2.0.0");
+    retired["superseded_by"] = json!("new-species");
+    nodes.retain(|n| n["id"] != json!("old-species"));
+    nodes.push(retired);
+
+    let b = bundle_with(json!(nodes)).expect("bundle loads");
+
+    let old = b.resolve("old-species").expect("resolves").expect("known id");
+    let new = b.resolve("new-species").expect("resolves").expect("known id");
+    assert_eq!(old.id, "new-species", "a retired id resolves to its successor");
+    assert_eq!(new.id, "new-species", "and the successor resolves to itself");
+    assert_eq!(old.id, new.id, "so a stored anchor and a fresh observation MATCH");
+}
+
+#[test]
+fn an_unknown_id_does_not_resolve_into_something_plausible() {
+    // The sweep falls back to the raw string when `resolve` says None, so a
+    // typo must stay a miss rather than being quietly mapped onto a real node.
+    let b = bundle_with(json!(base())).expect("bundle loads");
+    assert!(
+        b.resolve("not-a-node-at-all").expect("no error").is_none(),
+        "an unknown id is unknown — never resolved into a neighbour"
+    );
+}
+
+#[test]
+fn a_retirement_with_no_successor_resolves_to_itself() {
+    // "This was retired and nothing replaces it" is a real answer and must not
+    // be confused with "never existed" — a forecast anchored on it still
+    // matches an observation carrying the same id.
+    let mut nodes = base();
+    let mut orphaned = node("gone-species", "A", "species", Some("a-branch-1"));
+    orphaned["deprecated_in"] = json!("2.0.0");
+    orphaned["deprecation_note"] = json!("recorded in error; nothing replaces it");
+    nodes.push(orphaned);
+
+    let b = bundle_with(json!(nodes)).expect("bundle loads");
+    let r = b.resolve("gone-species").expect("resolves").expect("still known");
+    assert_eq!(r.id, "gone-species", "resolves to itself, so a stored anchor still matches");
+    assert!(r.is_deprecated(), "and it is still visibly retired");
+}
