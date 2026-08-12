@@ -1,0 +1,82 @@
+name: ci
+
+# THE GATES THIS CRATE IS ALREADY HELD TO, RUN WHERE IT LIVES.
+#
+# This repo had no CI at all. That was survivable only because the crate is
+# developed inside timepoint-beta and vendored here, so beta's suite was doing
+# the work — 45 tests and a clippy pass that, from this repo's point of view,
+# ran nowhere. Anyone forking or depending on `tt-core` got a crate whose
+# published copy nothing checked.
+#
+# It also blocked the real fix. Beta cannot depend on this crate instead of
+# forking it (its PLAN 2.2) while moving the code here means those tests stop
+# running. So this file is the prerequisite for ending the fork, not a tidy-up.
+#
+# The gates match beta's exactly, deliberately: same toolchain, same
+# `-D warnings`, same suites. A crate that passes here must pass there.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: test · clippy · fmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # rust-toolchain.toml pins the channel; this action honours it.
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.97.1
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+
+      - name: build
+        run: cargo build --all-targets
+
+      # The unit tests (distance.rs) and the integration suites: bundle,
+      # deprecation, envelope, vectors. No database, no network, no LLM — this
+      # crate is pure by design and its CI should stay that cheap.
+      - name: tests
+        run: cargo test --all-targets
+
+      - name: clippy
+        run: cargo clippy --all-targets -- -D warnings
+
+      # NO `cargo fmt --check`, deliberately.
+      #
+      # timepoint-beta does not enforce it, and rustfmt would rewrite 26 places
+      # in this crate. Adding the gate here would mean either a permanently red
+      # CI, or formatting this copy and instantly diverging from beta's by 26
+      # hunks — manufacturing the exact drift ending the fork is meant to stop.
+      # If fmt is ever enforced, it lands in BOTH repos in one change.
+
+  conformance:
+    name: the bundle is what the vectors say it is
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.97.1
+      - uses: Swatinem/rust-cache@v2
+
+      # THE VECTORS ARE THE SPEC. `TT-SPEC §2/§3/§4/§5` is cited normatively
+      # throughout this crate and the document exists in neither repo, so the
+      # committed vectors in `vectors/*.json` are doing that job. They are
+      # asserted byte-for-byte by `tests/vectors.rs`.
+      #
+      # Kept as its own job so a red here reads as "claim identity moved",
+      # which is a different and much louder fact than "a test failed".
+      - name: conformance vectors reproduce byte-for-byte
+        run: cargo test --test vectors -- --nocapture
+
+      # The shipped bundle must LOAD — every validate.py check family is a
+      # loader-time assertion, so a malformed bundle cannot reach a consumer.
+      - name: the shipped bundle validates
+        run: cargo test --test bundle -- --nocapture

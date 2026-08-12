@@ -1,0 +1,6 @@
+# Pinned to match timepoint-beta, which vendors this crate and builds it with
+# the same compiler. Two copies of one crate compiling under two toolchains is
+# a difference that shows up as a mystery, not as an error.
+[toolchain]
+channel = "1.97.1"
+components = ["clippy"]
