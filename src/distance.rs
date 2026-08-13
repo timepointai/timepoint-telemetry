@@ -293,13 +293,19 @@ mod tests {
         let a_scaled = profile(&[("bonding-and-kinship", 0.2), ("marriage-and-union", 0.2)]);
         let b_scaled = profile(&[("marriage-and-union", 0.4)]);
         let d2 = distance(&bundle, &a_scaled, &b_scaled).expect("path exists");
-        assert!((d - d2).abs() < EPS, "normalization invariance: {d} vs {d2}");
+        assert!(
+            (d - d2).abs() < EPS,
+            "normalization invariance: {d} vs {d2}"
+        );
     }
 
     #[test]
     fn distance_is_symmetric() {
         let bundle = real_bundle();
-        let a = profile(&[("homemaking-and-dwelling", 0.7), ("journey-and-travel", 0.3)]);
+        let a = profile(&[
+            ("homemaking-and-dwelling", 0.7),
+            ("journey-and-travel", 0.3),
+        ]);
         let b = profile(&[("making-and-cultivating", 1.0)]);
         let ab = distance(&bundle, &a, &b).expect("path exists");
         let ba = distance(&bundle, &b, &a).expect("path exists");

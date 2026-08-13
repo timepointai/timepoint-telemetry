@@ -20,8 +20,7 @@ mod envelope;
 pub use bundle::{Bridge, Bundle, LateralEdge, Lens, Lenses, Metric, Node, RELATIONS};
 pub use distance::{DistanceIndex, distance};
 pub use envelope::{
-    CONTENT_HASH_FIELDS, Envelope, canonicalize, content_canonical, content_hash,
-    provenance_hash,
+    CONTENT_HASH_FIELDS, Envelope, canonicalize, content_canonical, content_hash, provenance_hash,
 };
 
 /// Typed errors. Unknown/absent are representable states — a payload missing a claim

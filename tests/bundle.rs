@@ -6,10 +6,7 @@ use serde_json::{Value, json};
 use tt_core::{Bundle, TtError};
 
 fn bundle_path() -> String {
-    format!(
-        "{}/bundle/taxonomy-v2.1.json",
-        env!("CARGO_MANIFEST_DIR")
-    )
+    format!("{}/bundle/taxonomy-v2.1.json", env!("CARGO_MANIFEST_DIR"))
 }
 
 fn load_real() -> Bundle {
@@ -121,7 +118,10 @@ fn vendored_bundle_loads_with_exact_validate_py_counts() {
     // The chain is now typed, so it can be asked rather than eyeballed: this
     // release answers to its own id AND to the one it replaced.
     assert!(b.is_this_release("tt-ontology/1.0 v2.1.0"));
-    assert!(b.is_this_release("tt-ontology/1.0 v2.0.0"), "the step behind counts");
+    assert!(
+        b.is_this_release("tt-ontology/1.0 v2.0.0"),
+        "the step behind counts"
+    );
     assert!(
         !b.is_this_release("clockchain-taxonomy/1.0 v1.1.0-alpha.1"),
         "two steps back does NOT — walking further needs the intervening bundle, \
@@ -202,7 +202,10 @@ fn bridge_for_behaves_per_the_bundle() {
         .bridge_for("negotiation-and-agreement")
         .expect("bridge exists");
     assert_eq!(br.relation, "scales-up-to");
-    assert_eq!(br.event.as_deref(), Some("treaty-alliance-and-peace-accord"));
+    assert_eq!(
+        br.event.as_deref(),
+        Some("treaty-alliance-and-peace-accord")
+    );
 
     // Its parent has no bridge row of its own.
     assert!(b.bridge_for("communication-and-exchange").is_none());
@@ -222,7 +225,9 @@ fn id_lookup_surface() {
     assert!(b.is_valid_id("negotiation-and-agreement"));
     assert!(!b.is_valid_id("negotiation_and_agreement"));
     assert!(!b.is_valid_id(""));
-    let n = b.node("politics-governance-and-law").expect("branch exists");
+    let n = b
+        .node("politics-governance-and-law")
+        .expect("branch exists");
     assert_eq!(n.lens, "A");
     assert_eq!(n.level, "branch");
     assert_eq!(n.parent, None);
@@ -300,7 +305,10 @@ fn rejects_branch_count_and_lenses_block_drift() {
     assert_invalid(&v, "lenses.A.branches matches nodes");
 
     let mut v = raw_value();
-    v["lenses"]["B"]["branches"].as_array_mut().unwrap().reverse();
+    v["lenses"]["B"]["branches"]
+        .as_array_mut()
+        .unwrap()
+        .reverse();
     assert_invalid(&v, "lenses.B.branches matches nodes");
 }
 

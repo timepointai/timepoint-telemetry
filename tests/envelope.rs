@@ -80,7 +80,11 @@ fn fields_outside_content_hash_do_not_change_it() {
 
     let mut p = worked_payload();
     p["dialog"] = json!([{ "speaker": "/person/sofia-almeida", "line": "Send it." }]);
-    assert_eq!(content_hash(&p).unwrap(), base, "extra payload fields are outside");
+    assert_eq!(
+        content_hash(&p).unwrap(),
+        base,
+        "extra payload fields are outside"
+    );
 
     let mut p = worked_payload();
     p.as_object_mut().unwrap().remove("classification");
@@ -107,7 +111,11 @@ fn claim_fields_always_change_content_hash() {
 
     let mut p = worked_payload();
     p["participants"] = json!(["/person/sofia-almeida", "/organization/novabloom"]);
-    assert_ne!(content_hash(&p).unwrap(), base, "participants are the claim");
+    assert_ne!(
+        content_hash(&p).unwrap(),
+        base,
+        "participants are the claim"
+    );
 
     // Array order is claim-significant: JCS never reorders arrays.
     let mut p = worked_payload();
@@ -128,8 +136,13 @@ fn provenance_mutation_changes_only_provenance_hash() {
     let env = envelope();
     let mut prov = worked_provenance();
     prov["branch"] = json!(4);
-    let retold = Envelope::new(env.id.clone(), prov, worked_payload(), env.entity_ids.clone())
-        .expect("retold envelope builds");
+    let retold = Envelope::new(
+        env.id.clone(),
+        prov,
+        worked_payload(),
+        env.entity_ids.clone(),
+    )
+    .expect("retold envelope builds");
     assert_eq!(
         retold.content_hash, env.content_hash,
         "same claim, different telling"
@@ -184,5 +197,6 @@ fn envelope_round_trips_through_serde() {
     let text = serde_json::to_string(&env).expect("envelope serializes");
     let back: Envelope = serde_json::from_str(&text).expect("envelope deserializes");
     assert_eq!(back, env);
-    back.verify().expect("round-tripped envelope still verifies");
+    back.verify()
+        .expect("round-tripped envelope still verifies");
 }
