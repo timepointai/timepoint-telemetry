@@ -74,6 +74,11 @@ immediately behind it:
 "governance": "structure fluid, identity frozen — ids never change; structural change = semver bump"
 ```
 
+**v2.1.0 is the current release and the first Structure release**: it retires
+`everyday-movement-and-commute` into `journey-and-travel` — the id stays in the
+bundle forever, stops being a target for new work, and `resolve()` carries every
+stored reading onto the successor. Counts are unchanged.
+
 **v2.0.0 renames the format and changes nothing else.** The counts are
 identical to v1.1.0 — 149 nodes, 151 lateral edges, 26 bridges, the same three
 kernel members — and **no node id moved**, which is the guarantee that makes a
