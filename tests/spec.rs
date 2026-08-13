@@ -31,7 +31,10 @@ fn the_spec_names_the_release_it_describes() {
         b.version_string()
     );
     if let Some(prev) = &b.supersedes {
-        assert!(s.contains(prev.as_str()), "the lineage step is stated: {prev}");
+        assert!(
+            s.contains(prev.as_str()),
+            "the lineage step is stated: {prev}"
+        );
     }
 }
 
@@ -40,7 +43,10 @@ fn the_counts_the_spec_prints_are_the_bundles_counts() {
     let b = bundle();
     let s = spec();
     let count = |lens: &str, level: &str| {
-        b.nodes.iter().filter(|n| n.lens == lens && n.level == level).count()
+        b.nodes
+            .iter()
+            .filter(|n| n.lens == lens && n.level == level)
+            .count()
     };
     let per_level = |level: &str| b.nodes.iter().filter(|n| n.level == level).count();
 
@@ -51,8 +57,14 @@ fn the_counts_the_spec_prints_are_the_bundles_counts() {
         ("branches", per_level("branch")),
         ("species", per_level("species")),
         ("subspecies", per_level("subspecies")),
-        ("lens A nodes", b.nodes.iter().filter(|n| n.lens == "A").count()),
-        ("lens B nodes", b.nodes.iter().filter(|n| n.lens == "B").count()),
+        (
+            "lens A nodes",
+            b.nodes.iter().filter(|n| n.lens == "A").count(),
+        ),
+        (
+            "lens B nodes",
+            b.nodes.iter().filter(|n| n.lens == "B").count(),
+        ),
         ("lens A branches", count("A", "branch")),
         ("lens B branches", count("B", "branch")),
         ("lateral edges", b.lateral_edges.len()),
@@ -92,7 +104,10 @@ fn the_kernel_the_spec_lists_is_the_kernel() {
         );
     }
     // And nothing else is presented as kernel: the count is stated too.
-    assert!(s.contains(&format!("| {} |", b.kernel().len())), "the kernel count is stated");
+    assert!(
+        s.contains(&format!("| {} |", b.kernel().len())),
+        "the kernel count is stated"
+    );
 }
 
 #[test]
@@ -101,7 +116,10 @@ fn every_cited_section_exists() {
     // section that does not exist is the state this document was written to end.
     let s = spec();
     for section in ["## §2.", "## §3.", "## §4.", "## §5."] {
-        assert!(s.contains(section), "TT-SPEC has no {section} — but the code cites it");
+        assert!(
+            s.contains(section),
+            "TT-SPEC has no {section} — but the code cites it"
+        );
     }
 }
 
@@ -110,7 +128,10 @@ fn the_spec_states_the_hash_coverage_exactly() {
     // The load-bearing decision of the format: a moment's identity is its claim.
     let s = spec();
     for field in tt_core::CONTENT_HASH_FIELDS {
-        assert!(s.contains(field), "TT-SPEC must state that `{field}` is hash-covered");
+        assert!(
+            s.contains(field),
+            "TT-SPEC must state that `{field}` is hash-covered"
+        );
     }
     assert!(
         s.contains("classification") && s.contains("provenance"),

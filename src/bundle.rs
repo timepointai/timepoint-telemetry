@@ -147,7 +147,8 @@ impl Bundle {
     /// The bundle graph with every shortest path solved. Built on first call
     /// (149 Dijkstras, ~178 KB) and shared thereafter.
     pub fn distances(&self) -> &crate::distance::DistanceIndex {
-        self.distances.get_or_init(|| crate::distance::DistanceIndex::build(self))
+        self.distances
+            .get_or_init(|| crate::distance::DistanceIndex::build(self))
     }
 
     /// `"<schema> v<version>"`, e.g. `"tt-ontology/1.0 v2.0.0"`. Doubles as the ETag.
@@ -197,7 +198,11 @@ impl Bundle {
                 )));
             }
             seen.push(&cur.id);
-            match cur.superseded_by.as_deref().and_then(|next| self.node(next)) {
+            match cur
+                .superseded_by
+                .as_deref()
+                .and_then(|next| self.node(next))
+            {
                 Some(next) => cur = next,
                 None => return Ok(Some(cur)),
             }
@@ -246,10 +251,9 @@ impl Bundle {
                 self.nodes.iter().map(|n| n.id.as_str()).collect();
             for n in self.nodes.iter().filter(|n| n.is_deprecated()) {
                 match n.superseded_by.as_deref() {
-                    Some(sup) if !ids.contains(sup) => failures.push(format!(
-                        "node {} superseded_by unknown id {sup}",
-                        n.id
-                    )),
+                    Some(sup) if !ids.contains(sup) => {
+                        failures.push(format!("node {} superseded_by unknown id {sup}", n.id))
+                    }
                     Some(sup) if sup == n.id => {
                         failures.push(format!("node {} supersedes itself", n.id))
                     }
@@ -270,7 +274,6 @@ impl Bundle {
                 }
             }
         }
-
 
         // Index + duplicate detection.
         let mut by_id: HashMap<&str, &Node> = HashMap::with_capacity(self.nodes.len());

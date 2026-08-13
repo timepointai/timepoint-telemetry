@@ -6,8 +6,8 @@
 //! follows supersession to the node in use today, and a bundle that would strand
 //! a record refuses to load at all.
 
-use tt_core::Bundle;
 use serde_json::json;
+use tt_core::Bundle;
 
 /// A minimal but structurally valid bundle, so each test states only the thing
 /// it is about.
@@ -91,7 +91,9 @@ fn a_retired_id_still_reads_and_resolution_lands_on_its_successor() {
     let b = bundle_with(json!(nodes)).expect("loads");
 
     // The retired id is STILL THERE — that is the promise.
-    let raw = b.node("old-name").expect("a retired id never stops being readable");
+    let raw = b
+        .node("old-name")
+        .expect("a retired id never stops being readable");
     assert!(raw.is_deprecated());
     assert_eq!(raw.deprecated_in.as_deref(), Some("2.0.0"));
 
@@ -114,7 +116,10 @@ fn a_chain_of_supersessions_resolves_all_the_way_through() {
         nodes.push(n);
     }
     let b = bundle_with(json!(nodes)).expect("loads");
-    assert_eq!(b.resolve("first").expect("no cycle").expect("resolves").id, "third");
+    assert_eq!(
+        b.resolve("first").expect("no cycle").expect("resolves").id,
+        "third"
+    );
 }
 
 /// Retired with nothing to replace it is LEGAL — a node that should never have
@@ -130,7 +135,13 @@ fn retired_with_no_successor_is_legal_only_when_it_says_why() {
     let b = bundle_with(json!(with_note)).expect("a stated reason is enough");
     // It resolves to ITSELF: retired-and-unreplaced is a real answer, and must
     // not be confused with "never existed".
-    assert_eq!(b.resolve("was-a-mistake").expect("no cycle").expect("known").id, "was-a-mistake");
+    assert_eq!(
+        b.resolve("was-a-mistake")
+            .expect("no cycle")
+            .expect("known")
+            .id,
+        "was-a-mistake"
+    );
     assert!(b.resolve("never-existed").expect("no cycle").is_none());
 
     let mut silent = base();
@@ -179,10 +190,17 @@ fn the_shipped_bundle_retires_exactly_one_node_with_a_successor() {
     ))
     .expect("the shipped bundle loads");
     let retired: Vec<_> = b.deprecated();
-    assert_eq!(retired.len(), 1, "one retirement, deliberately: {retired:?}");
+    assert_eq!(
+        retired.len(),
+        1,
+        "one retirement, deliberately: {retired:?}"
+    );
     assert_eq!(retired[0].id, "everyday-movement-and-commute");
     assert_eq!(
-        b.resolve("everyday-movement-and-commute").expect("no cycle").expect("known").id,
+        b.resolve("everyday-movement-and-commute")
+            .expect("no cycle")
+            .expect("known")
+            .id,
         "journey-and-travel",
         "the retired id resolves to its successor"
     );
@@ -221,15 +239,25 @@ fn retiring_a_branch_and_naming_its_successor_still_loads() {
         // The lens list declares every branch node, retired ones included —
         // they are still nodes and still readable.
         vec![
-            "a-branch-1".into(), "a-branch-2".into(), "a-branch-3".into(),
-            "a-branch-4".into(), "a-branch-5".into(), "a-branch-6".into(),
+            "a-branch-1".into(),
+            "a-branch-2".into(),
+            "a-branch-3".into(),
+            "a-branch-4".into(),
+            "a-branch-5".into(),
+            "a-branch-6".into(),
             "a-branch-6b".into(),
         ],
         b_branches(),
     )
     .expect("a retired branch plus its successor is six LIVE branches, and must load");
 
-    assert_eq!(b.resolve("a-branch-6").expect("no cycle").expect("known").id, "a-branch-6b");
+    assert_eq!(
+        b.resolve("a-branch-6")
+            .expect("no cycle")
+            .expect("known")
+            .id,
+        "a-branch-6b"
+    );
     assert_eq!(b.deprecated().len(), 1);
 }
 
@@ -245,7 +273,10 @@ fn retiring_a_branch_with_no_successor_is_refused() {
     nodes.push(retired);
     let err = bundle_with_branches(json!(nodes), a_branches(), b_branches())
         .expect_err("five live Lens-A branches is not a taxonomy this code knows");
-    assert!(format!("{err}").contains("Lens A live branch count"), "{err}");
+    assert!(
+        format!("{err}").contains("Lens A live branch count"),
+        "{err}"
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -277,11 +308,26 @@ fn a_retired_id_and_its_successor_resolve_to_one_node() {
 
     let b = bundle_with(json!(nodes)).expect("bundle loads");
 
-    let old = b.resolve("old-species").expect("resolves").expect("known id");
-    let new = b.resolve("new-species").expect("resolves").expect("known id");
-    assert_eq!(old.id, "new-species", "a retired id resolves to its successor");
-    assert_eq!(new.id, "new-species", "and the successor resolves to itself");
-    assert_eq!(old.id, new.id, "so a stored anchor and a fresh observation MATCH");
+    let old = b
+        .resolve("old-species")
+        .expect("resolves")
+        .expect("known id");
+    let new = b
+        .resolve("new-species")
+        .expect("resolves")
+        .expect("known id");
+    assert_eq!(
+        old.id, "new-species",
+        "a retired id resolves to its successor"
+    );
+    assert_eq!(
+        new.id, "new-species",
+        "and the successor resolves to itself"
+    );
+    assert_eq!(
+        old.id, new.id,
+        "so a stored anchor and a fresh observation MATCH"
+    );
 }
 
 #[test]
@@ -307,7 +353,13 @@ fn a_retirement_with_no_successor_resolves_to_itself() {
     nodes.push(orphaned);
 
     let b = bundle_with(json!(nodes)).expect("bundle loads");
-    let r = b.resolve("gone-species").expect("resolves").expect("still known");
-    assert_eq!(r.id, "gone-species", "resolves to itself, so a stored anchor still matches");
+    let r = b
+        .resolve("gone-species")
+        .expect("resolves")
+        .expect("still known");
+    assert_eq!(
+        r.id, "gone-species",
+        "resolves to itself, so a stored anchor still matches"
+    );
     assert!(r.is_deprecated(), "and it is still visibly retired");
 }

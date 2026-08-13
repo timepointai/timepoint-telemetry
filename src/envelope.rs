@@ -40,9 +40,7 @@ fn claim_subset(payload: &Value) -> Result<Value, TtError> {
     let obj = payload.as_object().ok_or(TtError::PayloadNotObject)?;
     let mut subset = serde_json::Map::new();
     for field in CONTENT_HASH_FIELDS {
-        let v = obj
-            .get(field)
-            .ok_or(TtError::MissingPayloadField(field))?;
+        let v = obj.get(field).ok_or(TtError::MissingPayloadField(field))?;
         subset.insert(field.to_owned(), v.clone());
     }
     Ok(Value::Object(subset))
