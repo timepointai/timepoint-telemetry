@@ -7,7 +7,7 @@ use tt_core::{Bundle, TtError};
 
 fn bundle_path() -> String {
     format!(
-        "{}/bundle/taxonomy-v2.0.json",
+        "{}/bundle/taxonomy-v2.1.json",
         env!("CARGO_MANIFEST_DIR")
     )
 }
@@ -48,13 +48,13 @@ fn node_index(v: &Value, id: &str) -> usize {
 fn vendored_bundle_loads_with_exact_validate_py_counts() {
     let b = load_real();
 
-    assert_eq!(b.version_string(), "tt-ontology/1.0 v2.0.0");
+    assert_eq!(b.version_string(), "tt-ontology/1.0 v2.1.0");
     assert_eq!(b.schema, "tt-ontology/1.0");
-    assert_eq!(b.version, "2.0.0");
-    // The rename is a MAJOR bump carrying no structural change, and the chain
-    // records the step behind it. Every count below is asserted unchanged from
-    // v1.1.0 — that identity holding across the bump is the whole claim.
-    assert_eq!(b.supersedes.as_deref(), Some("snag-ontology/1.0 v1.1.0"));
+    assert_eq!(b.version, "2.1.0");
+    // v2.1.0 is the first Structure release: ONE retirement, nothing removed.
+    // Every count below is asserted unchanged — a retired node stays in the
+    // bundle forever; what ends is its eligibility for new work.
+    assert_eq!(b.supersedes.as_deref(), Some("tt-ontology/1.0 v2.0.0"));
 
     assert_eq!(b.nodes.len(), 149, "nodes total");
     assert_eq!(b.lateral_edges.len(), 151, "lateral edges total");
@@ -115,13 +115,13 @@ fn vendored_bundle_loads_with_exact_validate_py_counts() {
 
     // The verbatim document survives loading (servers hand it out unchanged).
     assert_eq!(b.raw["schema"], "tt-ontology/1.0");
-    assert_eq!(b.raw["supersedes"], "snag-ontology/1.0 v1.1.0");
+    assert_eq!(b.raw["supersedes"], "tt-ontology/1.0 v2.0.0");
     assert!(b.raw.get("design_principles").is_some());
 
     // The chain is now typed, so it can be asked rather than eyeballed: this
     // release answers to its own id AND to the one it replaced.
-    assert!(b.is_this_release("tt-ontology/1.0 v2.0.0"));
-    assert!(b.is_this_release("snag-ontology/1.0 v1.1.0"), "the step behind counts");
+    assert!(b.is_this_release("tt-ontology/1.0 v2.1.0"));
+    assert!(b.is_this_release("tt-ontology/1.0 v2.0.0"), "the step behind counts");
     assert!(
         !b.is_this_release("clockchain-taxonomy/1.0 v1.1.0-alpha.1"),
         "two steps back does NOT — walking further needs the intervening bundle, \

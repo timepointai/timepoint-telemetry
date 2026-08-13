@@ -11,7 +11,7 @@
 
 use std::collections::BTreeMap;
 
-const BUNDLE_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/bundle/taxonomy-v2.0.json");
+const BUNDLE_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/bundle/taxonomy-v2.1.json");
 const SPEC_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/TT-SPEC.md");
 
 fn bundle() -> tt_core::Bundle {

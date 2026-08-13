@@ -210,7 +210,7 @@ mod tests {
     fn real_bundle() -> Bundle {
         Bundle::load_from_file(concat!(
             env!("CARGO_MANIFEST_DIR"),
-            "/bundle/taxonomy-v2.0.json"
+            "/bundle/taxonomy-v2.1.json"
         ))
         .expect("vendored bundle loads")
     }

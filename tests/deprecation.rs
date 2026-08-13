@@ -169,24 +169,31 @@ fn a_supersession_cycle_is_caught_at_load_not_survived() {
     assert!(format!("{err}").contains("supersession cycle"), "{err}");
 }
 
-/// The shipped bundle predates retirement entirely. It must still load, and
-/// nothing in it may be retired by accident.
+/// v2.1.0 is the first Structure release: it retires exactly ONE node, with a
+/// successor, and everything else still resolves to itself.
 #[test]
-fn the_shipped_bundle_parses_unchanged_and_retires_nothing() {
+fn the_shipped_bundle_retires_exactly_one_node_with_a_successor() {
     let b = Bundle::load_from_file(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/bundle/taxonomy-v2.0.json"
+        "/bundle/taxonomy-v2.1.json"
     ))
-    .expect("the shipped bundle still loads with the new fields absent");
-    assert!(
-        b.deprecated().is_empty(),
-        "v1.1.0 retires nothing; retirement arrives with the version that uses it"
+    .expect("the shipped bundle loads");
+    let retired: Vec<_> = b.deprecated();
+    assert_eq!(retired.len(), 1, "one retirement, deliberately: {retired:?}");
+    assert_eq!(retired[0].id, "everyday-movement-and-commute");
+    assert_eq!(
+        b.resolve("everyday-movement-and-commute").expect("no cycle").expect("known").id,
+        "journey-and-travel",
+        "the retired id resolves to its successor"
     );
     for n in &b.nodes {
+        if n.id == "everyday-movement-and-commute" {
+            continue;
+        }
         assert_eq!(
             b.resolve(&n.id).expect("no cycle").expect("known").id,
             n.id,
-            "with nothing retired, every id resolves to itself"
+            "every other id resolves to itself"
         );
     }
 }

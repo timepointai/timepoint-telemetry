@@ -1,7 +1,7 @@
 {
   "schema": "tt-ontology/1.0",
-  "version": "2.0.0",
-  "supersedes": "snag-ontology/1.0 v1.1.0",
+  "version": "2.1.0",
+  "supersedes": "tt-ontology/1.0 v2.0.0",
   "governance": "structure fluid, identity frozen — ids never change; structural change = semver bump",
   "metric": {
     "hierarchy_edge_weight": 1.0,
@@ -860,7 +860,10 @@
       "level": "species",
       "parent": "movement-and-dwelling",
       "label": "Everyday Movement & Commute",
-      "definition": "Routine getting-about — walking, riding, commuting, errands."
+      "definition": "Routine getting-about — walking, riding, commuting, errands.",
+      "deprecated_in": "2.1.0",
+      "superseded_by": "journey-and-travel",
+      "deprecation_note": "Folded into its sibling: the routine-vs-notable split of movement produced 3 classifications ever (0 real) and no bridge or lateral edge referenced it. journey-and-travel covers setting out and traveling from place to place; routine getting-about is that, at smaller scale."
     },
     {
       "id": "homemaking-and-dwelling",

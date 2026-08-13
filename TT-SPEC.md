@@ -1,6 +1,6 @@
 # TT-SPEC — Timepoint Telemetry, normatively
 
-**Applies to:** `tt-ontology/1.0 v2.0.0` · crate `tt-core` 2.0.0
+**Applies to:** `tt-ontology/1.0 v2.1.0` · crate `tt-core` 2.1.0
 **Status:** normative. Where this document and the code disagree, **the committed
 conformance vectors win** — see §6.
 
@@ -38,15 +38,15 @@ TT is three artifacts that ship together and version together:
 | **The metric** | how near two records are in meaning |
 
 A release is identified by `"<schema> v<version>"` — for this one,
-`tt-ontology/1.0 v2.0.0`. That string is the ETag a server serves the bundle
+`tt-ontology/1.0 v2.1.0`. That string is the ETag a server serves the bundle
 under and the value a record cites to say which vocabulary made it.
 
 **Lineage is one step back.** A bundle names the release it supersedes and no
 further:
 
 ```json
-{ "schema": "tt-ontology/1.0", "version": "2.0.0",
-  "supersedes": "snag-ontology/1.0 v1.1.0" }
+{ "schema": "tt-ontology/1.0", "version": "2.1.0",
+  "supersedes": "tt-ontology/1.0 v2.0.0" }
 ```
 
 Reading a record more than one release old therefore means walking the chain a
@@ -209,7 +209,7 @@ A classification is **not a category**. It is a mass distribution over each lens
 { "lens_b": { "negotiation-and-agreement": 0.55, "deciding-and-judging": 0.25 },
   "lens_a": { "corporate-founding-and-milestone": 0.6 },
   "abstain": false,
-  "bundle": "tt-ontology/1.0 v2.0.0" }
+  "bundle": "tt-ontology/1.0 v2.1.0" }
 ```
 
 ### §4.1 The rules

@@ -45,7 +45,7 @@ lying in the more flattering direction.
 
 | | |
 |---|---|
-| `bundle/taxonomy-v2.0.json` | the versioned taxonomy — 149 nodes, 2 lenses, 151 lateral edges, 26 bridges, the kernel, metric weights, design principles |
+| `bundle/taxonomy-v2.1.json` | the versioned taxonomy — 149 nodes, 2 lenses, 151 lateral edges, 26 bridges, the kernel, metric weights, design principles |
 | `src/bundle.rs` | load + validate a bundle; parent chains, bridge lookup, id validity |
 | `src/envelope.rs` | RFC 8785 canonicalisation, `content_hash`, `provenance_hash` |
 | `src/distance.rs` | node-to-node and distribution-to-distribution distance |
@@ -162,7 +162,7 @@ tt-core = { git = "https://github.com/timepointai/timepoint-telemetry" }
 ```
 
 ```rust
-let bundle = tt_core::Bundle::load_from_file("bundle/taxonomy-v2.0.json")?;
+let bundle = tt_core::Bundle::load_from_file("bundle/taxonomy-v2.1.json")?;
 
 // Is this id real, and what does it mean?
 let node = bundle.node("courtship-and-falling-in-love").unwrap();
