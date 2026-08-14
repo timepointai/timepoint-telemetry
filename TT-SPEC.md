@@ -311,8 +311,12 @@ unicode, UTF-16 key ordering, ES6 number formatting, precision at the 2⁵³ edg
 nested arrays, empty participants, escaping, and a hash-coverage twin — two
 documents differing only outside the covered fields, which must hash the same.
 
-Two implementations exist today: this crate, and an independent stdlib-only
-Python port. Both run in CI, in their respective repositories, on every push.
+Three implementations exist today: this crate; an independent stdlib-only
+Python port in another repository; and the stdlib-only Python on-ramp in
+`python/`, written blind against the vectors. All three run in CI on every
+push, two of them in this repository. Two of the three were written without
+sight of the others' code, which is what lets this document claim to be
+unambiguous rather than merely self-consistent.
 
 **If this document and the vectors disagree, the vectors are right and this
 document is a bug.**
