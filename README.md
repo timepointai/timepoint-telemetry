@@ -93,6 +93,12 @@ resolving further needs the intervening bundle.
 
 ## The model in five minutes
 
+![How Timepoint Telemetry works — a moment is hashed into a content/provenance
+pair and classified as a mass distribution over two disjoint lenses; bridges
+carry actions into the events they become, three of them stating that no event
+exists; distance is a weighted shortest path over the bundle
+graph.](docs/how-tt-works.svg)
+
 ### Two lenses
 
 | Lens | Asks | Branches | Nodes |
@@ -184,7 +190,7 @@ let d = bundle.distances().between(&profile_a, &profile_b); // Option<f64>
 ```
 
 ```
-cargo test    # 40 tests, including every conformance vector
+cargo test    # 51 tests, including every conformance vector
 ```
 
 ## Being compatible

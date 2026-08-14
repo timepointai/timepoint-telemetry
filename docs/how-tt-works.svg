@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 610" width="980" height="610" role="img" aria-label="How Timepoint Telemetry works: a moment is hashed into a content and provenance pair and classified as a mass distribution over two disjoint lenses; bridges carry actions into events, three of them stating that no event exists; distance is a weighted shortest path over the bundle graph.">
+  <style>
+    .sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; fill: #1f2328; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fill: #1f2328; }
+    .gray { fill: #57606a; }
+    .blue { fill: #0969da; }
+    .amber { fill: #7d4e00; }
+    .t16 { font-size: 16px; font-weight: 700; }
+    .t13 { font-size: 13px; font-weight: 600; }
+    .t115 { font-size: 11.5px; font-weight: 600; }
+    .b11 { font-size: 11px; }
+    .b105 { font-size: 10.5px; }
+    .m11 { font-size: 11px; }
+    .m10 { font-size: 10px; }
+    .m95 { font-size: 9.5px; }
+    .it { font-style: italic; }
+    .card { fill: #ffffff; stroke: #d0d7de; stroke-width: 1; }
+    .arrow { stroke: #57606a; stroke-width: 1.5; fill: none; }
+  </style>
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#57606a"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="980" height="610" fill="#ffffff"/>
+
+  <text x="25" y="34" class="sans t16">How Timepoint Telemetry works</text>
+  <text x="955" y="34" text-anchor="end" class="sans b105 gray it">one moment &#8594; a pair of hashes, a classification, and a place in a frozen graph</text>
+
+  <!-- A moment -->
+  <rect x="25" y="60" width="270" height="200" rx="6" class="card"/>
+  <text x="40" y="86" class="sans t13">A moment</text>
+  <text x="40" y="104" class="sans b11 gray it">one record of something happening</text>
+  <rect x="38" y="137" width="248" height="47" rx="3" fill="#ddf4ff"/>
+  <text x="45" y="132" class="mono m11">{</text>
+  <text x="45" y="149" class="mono m11">  "label": "Treaty signed",</text>
+  <text x="45" y="165" class="mono m11">  "occurs_at": "1815-06-09",</text>
+  <text x="280" y="165" text-anchor="end" class="sans m10 blue it">the claim</text>
+  <text x="45" y="181" class="mono m11">  "participants": ["&#8230;"],</text>
+  <text x="45" y="197" class="mono m11">  "classification": { &#8230; },</text>
+  <text x="45" y="213" class="mono m11">  "provenance": { &#8230; }</text>
+  <text x="45" y="229" class="mono m11">}</text>
+
+  <!-- A classification -->
+  <rect x="355" y="60" width="290" height="200" rx="6" class="card"/>
+  <text x="370" y="86" class="sans t13">A classification</text>
+  <text x="370" y="104" class="sans b11 gray it">a mass distribution per lens &#8212; not a category</text>
+  <text x="378" y="128" class="mono m11">lens_b:</text>
+  <text x="378" y="143" class="mono m11">  negotiation-and-agreement 0.55</text>
+  <text x="378" y="158" class="mono m11">  deciding-and-judging      0.25</text>
+  <text x="378" y="173" class="mono m11">lens_a:</text>
+  <text x="378" y="188" class="mono m11">  corporate-founding-&#8230;      0.60</text>
+  <text x="378" y="203" class="mono m11">abstain: false</text>
+  <text x="370" y="230" class="sans b105 gray">&#8804; 3 entries per lens &#183; masses in (0,1] &#183; sum &#8804; 1</text>
+  <text x="370" y="246" class="sans b105 gray">invalid is rejected, never repaired &#183; abstain is valid</text>
+
+  <!-- The metric -->
+  <rect x="695" y="60" width="260" height="200" rx="6" class="card"/>
+  <text x="710" y="86" class="sans t13">The metric</text>
+  <text x="710" y="104" class="sans b11 gray it">how near are two classifications?</text>
+  <text x="710" y="128" class="sans b11">node &#8594; node: weighted shortest path</text>
+  <text x="710" y="145" class="mono m10 gray">hierarchy edge 1.0 &#183; lateral edge 1.6</text>
+  <text x="710" y="168" class="sans b11">distribution &#8594; distribution:</text>
+  <text x="710" y="184" class="sans b11">symmetric mass-weighted chamfer</text>
+  <text x="710" y="211" class="sans t115">absence stays typed:</text>
+  <text x="710" y="228" class="sans b11">empty &#183; unknown id &#183; cross-lens</text>
+  <text x="710" y="244" class="sans b11">&#8594; <tspan class="mono m11">None</tspan>, never <tspan class="mono m11">0.0</tspan></text>
+
+  <!-- The envelope -->
+  <rect x="25" y="320" width="270" height="250" rx="6" class="card"/>
+  <text x="40" y="346" class="sans t13">The envelope</text>
+  <text x="40" y="364" class="sans b11 gray it">a claim is its content</text>
+  <text x="40" y="390" class="mono m11">content_hash =</text>
+  <rect x="48" y="396" width="216" height="38" rx="3" fill="#ddf4ff"/>
+  <text x="54" y="410" class="mono m11 blue">sha256(JCS({label, occurs_at,</text>
+  <text x="54" y="426" class="mono m11 blue">            participants}))</text>
+  <text x="40" y="452" class="mono m11">provenance_hash =</text>
+  <text x="54" y="468" class="mono m11">sha256(JCS(provenance))</text>
+  <text x="40" y="496" class="sans b11">same <tspan class="mono m11">content_hash</tspan> &#8594; same claim, told again</text>
+  <text x="40" y="513" class="sans b11 gray">who said it is hashed separately and</text>
+  <text x="40" y="529" class="sans b11 gray">never changes what was said &#8212; re-classified</text>
+  <text x="40" y="545" class="sans b11 gray">or re-grounded moments keep their identity</text>
+
+  <!-- The bundle -->
+  <rect x="355" y="320" width="600" height="250" rx="6" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1"/>
+  <text x="370" y="344" class="sans t13">The bundle &#8212; tt-ontology/1.0 &#183; taxonomy v2.1.0 &#183; 149 nodes</text>
+  <text x="370" y="361" class="sans b105 gray">identity frozen &#8212; an id never changes meaning; structural change is a semver bump</text>
+
+  <!-- Lens B -->
+  <rect x="370" y="376" width="240" height="128" rx="5" class="card"/>
+  <text x="382" y="398" class="sans t115">Lens B &#8212; Human Action &amp; Behavior</text>
+  <text x="382" y="416" class="sans b11 gray it">what were people doing?</text>
+  <text x="382" y="440" class="sans b11">9 branches &#183; 70 nodes</text>
+  <text x="382" y="462" class="mono m95 gray">bonding-and-kinship &#183; work-and-</text>
+  <text x="382" y="475" class="mono m95 gray">provision &#183; striving-and-harm &#8230;</text>
+
+  <!-- Lens A -->
+  <rect x="715" y="376" width="224" height="128" rx="5" class="card"/>
+  <text x="727" y="398" class="sans t115">Lens A &#8212; Recorded Public Events</text>
+  <text x="727" y="416" class="sans b11 gray it">what did the record keep?</text>
+  <text x="727" y="440" class="sans b11">6 branches &#183; 79 nodes</text>
+  <text x="727" y="462" class="mono m95 gray">conflict-and-warfare &#183; economy-</text>
+  <text x="727" y="475" class="mono m95 gray">trade-and-labor &#183; politics-&#8230;</text>
+
+  <!-- Bridges -->
+  <text x="662" y="404" text-anchor="middle" class="sans t115">26 bridges</text>
+  <line x1="614" y1="414" x2="708" y2="414" class="arrow" marker-end="url(#ah)"/>
+  <text x="662" y="433" text-anchor="middle" class="mono m10 gray">recorded-as &#215;14</text>
+  <text x="662" y="447" text-anchor="middle" class="mono m10 gray">scales-up-to &#215;6</text>
+  <text x="662" y="461" text-anchor="middle" class="mono m10 gray">constitutes &#215;3</text>
+  <text x="662" y="475" text-anchor="middle" class="mono m10 amber" font-weight="600">unrecorded &#215;3</text>
+  <text x="662" y="494" text-anchor="middle" class="sans m95 gray it">an action, into the event it becomes</text>
+
+  <!-- Kernel strip -->
+  <rect x="370" y="512" width="569" height="46" rx="5" fill="#fff8c5" stroke="#d4a72c" stroke-opacity="0.5"/>
+  <text x="382" y="530" class="sans b11 amber" font-weight="600">the kernel &#8212; three bridges state that no public event exists (<tspan class="mono m10">event: null</tspan>):</text>
+  <text x="382" y="548" class="mono m10" fill="#9a6700">migration-and-resettlement &#183; journey-and-travel &#183; courtship-and-falling-in-love</text>
+
+  <!-- Arrows between cards -->
+  <line x1="295" y1="160" x2="348" y2="160" class="arrow" marker-end="url(#ah)"/>
+  <text x="322" y="150" text-anchor="middle" class="sans b105 gray">classify</text>
+  <line x1="645" y1="160" x2="688" y2="160" class="arrow" marker-end="url(#ah)"/>
+  <text x="667" y="150" text-anchor="middle" class="sans b105 gray">compare</text>
+  <line x1="160" y1="260" x2="160" y2="313" class="arrow" marker-end="url(#ah)"/>
+  <text x="170" y="294" class="sans b105 gray">hash</text>
+  <line x1="500" y1="260" x2="500" y2="313" class="arrow" marker-end="url(#ah)"/>
+  <text x="510" y="294" class="sans b105 gray">every id must exist in the bundle</text>
+  <line x1="830" y1="320" x2="830" y2="267" class="arrow" stroke-dasharray="4 3" marker-end="url(#ah)"/>
+  <text x="822" y="294" text-anchor="end" class="sans b105 gray">over the graph</text>
+</svg>
