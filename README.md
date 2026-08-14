@@ -1,16 +1,19 @@
 # Timepoint Telemetry
 
-**A shared, frozen-identity vocabulary for recording what happened — and an
-honest account of what the record cannot see.**
+**A shared, versioned vocabulary for recording what happened — a community
+resource for the ML community, maintained on a tightly controlled, published
+update cycle.**
 
 Most systems that record events invent their categories as they go. The
 categories then mean whatever the code meant that week, and two records can
 never be compared — not across time, and certainly not across organisations.
 
-Timepoint Telemetry is a fixed, versioned taxonomy with **frozen identity**: a
-node id never changes meaning, structure may grow, and a structural change is a
-semantic version bump. That is what makes a moment recorded today comparable
-with one recorded next year, or by somebody else.
+Timepoint Telemetry is a versioned taxonomy under strict, written governance:
+a node id never changes meaning, structure grows on a **published update
+cycle**, and a structural change is a semantic version bump. It is not a
+frozen artifact — it is a maintained one, with two scheduled release windows
+and a written process for change. That combination is what makes a moment
+recorded today comparable with one recorded next year, or by somebody else.
 
 ---
 
@@ -240,8 +243,9 @@ Proposals use [the change request template](.github/CHANGE_REQUEST.md).
 
 ## Status
 
-**Early and honest about it.** The taxonomy is at `2.0.0` and its identity
-guarantee is real — ids will not change meaning.
+**Early and honest about it.** The taxonomy is at `2.1.0` and its identity
+guarantee is real — ids will not change meaning, and change arrives only
+through the published update cycle.
 
 [TT-SPEC.md](TT-SPEC.md) is the normative description, written from the
 implementation rather than ahead of it. Where it and the committed conformance
@@ -256,8 +260,8 @@ classify against it.
 This is not only a taxonomy. It is a reference system for the real world — the
 shared ground that lets independent agents, platforms and parties coordinate
 about what happened without sharing a database or an employer. That is why
-identity is frozen, why the process is written down before it is needed, and
-why the kernel is stated rather than hidden.
+ids never change meaning, why the update cycle is written down before it is
+needed, and why the kernel is stated rather than hidden.
 
 ## Licence
 

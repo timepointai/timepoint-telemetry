@@ -26,7 +26,7 @@
   <rect x="0" y="0" width="980" height="610" fill="#ffffff"/>
 
   <text x="25" y="34" class="sans t16">How Timepoint Telemetry works</text>
-  <text x="955" y="34" text-anchor="end" class="sans b105 gray it">one moment &#8594; a pair of hashes, a classification, and a place in a frozen graph</text>
+  <text x="955" y="34" text-anchor="end" class="sans b105 gray it">one moment &#8594; a pair of hashes, a classification, and a place in a versioned, governed graph</text>
 
   <!-- A moment -->
   <rect x="25" y="60" width="270" height="200" rx="6" class="card"/>
@@ -85,7 +85,7 @@
   <!-- The bundle -->
   <rect x="355" y="320" width="600" height="250" rx="6" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1"/>
   <text x="370" y="344" class="sans t13">The bundle &#8212; tt-ontology/1.0 &#183; taxonomy v2.1.0 &#183; 149 nodes</text>
-  <text x="370" y="361" class="sans b105 gray">identity frozen &#8212; an id never changes meaning; structural change is a semver bump</text>
+  <text x="370" y="361" class="sans b105 gray">an id never changes meaning; structure grows on a published update cycle &#8212; a semver bump</text>
 
   <!-- Lens B -->
   <rect x="370" y="376" width="240" height="128" rx="5" class="card"/>
