@@ -80,3 +80,15 @@ jobs:
       # loader-time assertion, so a malformed bundle cannot reach a consumer.
       - name: the shipped bundle validates
         run: cargo test --test bundle -- --nocapture
+
+  python-onramp:
+    name: the python on-ramp passes the same vectors
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # stdlib-only by design: no pip, no venv, no lockfile. If this job ever
+      # grows a dependency step, the on-ramp has failed its one constraint.
+      - name: envelope reproduces every vector byte-for-byte
+        run: python3 python/test_tt_envelope.py
+      - name: the §4 validator rejects what the spec rejects
+        run: python3 python/test_tt_validate.py

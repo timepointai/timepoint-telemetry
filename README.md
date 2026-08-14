@@ -374,10 +374,19 @@ let d = bundle.distances().between(&profile_a, &profile_b); // Option<f64>
 cargo test    # 51 tests, including every conformance vector
 ```
 
-**Not a Rust shop?** The bundle is plain JSON — load it in anything. An
-independent, stdlib-only Python port of the envelope hashing already exists
-and runs the same vectors in CI (TT-SPEC §6); a standalone Python on-ramp
-(schema + validator) is the next artifact this repo owes its stated audience.
+**Not a Rust shop?** `python/` is the stdlib-only on-ramp — no pip, no venv:
+
+- `tt_validate.py` — the §4 classification validator: reject-never-repair,
+  typed rejections (a retired id names its successor; an unknown id never
+  existed), abstention first-class, bundle string stamped on accept.
+- `tt_envelope.py` — RFC 8785 canonicalisation and both hashes, written fresh
+  against the committed vectors and passing all 10 byte-for-byte in CI.
+- `classification.schema.json` — the shape, for toolchains that speak JSON
+  Schema; the validator remains the authority on bundle-dependent truth.
+
+A second independent Python port of the envelope also runs the vectors in
+another repo's CI (TT-SPEC §6) — written blind to this one, which is the
+point.
 
 ## Being compatible
 
