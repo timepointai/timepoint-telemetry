@@ -92,3 +92,5 @@ jobs:
         run: python3 python/test_tt_envelope.py
       - name: the §4 validator rejects what the spec rejects
         run: python3 python/test_tt_validate.py
+      - name: the classification vectors reproduce, both tiers
+        run: python3 python/test_classification_vectors.py

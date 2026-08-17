@@ -85,6 +85,7 @@ powers sign the Final Act of the Congress of Vienna:
 | `docs/WORKED-EXAMPLE.md` | one moment carried end to end — every number computed, none illustrative |
 | `docs/how-tt-works.svg` | the model in one picture |
 | `docs/CONSUMERS.md` | the consumer contract — five obligations, and the stricter-not-looser rule |
+| `vectors/classification-verdicts.json` | 39 §4 verdict vectors — codes normative, detail strings advisory |
 | `src/bundle.rs` | load + validate a bundle; parent chains, bridge lookup, id validity |
 | `src/envelope.rs` | RFC 8785 canonicalisation, `content_hash`, `provenance_hash` |
 | `src/distance.rs` | node-to-node and distribution-to-distribution distance |
