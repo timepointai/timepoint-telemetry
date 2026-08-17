@@ -84,6 +84,7 @@ powers sign the Final Act of the Congress of Vienna:
 | `bundle/taxonomy-v2.1.json` | the versioned taxonomy — 149 nodes, 2 lenses, 151 lateral edges, 26 bridges, the kernel, metric weights, design principles |
 | `docs/WORKED-EXAMPLE.md` | one moment carried end to end — every number computed, none illustrative |
 | `docs/how-tt-works.svg` | the model in one picture |
+| `docs/CONSUMERS.md` | the consumer contract — five obligations, and the stricter-not-looser rule |
 | `src/bundle.rs` | load + validate a bundle; parent chains, bridge lookup, id validity |
 | `src/envelope.rs` | RFC 8785 canonicalisation, `content_hash`, `provenance_hash` |
 | `src/distance.rs` | node-to-node and distribution-to-distribution distance |
