@@ -35,8 +35,11 @@ def _make_test(path):
     return test
 
 
-_paths = sorted(VECTORS_DIR.glob("*.json"))
-assert len(_paths) == 10, f"expected 10 vectors, found {len(_paths)}"
+# Envelope vectors only — classification-verdicts.json is the §4 corpus with
+# its own shape and its own test (test_classification_vectors.py).
+_paths = sorted(p for p in VECTORS_DIR.glob("*.json")
+                if p.name != "classification-verdicts.json")
+assert len(_paths) == 10, f"expected 10 envelope vectors, found {len(_paths)}"
 for _p in _paths:
     setattr(Vectors, f"test_{_p.stem.replace('-', '_')}", _make_test(_p))
 

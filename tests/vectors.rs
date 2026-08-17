@@ -31,6 +31,9 @@ fn load_vectors() -> Vec<Vector> {
         .expect("vectors/ directory exists")
         .filter_map(|e| e.ok().map(|e| e.path()))
         .filter(|p| p.extension().is_some_and(|e| e == "json"))
+        // Envelope vectors only: classification-verdicts.json is the §4 corpus,
+        // a different shape with its own walker (python/test_classification_vectors.py).
+        .filter(|p| p.file_name().is_some_and(|n| n != "classification-verdicts.json"))
         .collect();
     paths.sort();
     paths
