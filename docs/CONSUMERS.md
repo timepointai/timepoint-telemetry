@@ -73,6 +73,26 @@ boundary — the moment a consumer accepts an unknown id, a fourth lens entry,
 or a mass of 1.3, its "TT classifications" are no longer TT classifications,
 whatever the column is named.
 
+## Identity has two layers
+
+**Exact — the hash.** Zero tolerance, automatic. Two payloads differing by one
+byte are two identities; two payloads measuring arbitrarily close under the
+metric are still two identities. Nothing tolerant ever moves the hash.
+
+**Tolerant — the metric, and any similarity surface built on it.** It ranks;
+it may never resolve identity. TT is deliberately anti-attractor at the
+identity layer: no basin, no settling, no "close enough becomes the same" —
+the over-merge that destroyed *Arab Conquest of Ctesiphon* was exactly a
+spurious attractor, basin dynamics added where identity lives.
+
+The obligation that follows, reject-never-repair's retrieval twin: a
+near-match, dedup, or noisy-query surface exposes **ranked candidates with
+scores**. Automatic resolution happens only on exact identity. Anything
+beyond that is a **recorded decision** — naming who or what resolved, on what
+evidence — never a silent equality. Named policies are allowed (a consumer
+may auto-merge on a stated containment rule); their resolutions are logged as
+decisions, so the trail shows a policy chose, not that the world was equal.
+
 ## What TT has no opinion about
 
 Coordinates and calendars (`occurs_at` is an opaque string — TT-SPEC §7),
