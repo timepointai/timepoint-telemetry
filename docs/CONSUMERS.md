@@ -142,3 +142,14 @@ obligations above are the durable half. Verified per consumer, by probe:
 
 "Not audited" is a statement about this snapshot, not about beta — nobody has
 looked, which is a different fact from looking and finding a gap.
+
+**Derived TT edge context (Clockchain, verified 2026-08-18):** every causal
+edge (174/174, by census, not sample) carries bundle-derived context — endpoint
+types with lenses, `type_distance` with the design-constant-weights caveat
+attached to the value, lens-crossing, and bridge-relatedness — verified
+edge-by-edge upstream: 152 same-lens distances reproduced to exact float
+equality by an independent implementation, all 22 cross-lens edges showing
+typed absence (`unreachable`, never a number), and zero false bridge claims.
+The edge's own relation vocabulary (`Causation`/`Influence`) is the consumer's,
+correctly: TT defines no event-to-event vocabulary, and the projection says so
+on every edge.
