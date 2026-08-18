@@ -318,6 +318,18 @@ push, two of them in this repository. Two of the three were written without
 sight of the others' code, which is what lets this document claim to be
 unambiguous rather than merely self-consistent.
 
+**Classification verdicts have their own corpus** —
+`vectors/classification-verdicts.json`, 39 cases over the §4 contract, with a
+two-tier rule stated in the file: the verdict, the normalized form, and the
+multiset of rejection codes are normative in any language; the rejection
+detail strings are an advisory byte-for-byte tier that the reference
+implementation passes and a port may opt into. The corpus began as a
+downstream consumer's differential harness against `python/tt_validate.py`;
+adopting it upstream converted the reference implementation's rendering
+habits from silent law into a documented, separately-checkable tier. Inputs
+stay within IEEE-754 doubles — wider integer literals are parser territory,
+not §4 contract.
+
 **If this document and the vectors disagree, the vectors are right and this
 document is a bug.**
 

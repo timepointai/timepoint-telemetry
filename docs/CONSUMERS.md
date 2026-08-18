@@ -91,3 +91,34 @@ reading of a specific vocabulary, not a shrug. And an abstention *rate*
 divides by moments actually put to a reader, never by all moments: "declined"
 and "never asked" are different facts, and a denominator that pools them is
 reporting on the corpus while claiming to report on the reader.
+
+The same failure exists one level up, and it was found in practice: a corpus
+*generated to be classifiable* will abstain at 0%, and that 0% describes the
+generator, not the reader — arithmetically correct, verifiable, and the wrong
+measurement. A published abstention rate names the population that produced
+it, or it is not published. The canonical worked example, signed by both
+parties on 2026-08-17 and quotable only whole:
+
+> Abstain rate: **27 of 39** deliberately thin-attested records (**69.2%**) against **2 of 20**
+> well-attested controls (**10.0%**), same run — sample sizes are small and no significance is
+> claimed. Under pre-registration `b76f99f5` with sampling and interpretation fixed before
+> generation. A rate over deliberately thin records is not a rate over the corpus: the pre-pilot
+> corpus, generated to be classifiable, abstained **0 of 322** — that figure stands permanently
+> beside these. No single "Clockchain abstain rate" exists; three populations generated under
+> different instructions now coexist and none speaks for the chain.
+
+## Status snapshot — 2026-08-17
+
+Dated, because compliance is the perishable half of a true claim; the
+obligations above are the durable half. Verified per consumer, by probe:
+
+| obligation | Clockchain | timepoint-beta |
+|---|---|---|
+| 1 · pin + byte-check | ✅ `tt-core` pinned by rev in the lockfile (cc-node, cc-migrator); cc-filter hashes the vendored artifact | ✅ tag-pin + bundle byte-check (the founding consumer) |
+| 2 · whole bundle, not subset | ✅ both directions — write path and query boundary | not audited |
+| 3 · resolve retirement on read | ✅ bounded 8 hops; boundary answers through the successor | not audited |
+| 4 · reject, never repair | ✅ whole-batch refusal; every failure named | not audited |
+| 5 · derive, don't declare | ✅ bundle tables baked at build; declared copies checked on mint | not audited |
+
+"Not audited" is a statement about this snapshot, not about beta — nobody has
+looked, which is a different fact from looking and finding a gap.
