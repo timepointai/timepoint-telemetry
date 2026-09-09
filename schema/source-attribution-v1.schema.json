@@ -31,7 +31,6 @@
   "properties": {
     "contract": {
       "const": "timepoint-source/1",
-      "default": "timepoint-source/1",
       "title": "Contract",
       "type": "string"
     },
@@ -72,9 +71,11 @@
     }
   },
   "required": [
+    "contract",
     "method",
     "role",
-    "producer"
+    "producer",
+    "evidence"
   ],
   "title": "SourceAttribution",
   "type": "object"
