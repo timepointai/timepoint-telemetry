@@ -113,5 +113,99 @@
       "evidence": []
     },
     "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "method": "model_generated",
+      "role": "simulation",
+      "producer": "pro.deep_sim",
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "role": "simulation",
+      "producer": "pro.deep_sim",
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "producer": "pro.deep_sim",
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "simulation",
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "simulation",
+      "producer": "pro.deep_sim"
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "simulation",
+      "producer": 7,
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "simulation",
+      "producer": "pro.deep_sim",
+      "evidence": [
+        null
+      ]
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "simulation",
+      "producer": "pro.deep_sim",
+      "evidence": [],
+      "confidence": 1
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "simulation",
+      "producer": "pro.deep_sim",
+      "evidence": [
+        {
+          "record_id": "doc:1",
+          "relation": "quotes",
+          "verified": true
+        }
+      ]
+    },
+    "label": "SOURCE UNKNOWN"
   }
 ]
