@@ -95,6 +95,10 @@ decisions, so the trail shows a policy chose, not that the world was equal.
 
 ## What TT has no opinion about
 
+Generated image attachments follow the provenance and identity boundary in
+[GENERATED-MEDIA.md](GENERATED-MEDIA.md). Their admission and storage are consumer
+implementation details; images do not extend TT's claim hash or evidence rules.
+
 Coordinates and calendars (`occurs_at` is an opaque string — TT-SPEC §7),
 deduplication and merge policy, batch semantics, title hygiene, provenance
 completeness rules, storage schemas, retry and queue behavior. Consumers own
