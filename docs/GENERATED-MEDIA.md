@@ -33,3 +33,14 @@ Do not label it unrestricted. Hosted API permission is a separate assessment.
 The model license, checkpoint revision and weight hashes must be recorded.
 
 Source: https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/462165984030d82259a11f4367a4eed129e94a7b/LICENSE.md
+
+Clockchain also admits `flux-klein-4b-apache-local-v1`: self-hosted FLUX.2 klein
+4B, pinned to revision `e7b7dc27f91deacad38e78976d1f2b499d76a294`, under Apache-2.0.
+The model license has no competing-model output-training ban or downstream-model
+share-alike requirement. Apache redistribution notices and third-party rights
+still apply. This does not authorize other FLUX variants or hosted API routes.
+An HF Job running our own pinned code is self-hosted inference on rented compute.
+Optional `execution_platform` and `generator_sha256` fields are signed provenance.
+License profiles remain per attachment; existing SDXL conditions do not change.
+
+Source: https://huggingface.co/black-forest-labs/FLUX.2-klein-4B/blob/e7b7dc27f91deacad38e78976d1f2b499d76a294/LICENSE.md
