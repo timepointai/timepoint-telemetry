@@ -16,6 +16,8 @@
 mod bundle;
 mod distance;
 mod envelope;
+mod provenance;
+pub use provenance::{ClaimRole, EvidenceRef, ProductionMethod, SourceAttribution, SOURCE_CONTRACT, source_from_provenance};
 
 pub use bundle::{Bridge, Bundle, LateralEdge, Lens, Lenses, Metric, Node, RELATIONS};
 pub use distance::{DistanceIndex, distance};
