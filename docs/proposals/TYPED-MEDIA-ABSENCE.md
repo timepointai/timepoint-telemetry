@@ -1,7 +1,9 @@
 # Proposal: typed media absence for Clockchain
 
-Status: proposed for Telemetry review, not an accepted contract. Sean authorized
-opening this proposal on 2026-09-12. Consumer implementation follows acceptance.
+Status: updated for review following Sean's 2026-09-12 instruction:
+"proceed with the plan - update telemetry and clockchain as needed."
+That instruction authorizes preparing this contract and its consumer together;
+this PR is not merged and does not claim independent Telemetry verification.
 
 ## Problem and evidence
 
@@ -76,8 +78,7 @@ read contract; it does not assert a historical decision.
 Preserve the existing response contract for existing callers. In particular,
 `no_image` retains its coarse meaning on the legacy surface; it must not acquire
 the meaning "deliberately unillustrated." Introduce the richer per-reading state
-through an explicitly versioned consumer read contract. Select and document that
-version mechanism before implementation; do not silently replace the v1 enum.
+through an explicitly versioned consumer read contract. Use `GET /v2/media?entity_id=...&as_of=...`; do not silently replace the v1 enum.
 The legacy surface cannot satisfy the typed-absence requirement on its own.
 
 An absence writer is enabled only alongside the accepted richer read surface,
@@ -113,3 +114,46 @@ implementation of the agreed contract, not a production deploy or bulk decisions
 The separate image-orphan assertion is consumer integrity work: every image's
 body must remain projected by some moment. It does not resolve the typed-absence
 question and must not be treated as satisfying this proposal.
+
+## Concrete wire contract for the proposed consumer
+
+`POST /v2/media/absence-decisions` accepts `manifest`, `author`, `signature`.
+The manifest has exactly these fields:
+
+| Field | Value |
+|---|---|
+| `schema` | `cc.media-absence.v1` |
+| `kind` | `deliberately_unillustrated` |
+| `source_entity_id` | Canonical decimal i64 string |
+| `source_body_hash` | Lowercase SHA-256 hex |
+| `writer` | Lowercase Ed25519 public-key hex, equal to `author` |
+| `reason` | Nonblank text, at most 4096 UTF-8 bytes |
+| `decided_at_ticks` | Canonical decimal i64 string, whole ticks since J2000 |
+
+Decision time is writer-declared provenance, not admission time. The decision
+ID is SHA-256 of `cc.media-absence.v1` followed by one NUL byte and the UTF-8
+JCS manifest. Ed25519 signs that 32-byte digest. The server records its own
+admission coordinate and deduplicates identical decisions by ID. Admission
+locks the current source entity/body projection through commit. Replays after
+source withdrawal are refused, like existing image replays.
+
+The read route requires a full/read credential and mandatory `as_of`. The write
+route requires a full credential and a live posture. Narrow credentials gain
+no access. The response has schema `cc.media-readings.v2`,
+`projection_basis: current`, `historical_evidence: false` and a `readings` array.
+Each reading carries `source_body_hash`, the four-state `state`, signed `images`
+and `absence_decisions`, and `source_binding` (`currently_projected` or
+`stale_source`). Each signed record includes its admission coordinate.
+
+Readings comprise current moment bodies with event coordinate at or before
+`as_of`, plus bodies named by media records admitted at or before `as_of`.
+Source binding uses the current projection independently of that visibility
+filter. A query before all applicable moments/records returns an empty readings
+array. It does not invent a reading or reconstruct withdrawn projections.
+Results must not silently truncate records before computing state: a hidden
+record must not turn conflict into an apparently uncontested decision.
+
+This consumer-only addition does not add TT `ALLOWED_FIELDS` entries or permit
+extra claim-envelope fields. No claims, image manifests, TT classifications or
+historical signatures are rewritten. Revocation/resolution remains outside this
+initial contract; coexisting records expose conflict regardless of arrival order.
