@@ -44,3 +44,10 @@ Optional `execution_platform` and `generator_sha256` fields are signed provenanc
 License profiles remain per attachment; existing SDXL conditions do not change.
 
 Source: https://huggingface.co/black-forest-labs/FLUX.2-klein-4B/blob/e7b7dc27f91deacad38e78976d1f2b499d76a294/LICENSE.md
+
+## Pending contract proposal
+
+[Typed media absence](proposals/TYPED-MEDIA-ABSENCE.md) proposes a separately
+signed deliberate-absence decision and a versioned per-reading state contract.
+It is pending review; the accepted `no_image` contract above remains in force
+until an amendment is accepted.
