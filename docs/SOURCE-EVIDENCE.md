@@ -9,19 +9,20 @@ Clockchain owns source admission, causal relations, jobs and approval policy.
 
 A source-backed generated claim carries the profile in nested provenance, never
 in TT's hash-covered `label`, `occurs_at` or `participants` fields.
-`prov_measured.source_evidence` is an object with `schema` equal to
-`cc.source-evidence.v1` and a nonempty `sources` array. Each source records an
-`id`, `url`, `retrieved_at` UTC timestamp, `sha256` of the captured bytes,
-`capture_path` or durable object reference, `publisher`, `license`, and an
-`excerpt` with a `locator`. A hash identifies captured bytes; it does not prove
-that the publisher is reliable or that the passage supports a claim. Capture
-failure is a failure, never evidence of absence. Captures must remain available
-for audit; URLs alone are insufficient. Source licensing is recorded per source;
-permissive model licensing does not confer rights in source documents.
+`prov_measured.source_evidence_schema` names `cc.source-evidence.v1`.
+`prov_measured.source_evidence` is a nonempty array. Each source records an HTTPS
+`url`, `retrieved_at` UTC timestamp, `content_sha256` of the captured bytes,
+`excerpt`, and `supports` field names. Sources collectively support `title`,
+`year` and `summary`. Operational capture records additionally retain
+`capture_path` or durable object reference, `publisher`, `license` and `locator`.
+A hash identifies captured bytes; it does not prove publisher reliability or
+passage support. Capture failure is a failure, never evidence of absence.
+Captures remain available for audit; URLs alone are insufficient. Source
+licensing is recorded per source; model licensing does not confer document rights.
 
 `prov_asserted.source_support` records `schema: cc.source-support.v1`, a
-`claim` string, nonempty `source_ids`, and `support_kind` of `observed` or
-`attributed_announcement`. Every reference resolves to a captured source in the
+`claim` string, nonempty `source_urls`, and `support_kind` of `observed` or
+`attributed_announcement`. Every URL resolves to a captured source in the
 measured record. `rationale` states what the cited passage supports and what it
 does not. Announcement claims attribute the announcement; forecasts, promises
 and promotional claims are not silently promoted into accomplished events.
@@ -33,7 +34,8 @@ relabelled source-backed.
 
 Clockchain relation names and evidence classes remain Clockchain vocabulary,
 not TT bridges. A proposed edge explicitly supplies endpoints, relation,
-evidence class and an evidence record with source references and a rationale.
+evidence class and an `evidence` array in the same source shape, with
+`supports: ["relation"]`, plus a `rationale`.
 Unknown relations, unresolved references and unsupported declarations reject;
 none defaults to influence. Chronological succession, topical similarity, shared
 sources, model agreement and distinct signer keys do not alone establish cause.
