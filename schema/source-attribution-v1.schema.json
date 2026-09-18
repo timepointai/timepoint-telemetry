@@ -1,0 +1,82 @@
+{
+  "$defs": {
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "record_id": {
+          "minLength": 1,
+          "title": "Record Id",
+          "type": "string"
+        },
+        "relation": {
+          "enum": [
+            "quotes",
+            "summarizes",
+            "derived_from",
+            "reports"
+          ],
+          "title": "Relation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "record_id",
+        "relation"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "contract": {
+      "const": "timepoint-source/1",
+      "title": "Contract",
+      "type": "string"
+    },
+    "method": {
+      "enum": [
+        "model_generated",
+        "user_provided",
+        "source_extracted",
+        "system_observed",
+        "derived",
+        "unknown"
+      ],
+      "title": "Method",
+      "type": "string"
+    },
+    "role": {
+      "enum": [
+        "simulation",
+        "assumption",
+        "report",
+        "observation",
+        "inference",
+        "unknown"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "producer": {
+      "title": "Producer",
+      "type": "string"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "title": "Evidence",
+      "type": "array"
+    }
+  },
+  "required": [
+    "contract",
+    "method",
+    "role",
+    "producer",
+    "evidence"
+  ],
+  "title": "SourceAttribution",
+  "type": "object"
+}

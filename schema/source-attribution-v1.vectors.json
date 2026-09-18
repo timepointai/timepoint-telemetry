@@ -1,0 +1,211 @@
+[
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "simulation",
+      "producer": "pro.deep_sim",
+      "evidence": []
+    },
+    "label": "SIMULATED"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "inference",
+      "producer": "pro.portal_sim",
+      "evidence": []
+    },
+    "label": "MODEL INFERENCE"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "unknown",
+      "role": "unknown",
+      "producer": "",
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "user_provided",
+      "role": "assumption",
+      "producer": "test-client",
+      "evidence": []
+    },
+    "label": "USER-PROVIDED ASSUMPTION"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "user_provided",
+      "role": "report",
+      "producer": "test-client",
+      "evidence": []
+    },
+    "label": "USER-ATTESTED"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "source_extracted",
+      "role": "report",
+      "producer": "test-ingestor",
+      "evidence": [
+        {
+          "record_id": "doc:1#excerpt:2",
+          "relation": "quotes"
+        }
+      ]
+    },
+    "label": "SOURCE-REPORTED"
+  },
+  {
+    "input": {
+      "contract": "future/2",
+      "method": "model_generated",
+      "role": "simulation",
+      "producer": "pro.deep_sim",
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "observation",
+      "producer": "pro.deep_sim",
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "simulation",
+      "producer": "",
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "source_extracted",
+      "role": "report",
+      "producer": "pro.deep_sim",
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "report",
+      "producer": "pro.deep_sim",
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "method": "model_generated",
+      "role": "simulation",
+      "producer": "pro.deep_sim",
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "role": "simulation",
+      "producer": "pro.deep_sim",
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "producer": "pro.deep_sim",
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "simulation",
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "simulation",
+      "producer": "pro.deep_sim"
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "simulation",
+      "producer": 7,
+      "evidence": []
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "simulation",
+      "producer": "pro.deep_sim",
+      "evidence": [
+        null
+      ]
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "simulation",
+      "producer": "pro.deep_sim",
+      "evidence": [],
+      "confidence": 1
+    },
+    "label": "SOURCE UNKNOWN"
+  },
+  {
+    "input": {
+      "contract": "timepoint-source/1",
+      "method": "model_generated",
+      "role": "simulation",
+      "producer": "pro.deep_sim",
+      "evidence": [
+        {
+          "record_id": "doc:1",
+          "relation": "quotes",
+          "verified": true
+        }
+      ]
+    },
+    "label": "SOURCE UNKNOWN"
+  }
+]
