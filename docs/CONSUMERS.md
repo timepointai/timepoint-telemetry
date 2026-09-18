@@ -157,3 +157,8 @@ typed absence (`unreachable`, never a number), and zero false bridge claims.
 The edge's own relation vocabulary (`Causation`/`Influence`) is the consumer's,
 correctly: TT defines no event-to-event vocabulary, and the projection says so
 on every edge.
+
+## Source-backed human-directed contributions
+
+Clockchain’s versioned [source evidence and human approval profile](SOURCE-EVIDENCE.md)
+adds consumer provenance and workflow without changing TT identity or taxonomy.
