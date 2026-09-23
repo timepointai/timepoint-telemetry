@@ -107,3 +107,10 @@ jobs:
         run: python3 python/test_classification_vectors.py
       - name: the relation vectors reproduce, both tiers
         run: python3 python/test_relation_vectors.py
+      # The adoption pass reads a consumer's database. No database here: its
+      # parser is tested fail-closed on canned psql output, hostile values
+      # included.
+      - name: the relations adoption pass compiles
+        run: python3 -m py_compile tools/relations-adoption/relations_adoption.py
+      - name: the relations adoption pass parses fail-closed
+        run: python3 tools/relations-adoption/test_relations_adoption.py

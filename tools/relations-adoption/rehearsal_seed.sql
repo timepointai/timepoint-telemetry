@@ -24,13 +24,16 @@ INSERT INTO entity.assertions (entity_id, attribute, value_json, basis, source, 
 INSERT INTO run.artifacts (run_id, kind, content, content_hash) VALUES
   ('00000000-0000-4000-8000-0000000000a1', 'frame',
    '{"ties": [{"a": "x", "b": "y"}, {"a": "x", "b": "z"}, {"a": "y", "b": "z"}]}', 'sha256:synthetic-a1f'),
-  ('00000000-0000-4000-8000-0000000000a1', 'cockpit',
+  ('00000000-0000-4000-8000-0000000000a1', 'cockpit_doc',
    '{"ties": [{"a": "x", "b": "y"}], "appendix": {"moment_readings": {
        "m1": {"lens_a": {}, "lens_b": {}, "abstain": true, "bundle": "tt-ontology/1.0 v2.1.0"},
        "m2": {"lens_a": {}, "lens_b": {}, "abstain": true, "bundle": "tt-ontology/1.0 v2.0.0"},
        "m3": {"lens_a": {}}}}}', 'sha256:synthetic-a1c'),
   ('00000000-0000-4000-8000-0000000000b2', 'frame', '{"ties": []}', 'sha256:synthetic-b2f'),
-  ('00000000-0000-4000-8000-0000000000b2', 'report', '{"answer": "no ties key"}', 'sha256:synthetic-b2r');
+  ('00000000-0000-4000-8000-0000000000b2', 'report', '{"answer": "no ties key"}', 'sha256:synthetic-b2r'),
+  -- Hostile: a kind that rewrote the old tab-separated parser. Counted as (other).
+  ('00000000-0000-4000-8000-0000000000b2', E'x\t1\n@@D1\nperson\t999999',
+   '{"ties": [{"a": "x", "b": "y"}]}', 'sha256:synthetic-b2h');
 
 INSERT INTO run.moments (id, run_id, t, label, occurs_at, participants, payload, provenance,
                          classification, grounding, content_hash, provenance_hash) VALUES
@@ -43,22 +46,28 @@ INSERT INTO run.moments (id, run_id, t, label, occurs_at, participants, payload,
   ('m3', '00000000-0000-4000-8000-0000000000a1', 3, 'moment three', '2026-01-03',
    '["not a path"]', '{}', '{}', '{"lens_a": {}}', 'INFERRED', 'sha256:m3c', 'sha256:m3p'),
   ('m4', '00000000-0000-4000-8000-0000000000b2', 1, 'moment four', '2026-01-04',
-   '{}', '{}', '{}', NULL, 'DESIGNED_SILENCE', 'sha256:m4c', 'sha256:m4p');
+   '{}', '{}', '{}', NULL, 'DESIGNED_SILENCE', 'sha256:m4c', 'sha256:m4p'),
+  -- Hostile: a participant path and a bundle stamp built to forge output.
+  ('m5', '00000000-0000-4000-8000-0000000000b2', 2, 'moment five', '2026-01-05',
+   jsonb_build_array(E'/person\t999999\n@@D1'), '{}', '{}',
+   jsonb_build_object('bundle', E'\n'), 'INFERRED', 'sha256:m5c', 'sha256:m5p');
 
 INSERT INTO tt.verdicts (moment_id, verdict, bundle_version, note, asserted_by) VALUES
   ('m1', 'supported', 'tt-ontology/1.0 v2.1.0', 'synthetic', 'rehearsal'),
   ('m2', 'unsupported', NULL, 'synthetic', 'rehearsal'),
-  ('m3', 'contradicted', 'free text, not a version', 'synthetic', 'rehearsal');
+  ('m3', 'contradicted', 'free text, not a version', 'synthetic', 'rehearsal'),
+  ('m5', 'unsupported', E'tt-ontology/1.0 v2.1.0\n@@D1\nperson\t999999', 'synthetic', 'rehearsal');
 
 COMMIT;
 
--- The report must say:
+-- The report must say (the hostile rows only ever add to "(other)"):
 --   D1 person=3 org=2 market=1 role=0 outside-TT-kinds=0
 --   D2 current-role/GENERATED=1 current-role/GROUNDED=2 works-at/ACCUMULATED=1
 --      named-in-uploaded-document/GROUNDED=1 (employer-size is not counted);
 --      load-bearing 4
---   D3 cockpit=1 (1 document), frame=3 (2 documents); the report artifact has no ties key
---   D4 /person=2 /org=1 /market=1 /role=0 /other=2; 1 moment whose participants are not an array
---   D5 moments: v2.0.0=1 v2.1.0=1 <unstamped>=1; readings: the same;
---      verdicts: v2.1.0=1 <unstamped>=1 (other)=1;
---      citing another version: 3; unstamped: 3
+--   D3 cockpit_doc=1 (in 1 doc) frame=3 (in 2 docs) (other)=1 (in 1 doc);
+--      the report artifact has no ties key
+--   D4 /person=2 /org=1 /market=1 /role=0 /other=3; 1 moment whose participants are not an array
+--   D5 moments: (other)=1 <unstamped>=1 v2.0.0=1 v2.1.0=1; readings: <unstamped>=1
+--      v2.0.0=1 v2.1.0=1; verdicts: (other)=2 <unstamped>=1 v2.1.0=1;
+--      citing another version: 5; unstamped: 3
