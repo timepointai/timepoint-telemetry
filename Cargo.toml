@@ -1,6 +1,6 @@
 [package]
 name = "tt-core"
-version = "2.1.0"
+version = "2.1.2"
 edition = "2024"
 license-file = "LICENSE"
 description = "Timepoint Telemetry — the TT ontology, envelope and distance metric: a shared, versioned vocabulary for recording what happened, maintained on a published update cycle."
