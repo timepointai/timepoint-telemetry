@@ -127,6 +127,10 @@ class Parsing(unittest.TestCase):
                 {"kind": "research_report", "documents": 1, "ties": 1}])),
             "a free-text bundle in D5": canned(**dict(GOOD, **{"D5-verdicts": [
                 {"bundle": "free text, not a version", "n": 1}]})),
+            "a version-shaped but unpublished bundle in D5": canned(**dict(GOOD, **{"D5-moments": [
+                {"bundle": "personaldata/1.0 v1.2.3", "n": 1}]})),
+            "an unpublished tt-ontology version in D5": canned(**dict(GOOD, **{"D5-readings": [
+                {"bundle": "tt-ontology/1.0 v9.9.9", "n": 1}]})),
             "a duplicated label": canned(**dict(GOOD, D1=[{"kind": "person", "n": 1},
                                                           {"kind": "person", "n": 2}])),
             "two not-array rows": canned(**dict(GOOD, **{"D4-not-array": [{"n": 1}, {"n": 2}]})),
@@ -184,6 +188,17 @@ class Scripts(unittest.TestCase):
         self.assertIn("default_transaction_read_only = on", script)
         for label, _, _ in figs():
             self.assertIn(f"'{label}', (SELECT coalesce(jsonb_agg(to_jsonb(q))", script)
+
+    def test_d5_folds_against_published_versions_only(self):
+        by = {label: sql for label, _, sql in figs()}
+        for label in ("D5-moments", "D5-readings", "D5-verdicts"):
+            self.assertNotIn("~", by[label], "no pattern match: an exact published set")
+            for v in ra.PUBLISHED_TAXONOMY_VERSIONS:
+                self.assertIn(f"'{v}'", by[label])
+        doc = dict(GOOD, **{"D5-verdicts": [{"bundle": "snag-ontology/1.0 v1.1.0", "n": 2},
+                                            {"bundle": "(other)", "n": 1}]})
+        text = render(parse(canned(**doc)))
+        self.assertIn("snag-ontology/1.0 v1.1.0=2", text)
 
     def test_every_printed_label_is_folded_in_sql(self):
         by = {label: sql for label, _, sql in figs()}

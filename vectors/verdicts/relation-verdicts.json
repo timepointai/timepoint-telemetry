@@ -2365,7 +2365,7 @@
         "failures": [
           {
             "rule": "bad-version",
-            "detail": "version `1.0` is not MAJOR.MINOR.PATCH"
+            "detail": "version `1.0` is not MAJOR.MINOR.PATCH without leading zeros"
           },
           {
             "rule": "bad-supersedes",
@@ -2836,7 +2836,7 @@
         "failures": [
           {
             "rule": "bad-deprecated-in",
-            "detail": "entity kind `market`: deprecated_in `v1` is not MAJOR.MINOR.PATCH"
+            "detail": "entity kind `market`: deprecated_in `v1` is not MAJOR.MINOR.PATCH without leading zeros"
           }
         ]
       }
@@ -2935,6 +2935,183 @@
             "detail": "attribute type `date` is listed twice"
           }
         ]
+      }
+    },
+    {
+      "name": "blank governance",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/governance",
+          "value": "  "
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "empty-governance",
+            "detail": "governance is blank"
+          }
+        ]
+      }
+    },
+    {
+      "name": "blank respectful_modeling",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/respectful_modeling",
+          "value": ""
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "empty-respectful-modeling",
+            "detail": "respectful_modeling is blank"
+          }
+        ]
+      }
+    },
+    {
+      "name": "version with a leading zero",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.01.0"
+        },
+        {
+          "op": "replace",
+          "path": "/supersedes",
+          "value": "tt-relations/1.0 v1.0.0"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-version",
+            "detail": "version `1.01.0` is not MAJOR.MINOR.PATCH without leading zeros"
+          }
+        ]
+      }
+    },
+    {
+      "name": "deprecated_in with a leading zero",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecated_in",
+          "value": "1.00.0"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecation_note",
+          "value": "Fixture."
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-deprecated-in",
+            "detail": "entity kind `market`: deprecated_in `1.00.0` is not MAJOR.MINOR.PATCH without leading zeros"
+          }
+        ]
+      }
+    },
+    {
+      "name": "supersedes with a leading zero",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.1.0"
+        },
+        {
+          "op": "replace",
+          "path": "/supersedes",
+          "value": "tt-relations/1.0 v01.0.0"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-supersedes",
+            "detail": "`tt-relations/1.0 v01.0.0` does not name a release as `tt-relations/1.0 vMAJOR.MINOR.PATCH`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "supersedes naming another schema",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.1.0"
+        },
+        {
+          "op": "replace",
+          "path": "/supersedes",
+          "value": "tt-ontology/1.0 v2.1.0"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-supersedes",
+            "detail": "`tt-ontology/1.0 v2.1.0` does not name a release as `tt-relations/1.0 vMAJOR.MINOR.PATCH`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "supersedes naming a later release",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.1.0"
+        },
+        {
+          "op": "replace",
+          "path": "/supersedes",
+          "value": "tt-relations/1.0 v1.2.0"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-supersedes",
+            "detail": "`tt-relations/1.0 v1.2.0` is not earlier than this release, 1.1.0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a part that is exactly 0 is not a leading zero",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.0.10"
+        },
+        {
+          "op": "replace",
+          "path": "/supersedes",
+          "value": "tt-relations/1.0 v1.0.9"
+        }
+      ],
+      "expect": {
+        "loads": true,
+        "failures": []
       }
     }
   ]

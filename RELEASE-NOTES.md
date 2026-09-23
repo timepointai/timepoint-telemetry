@@ -76,6 +76,13 @@ nothing is synthesized, and no row anywhere is rewritten.
 
 ### Known limits
 
+- **A new field in the relations artifact breaks consumers.** Its loader
+  refuses unknown fields at every level (TT-SPEC §9.2), so any new field in a
+  tt-relations artifact is a consumer-must-change release (Identity-class under
+  GOVERNANCE §1). The taxonomy bundle is unlike it here, because its loader
+  tolerates unknown fields. The strictness is the M1 default and Sean may
+  reverse it before the tag.
+
 - The `text` attribute type checks shape, not meaning or rendering. Text that
   is only format characters (a zero-width space) or that carries bidirectional
   controls passes TT, and two vectors pin that. Refusing it is the consumer's

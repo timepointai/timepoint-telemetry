@@ -180,7 +180,7 @@ def check_vocabulary(raw):
     if schema != RELATIONS_SCHEMA:
         fail("bad-schema", f"schema is `{schema}`, expected `{RELATIONS_SCHEMA}`")
     if not _is_semver(version):
-        fail("bad-version", f"version `{version}` is not MAJOR.MINOR.PATCH")
+        fail("bad-version", f"version `{version}` is not MAJOR.MINOR.PATCH without leading zeros")
     if version == "1.0.0":
         if supersedes is not None:
             fail("bad-supersedes",
@@ -189,6 +189,20 @@ def check_vocabulary(raw):
         fail("bad-supersedes", f"version {version} must name the release it supersedes")
     elif supersedes == version_string:
         fail("bad-supersedes", f"`{supersedes}` supersedes itself")
+    else:
+        prefix = f"{RELATIONS_SCHEMA} v"
+        prev = supersedes[len(prefix):] if supersedes.startswith(prefix) else None
+        if prev is None or not _is_semver(prev):
+            fail("bad-supersedes",
+                 f"`{supersedes}` does not name a release as `{RELATIONS_SCHEMA} vMAJOR.MINOR.PATCH`")
+        elif _is_semver(version) and _semver_key(prev) >= _semver_key(version):
+            fail("bad-supersedes", f"`{supersedes}` is not earlier than this release, {version}")
+
+    # The two statements the artifact carries are part of it, not decoration.
+    if _trim(raw["governance"]) == "":
+        fail("empty-governance", "governance is blank")
+    if _trim(raw["respectful_modeling"]) == "":
+        fail("empty-respectful-modeling", "respectful_modeling is blank")
 
     types_seen = set()
     for t in raw["attribute_types"]:
@@ -287,7 +301,8 @@ def check_vocabulary(raw):
                 continue
             if not _is_semver(dep):
                 fail("bad-deprecated-in",
-                     f"{what} `{it['id']}`: deprecated_in `{dep}` is not MAJOR.MINOR.PATCH")
+                     f"{what} `{it['id']}`: deprecated_in `{dep}` is not MAJOR.MINOR.PATCH "
+                     "without leading zeros")
             elif _is_semver(version) and _semver_key(dep) > _semver_key(version):
                 fail("bad-deprecated-in",
                      f"{what} `{it['id']}`: deprecated_in {dep} is later than this release, {version}")
@@ -555,8 +570,10 @@ def _semver_key(v):
 
 
 def _is_semver(v):
+    """MAJOR.MINOR.PATCH as SemVer 2.0.0 writes it: no leading zero unless the part is 0."""
     parts = v.split(".")
-    return len(parts) == 3 and all(p != "" and all(c in "0123456789" for c in p) for p in parts)
+    return len(parts) == 3 and all(
+        p != "" and all(c in "0123456789" for c in p) and (p == "0" or p[0] != "0") for p in parts)
 
 
 def _is_attribute_name(name):

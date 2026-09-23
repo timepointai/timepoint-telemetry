@@ -243,6 +243,16 @@ The shared attributes mean the same thing on every relation that carries them:
    `"tt-relations/1.0 v<version>"`, and `supersedes` names one step back
    (null for 1.0.0).
 
+**Implementation note (T2).** The shipped loader is stricter than the seven
+rules above. It adds: a closed shape at every level, where an unknown field is
+`malformed` and `governance` and `respectful_modeling` are required and
+non-blank; at least one endpoint pair; retirement fields only on retired items;
+`deprecated_in` no later than the release; no blank deprecation note; no
+repeated attribute type; SemVer 2.0.0 versions without leading zeros; and
+`supersedes` naming an earlier `tt-relations/1.0` release. TT-SPEC §9.2 is the
+authoritative list. Because of the closed shape, any new field in a later
+artifact is a consumer-must-change release.
+
 ### 2.5 The edge-statement contract (`validate_edge`; reject, never repair)
 
 TT validates what a relation **says**, and nothing about who said it or how.

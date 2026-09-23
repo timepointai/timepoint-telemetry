@@ -21,6 +21,10 @@ INSERT INTO entity.assertions (entity_id, attribute, value_json, basis, source, 
   ('00000000-0000-4000-8000-000000000002', 'named-in-uploaded-document', '{"role": "Board member"}', 'GROUNDED', 'upload', '2026-01-05T00:00:00Z', 'owner-1'),
   ('00000000-0000-4000-8000-000000000002', 'employer-size', '"large"', 'GROUNDED', 'console_manual', '2026-01-06T00:00:00Z', 'owner-1');
 
+-- cockpit_doc is the production kind: it is what beta writes today, with the
+-- run's ties at the top level. frame is kept only for older rows: no code on
+-- beta's cr/coord writes a `frame` artifact (frame is an LLM step there), so a
+-- frame row, if one exists, predates that code.
 INSERT INTO run.artifacts (run_id, kind, content, content_hash) VALUES
   ('00000000-0000-4000-8000-0000000000a1', 'frame',
    '{"ties": [{"a": "x", "b": "y"}, {"a": "x", "b": "z"}, {"a": "y", "b": "z"}]}', 'sha256:synthetic-a1f'),
@@ -56,7 +60,9 @@ INSERT INTO tt.verdicts (moment_id, verdict, bundle_version, note, asserted_by) 
   ('m1', 'supported', 'tt-ontology/1.0 v2.1.0', 'synthetic', 'rehearsal'),
   ('m2', 'unsupported', NULL, 'synthetic', 'rehearsal'),
   ('m3', 'contradicted', 'free text, not a version', 'synthetic', 'rehearsal'),
-  ('m5', 'unsupported', E'tt-ontology/1.0 v2.1.0\n@@D1\nperson\t999999', 'synthetic', 'rehearsal');
+  ('m5', 'unsupported', E'tt-ontology/1.0 v2.1.0\n@@D1\nperson\t999999', 'synthetic', 'rehearsal'),
+  -- Version-shaped but never published: counted as (other), never printed.
+  ('m5', 'supported', 'personaldata/1.0 v1.2.3', 'synthetic', 'rehearsal');
 
 COMMIT;
 
@@ -69,5 +75,5 @@ COMMIT;
 --      the report artifact has no ties key
 --   D4 /person=2 /org=1 /market=1 /role=0 /other=3; 1 moment whose participants are not an array
 --   D5 moments: (other)=1 <unstamped>=1 v2.0.0=1 v2.1.0=1; readings: <unstamped>=1
---      v2.0.0=1 v2.1.0=1; verdicts: (other)=2 <unstamped>=1 v2.1.0=1;
---      citing another version: 5; unstamped: 3
+--      v2.0.0=1 v2.1.0=1; verdicts: (other)=3 <unstamped>=1 v2.1.0=1;
+--      citing another version: 6; unstamped: 3

@@ -373,6 +373,30 @@ LOADS = [
       {"op": "add", "path": "/entity_kinds/2/deprecation_note", "value": " \u00a0 "}]),
     ("attribute_types listing a type twice",
      [{"op": "add", "path": "/attribute_types/-", "value": "date"}]),
+
+    # R3: the artifact's statements are not blank; versions are SemVer 2.0.0.
+    ("blank governance",
+     [{"op": "replace", "path": "/governance", "value": "  "}]),
+    ("blank respectful_modeling",
+     [{"op": "replace", "path": "/respectful_modeling", "value": ""}]),
+    ("version with a leading zero",
+     [{"op": "replace", "path": "/version", "value": "1.01.0"},
+      {"op": "replace", "path": "/supersedes", "value": "tt-relations/1.0 v1.0.0"}]),
+    ("deprecated_in with a leading zero",
+     [{"op": "add", "path": "/entity_kinds/2/deprecated_in", "value": "1.00.0"},
+      {"op": "add", "path": "/entity_kinds/2/deprecation_note", "value": "Fixture."}]),
+    ("supersedes with a leading zero",
+     [{"op": "replace", "path": "/version", "value": "1.1.0"},
+      {"op": "replace", "path": "/supersedes", "value": "tt-relations/1.0 v01.0.0"}]),
+    ("supersedes naming another schema",
+     [{"op": "replace", "path": "/version", "value": "1.1.0"},
+      {"op": "replace", "path": "/supersedes", "value": "tt-ontology/1.0 v2.1.0"}]),
+    ("supersedes naming a later release",
+     [{"op": "replace", "path": "/version", "value": "1.1.0"},
+      {"op": "replace", "path": "/supersedes", "value": "tt-relations/1.0 v1.2.0"}]),
+    ("a part that is exactly 0 is not a leading zero",
+     [{"op": "replace", "path": "/version", "value": "1.0.10"},
+      {"op": "replace", "path": "/supersedes", "value": "tt-relations/1.0 v1.0.9"}]),
 ]
 
 

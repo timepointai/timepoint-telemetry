@@ -249,7 +249,10 @@ impl Vocabulary {
         if !is_semver(&self.version) {
             fail(
                 "bad-version",
-                format!("version `{}` is not MAJOR.MINOR.PATCH", self.version),
+                format!(
+                    "version `{}` is not MAJOR.MINOR.PATCH without leading zeros",
+                    self.version
+                ),
             );
         }
         match (self.version.as_str(), self.supersedes.as_deref()) {
@@ -268,7 +271,39 @@ impl Vocabulary {
             (_, Some(s)) if s == self.version_string() => {
                 fail("bad-supersedes", format!("`{s}` supersedes itself"))
             }
-            _ => {}
+            (_, Some(s)) => match s
+                .strip_prefix(RELATIONS_SCHEMA)
+                .and_then(|rest| rest.strip_prefix(" v"))
+                .filter(|v| is_semver(v))
+            {
+                None => fail(
+                    "bad-supersedes",
+                    format!(
+                        "`{s}` does not name a release as `{RELATIONS_SCHEMA} vMAJOR.MINOR.PATCH`"
+                    ),
+                ),
+                Some(prev)
+                    if is_semver(&self.version)
+                        && semver_key(prev) >= semver_key(&self.version) =>
+                {
+                    fail(
+                        "bad-supersedes",
+                        format!("`{s}` is not earlier than this release, {}", self.version),
+                    )
+                }
+                Some(_) => {}
+            },
+        }
+
+        // The two statements the artifact carries are part of it, not decoration.
+        if self.governance.trim().is_empty() {
+            fail("empty-governance", "governance is blank".to_owned());
+        }
+        if self.respectful_modeling.trim().is_empty() {
+            fail(
+                "empty-respectful-modeling",
+                "respectful_modeling is blank".to_owned(),
+            );
         }
 
         // Attribute types: only ones this implementation can check, each once.
@@ -521,7 +556,7 @@ impl Vocabulary {
                     fail(
                         "bad-deprecated-in",
                         format!(
-                            "{what} `{}`: deprecated_in `{dep}` is not MAJOR.MINOR.PATCH",
+                            "{what} `{}`: deprecated_in `{dep}` is not MAJOR.MINOR.PATCH without leading zeros",
                             it.id
                         ),
                     );
@@ -935,12 +970,16 @@ fn semver_key(v: &str) -> Vec<(usize, &str)> {
         .collect()
 }
 
+/// `MAJOR.MINOR.PATCH` as SemVer 2.0.0 writes it: ASCII digits, no leading
+/// zero unless the part is `0`, no pre-release or build suffix.
 fn is_semver(v: &str) -> bool {
     let parts: Vec<&str> = v.split('.').collect();
     parts.len() == 3
-        && parts
-            .iter()
-            .all(|p| !p.is_empty() && p.bytes().all(|b| b.is_ascii_digit()))
+        && parts.iter().all(|p| {
+            !p.is_empty()
+                && p.bytes().all(|b| b.is_ascii_digit())
+                && (*p == "0" || !p.starts_with('0'))
+        })
 }
 
 /// `^[a-z][a-z0-9_]*$` without a regex dependency.

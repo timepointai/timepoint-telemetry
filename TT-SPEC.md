@@ -448,21 +448,55 @@ accepts both.
 ### §9.2 Load rules
 
 An invalid artifact fails boot, as an invalid taxonomy does. Every failure is
-collected, each under a stable rule code: ids kebab-case, unique and disjoint
-across the two collections (`id-not-kebab`, `duplicate-id`, `ids-not-disjoint`);
-non-empty labels and definitions (`empty-label`, `empty-definition`);
-`direction` and `nature` from their sets, `inverse_label` present if and only if
-directed (`bad-direction`, `bad-nature`, `inverse-label-mismatch`); endpoints
-naming existing kinds, a live relation naming no retired kind, no duplicate
-pair, unordered when symmetric (`unknown-endpoint-kind`,
-`retired-endpoint-kind`, `duplicate-endpoint-pair`); attribute names
-`^[a-z][a-z0-9_]*$` and types from `attribute_types`, which may only name types
-an implementation can check (`bad-attribute-name`, `unknown-attribute-type`,
-`unsupported-attribute-type`); retirement as §2.5, for kinds and relations
-alike (`retired-without-successor-or-note`, `unknown-successor`,
-`self-supersession`, `supersession-cycle`); and the schema, version and
-one-step-back lineage (`bad-schema`, `bad-version`, `bad-supersedes`). A
-document of the wrong shape fails with `malformed` alone.
+collected, each under a stable rule code:
+
+- **Shape.** Every level of the artifact has a closed key set. An unknown
+  field at any level (the document, an entity kind, a relation kind, an
+  attribute spec) is `malformed`. So is a missing or ill-typed field, and
+  `governance` and `respectful_modeling` are required strings. A document of
+  the wrong shape fails with `malformed` alone, before any rule below is
+  checked.
+- **Ids.** Kebab-case, unique, and disjoint across the two collections
+  (`id-not-kebab`, `duplicate-id`, `ids-not-disjoint`).
+- **Text.** Non-empty labels and definitions (`empty-label`,
+  `empty-definition`), and non-blank `governance` and `respectful_modeling`
+  (`empty-governance`, `empty-respectful-modeling`).
+- **Direction and nature.** `direction` and `nature` from their sets, and
+  `inverse_label` present if and only if the relation is directed
+  (`bad-direction`, `bad-nature`, `inverse-label-mismatch`).
+- **Endpoints.** At least one pair (`no-endpoints`). Every endpoint names an
+  existing kind, a live relation names no retired kind, and no pair appears
+  twice, unordered when symmetric (`unknown-endpoint-kind`,
+  `retired-endpoint-kind`, `duplicate-endpoint-pair`).
+- **Attributes.** Names match `^[a-z][a-z0-9_]*$`, and types come from
+  `attribute_types` (`bad-attribute-name`, `unknown-attribute-type`).
+  `attribute_types` may only name types an implementation can check, each once
+  (`unsupported-attribute-type`, `duplicate-attribute-type`).
+- **Retirement**, as §2.5, for kinds and relations alike:
+  - `superseded_by` or `deprecation_note` only on a retired item
+    (`successor-without-retirement`);
+  - `deprecated_in` a version no later than the artifact's own
+    (`bad-deprecated-in`);
+  - a successor or a non-blank note (`retired-without-successor-or-note`,
+    `empty-deprecation-note`), the successor in the same collection and not
+    the item itself (`unknown-successor`, `self-supersession`);
+  - no supersession chain closes, through retired or live items
+    (`supersession-cycle`, reported once per cycle).
+- **Lineage.** `schema` is `tt-relations/1.0` (`bad-schema`). `version` is
+  SemVer 2.0.0 `MAJOR.MINOR.PATCH` with no leading zeros (`bad-version`).
+  `supersedes` is null for 1.0.0 and otherwise names one earlier
+  `tt-relations/1.0 vMAJOR.MINOR.PATCH` release (`bad-supersedes`).
+  `deprecated_in` follows the same SemVer form.
+
+**The closed shape has a consequence: a new field is a breaking release.** A
+loader built for one release refuses an artifact that carries a field it does
+not know. So **any new field in a tt-relations artifact is a
+consumer-must-change release (Identity-class under GOVERNANCE §1)**, however
+small the field. The taxonomy bundle is different: its loader tolerates
+unknown fields. The strictness is deliberate: a field nobody reads is a rule
+nobody enforces, and in a vocabulary with a respectful-modeling rule a
+silently ignored field is where that rule would erode. The decision can be
+revisited; relaxing it later is itself a change to this contract.
 
 ### §9.3 The edge-statement contract
 

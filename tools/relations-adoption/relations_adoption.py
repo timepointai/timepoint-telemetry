@@ -29,8 +29,10 @@ Properties the change request requires, and how this file keeps them:
     run unless their sha256 are the released ones.
   * AGGREGATE ONLY. Counts, never values: no display names, no assertion
     values, no participant slugs. Every label printed comes from a fixed
-    allow-list, applied in SQL and checked again here; anything else is
-    counted as "(other)".
+    allow-list, applied in SQL and checked again here: TT's entity kinds,
+    beta's three bases, the three assertion attributes asked about, the two
+    artifact kinds that carry ties, and the published taxonomy version strings.
+    Anything else is counted as "(other)".
   * FAIL CLOSED. psql returns ONE JSON document per call. Stored values are
     inside JSON strings, so no value can forge a row or a section. Output that
     is not exactly the expected shape stops the run with exit 3 and no report.
@@ -59,8 +61,21 @@ D2_ATTRIBUTES = ("current-role", "named-in-uploaded-document", "works-at")
 LOAD_BEARING_BASES = ("ACCUMULATED", "GROUNDED")
 BASES = ("ACCUMULATED", "GENERATED", "GROUNDED")
 # The run.artifacts kinds whose documents carry top-level `ties` in beta.
+# cockpit_doc is the production kind. frame is kept only for older rows: no
+# code on beta's cr/coord writes a `frame` artifact any more.
 D3_KINDS = ("cockpit_doc", "frame")
-VERSION_RE = r"^[a-z][a-z-]*/[0-9]+\.[0-9]+ v[0-9]+\.[0-9]+\.[0-9]+$"
+# Every taxonomy version string a published bundle has carried or named, read
+# from this repository's history: tt-ontology/1.0 v2.1.0 (tags v2.1.0-v2.1.2),
+# v2.0.0 (tag v2.0.0), snag-ontology/1.0 v1.1.0 (the first commit, which v2.0.0
+# supersedes) and clockchain-taxonomy/1.0 v1.1.0-alpha.1 (which v1.1.0
+# supersedes). D5 prints only these. Any other stored string, however
+# version-shaped, is counted as "(other)".
+PUBLISHED_TAXONOMY_VERSIONS = (
+    "clockchain-taxonomy/1.0 v1.1.0-alpha.1",
+    "snag-ontology/1.0 v1.1.0",
+    "tt-ontology/1.0 v2.0.0",
+    "tt-ontology/1.0 v2.1.0",
+)
 TABLES = ("entity.assertions", "entity.entities", "run.artifacts", "run.moments", "tt.verdicts")
 OTHER, UNSTAMPED = "(other)", "<unstamped>"
 EXIT_REFUSED = 3
@@ -85,7 +100,10 @@ def load_artifacts():
         tax = json.load(f)
     with open(RELATIONS, encoding="utf-8") as f:
         rel = json.load(f)
-    return (f"{tax['schema']} v{tax['version']}", f"{rel['schema']} v{rel['version']}",
+    taxonomy_vs = f"{tax['schema']} v{tax['version']}"
+    for v in (taxonomy_vs, tax.get("supersedes")):
+        assert v in PUBLISHED_TAXONOMY_VERSIONS, f"{v} missing from PUBLISHED_TAXONOMY_VERSIONS"
+    return (taxonomy_vs, f"{rel['schema']} v{rel['version']}",
             tuple(k["id"] for k in rel["entity_kinds"]))
 
 
@@ -98,7 +116,7 @@ def sql_list(items):
 
 def version_case(expr):
     return (f"CASE WHEN {expr} IS NULL THEN '{UNSTAMPED}' "
-            f"WHEN {expr} ~ '{VERSION_RE}' THEN {expr} ELSE '{OTHER}' END")
+            f"WHEN {expr} IN ({sql_list(PUBLISHED_TAXONOMY_VERSIONS)}) THEN {expr} ELSE '{OTHER}' END")
 
 
 # --------------------------------------------------------------------------
@@ -220,7 +238,6 @@ def parse_document(stdout, expected):
 def check_labels(res, kinds):
     """Every label printed must be one the queries can produce. A value that is
     not is refused, never printed: the SQL allow-lists should have folded it."""
-    version = re.compile(VERSION_RE)
     allowed = {
         "D1": {"kind": set(kinds) | {OTHER}},
         "D2": {"attribute": set(D2_ATTRIBUTES), "basis": set(BASES) | {OTHER}},
@@ -238,7 +255,7 @@ def check_labels(res, kinds):
                 if not isinstance(v, str):
                     continue
                 if label.startswith("D5-"):
-                    ok = v in (UNSTAMPED, OTHER) or version.match(v)
+                    ok = v in (UNSTAMPED, OTHER) or v in PUBLISHED_TAXONOMY_VERSIONS
                 else:
                     ok = v in allowed[label][c]
                 if not ok:
