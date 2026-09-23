@@ -431,7 +431,17 @@ Two **attribute types**. A `date` is `YYYY`, `YYYY-MM` or `YYYY-MM-DD`,
 proleptic Gregorian, year ≥ 1, naming a real calendar day. Reduced precision is
 kept, never padded. A `text` value is a JSON string, non-empty after trimming
 Unicode White_Space, at most 200 Unicode scalar values (not bytes, not UTF-16
-units), with no control characters. `valid_from` and `valid_to` are the period
+units), with no control characters (Unicode Cc).
+
+**What the `text` rule does not catch.** Format characters (Unicode Cf) are
+neither White_Space nor controls, so they pass: a `subject` that is only a
+zero-width space (U+200B), or one that carries bidirectional controls
+(U+202A–U+202E, U+2066–U+2069), is valid TT text. TT checks shape, not
+meaning or rendering. Refusing invisible or direction-changing text is the
+consumer's write-time lint (beta: the K2 rubric), and two vectors pin that TT
+accepts both.
+
+`valid_from` and `valid_to` are the period
 *in the world* during which the relation held. **An absent `valid_to` means
 "not stated", never "ongoing".**
 

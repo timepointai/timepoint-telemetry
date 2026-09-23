@@ -94,6 +94,7 @@ powers sign the Final Act of the Congress of Vienna:
 | `src/relations.rs` | load + validate the relations vocabulary; the edge-statement contract |
 | `TT-SPEC.md` | **the normative description** — what a conforming implementation must do. Written from this implementation, not ahead of it |
 | `GOVERNANCE.md` | how this changes — classes, pacing, retirement, migrations |
+| `RELEASE-NOTES.md` | what each release ships, what it asks of consumers, and what it left undone |
 | `vectors/*.json` | 10 envelope conformance vectors — the hashes an implementation must reproduce. Only envelope vectors live at this level; consumers glob it |
 | `tests/` | the suite the reference implementation passes (65 tests) |
 | `.github/workflows/ci.yml` | build · tests · clippy `-D warnings` · conformance as its own job, on every push |

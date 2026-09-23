@@ -186,6 +186,13 @@ EDGES = [
     ("text of only no-break spaces", edge("vendor-to", "org", "org", {"subject": "\u00a0\u00a0"})),
     ("text of only an ideographic space", edge("vendor-to", "org", "org", {"subject": "\u3000"})),
     ("text as a JSON number", edge("vendor-to", "org", "org", {"subject": 42})),
+    # Format characters (Unicode Cf) are neither White_Space nor controls, so
+    # TT's text rule lets them through. Judging them is the consumer's lint
+    # (TT-SPEC §9.1; beta's K2). These pin that TT accepts, not that it should.
+    ("text of only a zero-width space passes TT (a consumer lint's job)",
+     edge("vendor-to", "org", "org", {"subject": "\u200b"})),
+    ("text with a right-to-left override passes TT (a consumer lint's job)",
+     edge("vendor-to", "org", "org", {"subject": "bond \u202emeasure"})),
     ("text of exactly 200 ASCII scalar values",
      edge("competes-with", "person", "person", {"subject": "a" * 200})),
     ("required subject present but empty string", edge("allied-with", "person", "person", {"subject": ""})),

@@ -1522,6 +1522,52 @@
       }
     },
     {
+      "name": "text of only a zero-width space passes TT (a consumer lint's job)",
+      "input": {
+        "relation": "vendor-to",
+        "from_kind": "org",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "\u200b"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "vendor-to",
+          "from_kind": "org",
+          "to_kind": "org",
+          "attributes": {
+            "subject": "\u200b"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "text with a right-to-left override passes TT (a consumer lint's job)",
+      "input": {
+        "relation": "vendor-to",
+        "from_kind": "org",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "bond \u202emeasure"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "vendor-to",
+          "from_kind": "org",
+          "to_kind": "org",
+          "attributes": {
+            "subject": "bond \u202emeasure"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
       "name": "text of exactly 200 ASCII scalar values",
       "input": {
         "relation": "competes-with",

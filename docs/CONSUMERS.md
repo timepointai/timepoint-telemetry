@@ -81,6 +81,11 @@ each obligation applies to it unchanged:
    that their stored kinds are the `from_kind` and `to_kind` the statement
    declares, and that they are two different entities.
 
+TT's `text` type checks shape only (TT-SPEC §9.1). Text that is invisible, such
+as only a zero-width space, or that carries bidirectional controls passes TT.
+Lint it at write time; beta's K2 rubric is where that lives. The same lint
+judges what a `subject` says (TT-SPEC §9.4).
+
 A consumer that walks the vectors: top-level `vectors/*.json` are envelope
 vectors only, and stay that way. The verdict corpora
 (`vectors/verdicts/classification-verdicts.json` and
