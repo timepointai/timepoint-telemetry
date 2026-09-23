@@ -17,12 +17,17 @@ mod bundle;
 mod distance;
 mod envelope;
 mod provenance;
+mod relations;
 pub use provenance::{ClaimRole, EvidenceRef, ProductionMethod, SourceAttribution, SOURCE_CONTRACT, source_from_provenance};
 
 pub use bundle::{Bridge, Bundle, LateralEdge, Lens, Lenses, Metric, Node, RELATIONS};
 pub use distance::{DistanceIndex, distance};
 pub use envelope::{
     CONTENT_HASH_FIELDS, Envelope, canonicalize, content_canonical, content_hash, provenance_hash,
+};
+pub use relations::{
+    ATTRIBUTE_TYPES, AttributeSpec, EDGE_KEYS, EdgeRejection, EntityKind, LoadFailure,
+    RELATIONS_SCHEMA, RelationKind, TEXT_MAX_SCALARS, Vocabulary,
 };
 
 /// Typed errors. Unknown/absent are representable states — a payload missing a claim

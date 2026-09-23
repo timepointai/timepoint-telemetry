@@ -35,10 +35,12 @@ def _make_test(path):
     return test
 
 
-# Envelope vectors only — classification-verdicts.json is the §4 corpus with
-# its own shape and its own test (test_classification_vectors.py).
+# Envelope vectors only. The verdict corpora have their own shapes and their
+# own tests: classification-verdicts.json (test_classification_vectors.py) and
+# relation-verdicts.json (test_relation_vectors.py).
+VERDICT_CORPORA = {"classification-verdicts.json", "relation-verdicts.json"}
 _paths = sorted(p for p in VECTORS_DIR.glob("*.json")
-                if p.name != "classification-verdicts.json")
+                if p.name not in VERDICT_CORPORA)
 assert len(_paths) == 10, f"expected 10 envelope vectors, found {len(_paths)}"
 for _p in _paths:
     setattr(Vectors, f"test_{_p.stem.replace('-', '_')}", _make_test(_p))
