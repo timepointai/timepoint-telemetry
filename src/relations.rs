@@ -55,6 +55,7 @@ const DIRECTIONS: [&str; 2] = ["directed", "symmetric"];
 const NATURES: [&str; 2] = ["structural", "social"];
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct EntityKind {
     pub id: String,
     pub label: String,
@@ -75,6 +76,7 @@ impl EntityKind {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct AttributeSpec {
     #[serde(rename = "type")]
     pub ty: String,
@@ -82,6 +84,7 @@ pub struct AttributeSpec {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct RelationKind {
     pub id: String,
     pub label: String,
@@ -138,25 +141,32 @@ pub struct LoadFailure {
 }
 
 /// One edge-statement rejection. `code` is normative; `detail` is advisory
-/// (vectors/relation-verdicts.json, `conformance`).
+/// (vectors/verdicts/relation-verdicts.json, `conformance`).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct EdgeRejection {
     pub code: &'static str,
     pub detail: String,
 }
 
+/// A relations artifact. Every level has a closed key set: an unknown field
+/// is `malformed`, because a field nobody reads is a rule nobody enforces.
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Vocabulary {
     pub schema: String,
     pub version: String,
     /// One step back, `"<schema> v<version>"`; `None` for 1.0.0.
     #[serde(default)]
     pub supersedes: Option<String>,
+    /// The governance statement the artifact carries.
+    pub governance: String,
+    /// The respectful-modeling rule, written into the artifact (TT-SPEC §9.4).
+    pub respectful_modeling: String,
     pub attribute_types: Vec<String>,
     pub entity_kinds: Vec<EntityKind>,
     pub relation_kinds: Vec<RelationKind>,
     /// The artifact as parsed, kept verbatim so a server can hand it out
-    /// unchanged (`governance`, `respectful_modeling` are not modelled).
+    /// unchanged.
     #[serde(skip)]
     pub raw: Value,
 }
@@ -261,12 +271,19 @@ impl Vocabulary {
             _ => {}
         }
 
-        // Attribute types: only ones this implementation can check.
+        // Attribute types: only ones this implementation can check, each once.
+        let mut types_seen: HashSet<&str> = HashSet::new();
         for t in &self.attribute_types {
             if !ATTRIBUTE_TYPES.contains(&t.as_str()) {
                 fail(
                     "unsupported-attribute-type",
                     format!("attribute type `{t}` is not one of date, text"),
+                );
+            }
+            if !types_seen.insert(t.as_str()) {
+                fail(
+                    "duplicate-attribute-type",
+                    format!("attribute type `{t}` is listed twice"),
                 );
             }
         }
@@ -391,8 +408,15 @@ impl Vocabulary {
                 );
             }
 
-            // Rule 4: endpoints name existing kinds; a live relation names no
-            // retired kind; no duplicate pair (unordered when symmetric).
+            // Rule 4: at least one pair; endpoints name existing kinds; a live
+            // relation names no retired kind; no duplicate pair (unordered
+            // when symmetric).
+            if r.endpoints.is_empty() {
+                fail(
+                    "no-endpoints",
+                    format!("relation kind `{}` allows no endpoint pair", r.id),
+                );
+            }
             let mut pairs: BTreeSet<(&str, &str)> = BTreeSet::new();
             let mut retired_named: BTreeSet<&str> = BTreeSet::new();
             for [a, b] in &r.endpoints {
@@ -478,7 +502,38 @@ impl Vocabulary {
             ("entity kind", &kinds, &kind_ids),
             ("relation kind", &relations, &relation_ids),
         ] {
-            for it in items.iter().filter(|it| it.deprecated_in.is_some()) {
+            for it in items.iter() {
+                let Some(dep) = it.deprecated_in else {
+                    // Retirement fields on a live item would make it read as
+                    // retired to anyone who checks the wrong field.
+                    if it.superseded_by.is_some() || it.note.is_some() {
+                        fail(
+                            "successor-without-retirement",
+                            format!(
+                                "{what} `{}` has superseded_by or deprecation_note but no deprecated_in",
+                                it.id
+                            ),
+                        );
+                    }
+                    continue;
+                };
+                if !is_semver(dep) {
+                    fail(
+                        "bad-deprecated-in",
+                        format!(
+                            "{what} `{}`: deprecated_in `{dep}` is not MAJOR.MINOR.PATCH",
+                            it.id
+                        ),
+                    );
+                } else if is_semver(&self.version) && semver_key(dep) > semver_key(&self.version) {
+                    fail(
+                        "bad-deprecated-in",
+                        format!(
+                            "{what} `{}`: deprecated_in {dep} is later than this release, {}",
+                            it.id, self.version
+                        ),
+                    );
+                }
                 match it.superseded_by {
                     Some(s) if s == it.id => fail(
                         "self-supersession",
@@ -497,12 +552,19 @@ impl Vocabulary {
                     ),
                     _ => {}
                 }
+                if it.note.is_some_and(|n| n.trim().is_empty()) {
+                    fail(
+                        "empty-deprecation-note",
+                        format!("{what} `{}` has a blank deprecation_note", it.id),
+                    );
+                }
             }
-            // A chain may pass through retired items; it may not close. Each
-            // cycle is reported once, walked from its smallest id, so that the
-            // failure list is the same in every implementation. A one-item loop
-            // is `self-supersession`, already reported above.
-            for it in items.iter().filter(|it| it.deprecated_in.is_some()) {
+            // No supersession chain may close, whether it runs through retired
+            // or live items. Walked from every item that names a successor;
+            // each cycle is reported once, from its smallest id, so the failure
+            // list is the same in every implementation. A one-item loop is
+            // `self-supersession`, already reported above.
+            for it in items.iter().filter(|it| it.superseded_by.is_some()) {
                 let mut seen: Vec<&str> = Vec::new();
                 let mut cur = Some(*it);
                 while let Some(c) = cur {
@@ -860,6 +922,17 @@ fn days_in_month(year: u32, month: u32) -> Option<u32> {
         2 => Some(if leap { 29 } else { 28 }),
         _ => None,
     }
+}
+
+/// A semver string as a key that orders numerically without overflowing:
+/// each part as (digit count without leading zeros, those digits).
+fn semver_key(v: &str) -> Vec<(usize, &str)> {
+    v.split('.')
+        .map(|p| {
+            let t = p.trim_start_matches('0');
+            (t.len(), t)
+        })
+        .collect()
 }
 
 fn is_semver(v: &str) -> bool {

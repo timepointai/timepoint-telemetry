@@ -8,7 +8,7 @@
     "advisory": "detail strings, byte for byte, in order. Both reference implementations (src/relations.rs and python/tt_relations.py) pass this tier, except the detail of a `malformed` load failure, which is the parser's own wording."
   },
   "patches": "RFC 6902 subset: add, remove, replace; paths are JSON Pointers into the shipped artifact. The fixture and every load case are the shipped artifact plus a patch.",
-  "regenerate": "python3 python/gen_relation_vectors.py bundle/relations-v1.0.json > vectors/relation-verdicts.json",
+  "regenerate": "python3 python/gen_relation_vectors.py bundle/relations-v1.0.json > vectors/verdicts/relation-verdicts.json",
   "edges": [
     {
       "name": "cr-01 holds-office person -> role, day precision",
@@ -1566,8 +1566,18 @@
     }
   ],
   "fixture": {
-    "what": "the shipped artifact plus a retired entity kind (office -> role), a retired relation with a successor (holds-post -> holds-office) and one with only a note (acquainted-with). A test document, not a release.",
+    "what": "the shipped artifact as a 1.1.0 document, plus a retired entity kind (office -> role), a retired relation with a successor (holds-post -> holds-office) and one with only a note (acquainted-with). A test document, not a release.",
     "patch": [
+      {
+        "op": "replace",
+        "path": "/version",
+        "value": "1.1.0"
+      },
+      {
+        "op": "replace",
+        "path": "/supersedes",
+        "value": "tt-relations/1.0 v1.0.0"
+      },
       {
         "op": "add",
         "path": "/entity_kinds/-",
@@ -1717,7 +1727,7 @@
           "from_kind": "person",
           "to_kind": "person",
           "attributes": {},
-          "vocabulary": "tt-relations/1.0 v1.0.0"
+          "vocabulary": "tt-relations/1.0 v1.1.0"
         }
       }
     }
@@ -1825,7 +1835,7 @@
         {
           "op": "add",
           "path": "/entity_kinds/2/deprecated_in",
-          "value": "1.1.0"
+          "value": "1.0.0"
         }
       ],
       "expect": {
@@ -1844,7 +1854,7 @@
         {
           "op": "add",
           "path": "/entity_kinds/3/deprecated_in",
-          "value": "1.1.0"
+          "value": "1.0.0"
         },
         {
           "op": "add",
@@ -2136,7 +2146,7 @@
         {
           "op": "add",
           "path": "/entity_kinds/2/deprecated_in",
-          "value": "1.1.0"
+          "value": "1.0.0"
         },
         {
           "op": "add",
@@ -2160,7 +2170,7 @@
         {
           "op": "add",
           "path": "/entity_kinds/2/deprecated_in",
-          "value": "1.1.0"
+          "value": "1.0.0"
         },
         {
           "op": "add",
@@ -2184,7 +2194,7 @@
         {
           "op": "add",
           "path": "/relation_kinds/6/deprecated_in",
-          "value": "1.1.0"
+          "value": "1.0.0"
         },
         {
           "op": "add",
@@ -2208,7 +2218,7 @@
         {
           "op": "add",
           "path": "/relation_kinds/6/deprecated_in",
-          "value": "1.1.0"
+          "value": "1.0.0"
         },
         {
           "op": "add",
@@ -2218,7 +2228,7 @@
         {
           "op": "add",
           "path": "/relation_kinds/9/deprecated_in",
-          "value": "1.1.0"
+          "value": "1.0.0"
         },
         {
           "op": "add",
@@ -2242,7 +2252,7 @@
         {
           "op": "add",
           "path": "/entity_kinds/2/deprecated_in",
-          "value": "1.1.0"
+          "value": "1.0.0"
         },
         {
           "op": "add",
@@ -2266,7 +2276,7 @@
             ],
             "attributes": {},
             "definition": "Fixture.",
-            "deprecated_in": "1.1.0",
+            "deprecated_in": "1.0.0",
             "deprecation_note": "Fixture."
           }
         }
@@ -2483,6 +2493,400 @@
           {
             "rule": "malformed",
             "detail": "`relation_kinds` must be an array"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a live kind with a deprecation_note",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecation_note",
+          "value": "Fixture."
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "successor-without-retirement",
+            "detail": "entity kind `market` has superseded_by or deprecation_note but no deprecated_in"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a live relation with superseded_by",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/superseded_by",
+          "value": "competes-with"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "successor-without-retirement",
+            "detail": "relation kind `knows` has superseded_by or deprecation_note but no deprecated_in"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a cycle through a live item: retired knows -> live competes-with -> knows",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/superseded_by",
+          "value": "competes-with"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/9/superseded_by",
+          "value": "knows"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "successor-without-retirement",
+            "detail": "relation kind `competes-with` has superseded_by or deprecation_note but no deprecated_in"
+          },
+          {
+            "rule": "supersession-cycle",
+            "detail": "relation kind supersession cycle: competes-with -> knows -> competes-with"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a three-item cycle, reported once",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/superseded_by",
+          "value": "competes-with"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/9/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/9/superseded_by",
+          "value": "allied-with"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/7/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/7/superseded_by",
+          "value": "knows"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "supersession-cycle",
+            "detail": "relation kind supersession cycle: allied-with -> knows -> competes-with -> allied-with"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a chain into a cycle is reported once, from inside the cycle",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/7/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/7/superseded_by",
+          "value": "knows"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/superseded_by",
+          "value": "competes-with"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/9/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/9/superseded_by",
+          "value": "knows"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "supersession-cycle",
+            "detail": "relation kind supersession cycle: competes-with -> knows -> competes-with"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown top-level field",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/extensions",
+          "value": {}
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "malformed",
+            "detail": "artifact: unknown field `extensions`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "governance missing",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/governance"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "malformed",
+            "detail": "`governance` must be a string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown field on an entity kind",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/0/parent",
+          "value": "org"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "malformed",
+            "detail": "entity_kinds[0]: unknown field `parent`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown field on a relation kind",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/weight",
+          "value": 1
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "malformed",
+            "detail": "relation_kinds[6]: unknown field `weight`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown field in an attribute spec",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/5/attributes/subject/enum",
+          "value": [
+            "a"
+          ]
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "malformed",
+            "detail": "relation_kinds[5].attributes.subject: unknown field `enum`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a relation with no endpoint pairs",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/relation_kinds/1/endpoints",
+          "value": []
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "no-endpoints",
+            "detail": "relation kind `office-of` allows no endpoint pair"
+          }
+        ]
+      }
+    },
+    {
+      "name": "deprecated_in not MAJOR.MINOR.PATCH",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecated_in",
+          "value": "v1"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecation_note",
+          "value": "Fixture."
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-deprecated-in",
+            "detail": "entity kind `market`: deprecated_in `v1` is not MAJOR.MINOR.PATCH"
+          }
+        ]
+      }
+    },
+    {
+      "name": "deprecated_in later than the release",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecated_in",
+          "value": "1.0.10"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecation_note",
+          "value": "Fixture."
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-deprecated-in",
+            "detail": "entity kind `market`: deprecated_in 1.0.10 is later than this release, 1.0.0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "deprecated_in earlier than the release loads",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.10.0"
+        },
+        {
+          "op": "replace",
+          "path": "/supersedes",
+          "value": "tt-relations/1.0 v1.9.0"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecated_in",
+          "value": "1.9.0"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecation_note",
+          "value": "Fixture."
+        }
+      ],
+      "expect": {
+        "loads": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "a blank deprecation_note",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecation_note",
+          "value": " \u00a0 "
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "empty-deprecation-note",
+            "detail": "entity kind `market` has a blank deprecation_note"
+          }
+        ]
+      }
+    },
+    {
+      "name": "attribute_types listing a type twice",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/attribute_types/-",
+          "value": "date"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "duplicate-attribute-type",
+            "detail": "attribute type `date` is listed twice"
           }
         ]
       }

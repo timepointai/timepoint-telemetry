@@ -1,5 +1,5 @@
 //! The relations vocabulary, `tt-relations/1.0`: the shipped artifact loads, its
-//! bytes and surface are pinned, and `vectors/relation-verdicts.json` is walked
+//! bytes and surface are pinned, and `vectors/verdicts/relation-verdicts.json` is walked
 //! on both tiers (docs/proposals/ENTITY-RELATIONS.md §2.4, §2.5, §8). This
 //! walker claims only its own corpus; tests/vectors.rs walks the envelope
 //! vectors and python/test_classification_vectors.py the classification ones.
@@ -37,8 +37,10 @@ fn shipped() -> Vocabulary {
 }
 
 fn corpus() -> Value {
-    serde_json::from_str(&fs::read_to_string(path("vectors/relation-verdicts.json")).unwrap())
-        .expect("relation-verdicts.json parses")
+    serde_json::from_str(
+        &fs::read_to_string(path("vectors/verdicts/relation-verdicts.json")).unwrap(),
+    )
+    .expect("relation-verdicts.json parses")
 }
 
 // ---------------------------------------------------------------------------
@@ -184,6 +186,18 @@ fn load_errors_are_typed() {
         Err(TtError::Invalid(msg)) => assert!(msg.starts_with("bad-nature: "), "{msg}"),
         other => panic!("expected Invalid, got {other:?}"),
     }
+}
+
+/// A lone surrogate never reaches `validate_edge`: serde_json refuses it while
+/// parsing. python/tt_relations.py, whose parser accepts it, rejects it as
+/// `attribute-type` instead (python/test_relation_vectors.py).
+#[test]
+fn a_lone_surrogate_does_not_parse() {
+    assert!(serde_json::from_str::<Value>(r#""\ud800""#).is_err());
+    assert_eq!(
+        serde_json::from_str::<Value>(r#""\ud83d\ude42""#).unwrap(),
+        json!("\u{1F642}")
+    );
 }
 
 // ---------------------------------------------------------------------------

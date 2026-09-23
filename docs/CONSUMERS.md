@@ -81,6 +81,12 @@ each obligation applies to it unchanged:
    that their stored kinds are the `from_kind` and `to_kind` the statement
    declares, and that they are two different entities.
 
+A consumer that walks the vectors: top-level `vectors/*.json` are envelope
+vectors only, and stay that way. The verdict corpora
+(`vectors/verdicts/classification-verdicts.json` and
+`vectors/verdicts/relation-verdicts.json`) have their own shapes and live
+below that level.
+
 ## Stricter is allowed; looser is not
 
 A consumer may refuse what TT permits. It may never accept what TT rejects.

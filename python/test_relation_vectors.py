@@ -6,7 +6,7 @@ rejection codes on reject; for load cases, whether the patched artifact loads
 and the multiset of failure rules. Advisory tier: detail strings byte for
 byte, in order, except a `malformed` load failure's wording. The reference
 implementation passes both; a port conforms on the normative tier alone
-(vectors/relation-verdicts.json, `conformance`).
+(vectors/verdicts/relation-verdicts.json, `conformance`).
 
     python3 python/test_relation_vectors.py
 """
@@ -21,7 +21,7 @@ from tt_relations import VocabularyInvalid, check_vocabulary, load_vocabulary, v
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
-VECTORS = os.path.join(REPO, "vectors", "relation-verdicts.json")
+VECTORS = os.path.join(REPO, "vectors", "verdicts", "relation-verdicts.json")
 ARTIFACT = os.path.join(REPO, "bundle", "relations-v1.0.json")
 RELATIONS_SHA256 = "23b0dc5627301d19f128d96152a84fed87000954e1d9fff571f8658ee81b73bc"
 
@@ -103,6 +103,32 @@ class RelationVectors(unittest.TestCase):
             check=True, capture_output=True, cwd=HERE).stdout
         with open(VECTORS, "rb") as f:
             self.assertEqual(out, f.read())
+
+
+class PythonOnlyInputs(unittest.TestCase):
+    """Inputs Rust never sees, because its JSON parser refuses them first."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.vocab = load_vocabulary(ARTIFACT)
+
+    def test_a_lone_surrogate_in_text_is_an_attribute_type_rejection(self):
+        for text in ("\ud800", "bond \udfff measure", "\udc00" * 3):
+            with self.subTest(repr(text)):
+                statement = json.loads(json.dumps(
+                    {"relation": "vendor-to", "from_kind": "org", "to_kind": "org",
+                     "attributes": {"subject": text}}))
+                normalized, errors = validate_edge(statement, self.vocab)
+                self.assertIsNone(normalized)
+                self.assertEqual(errors, [{"code": "attribute-type",
+                                           "detail": "`subject`: text must not contain unpaired surrogates"}])
+
+    def test_a_surrogate_pair_is_one_scalar_and_accepts(self):
+        statement = json.loads('{"relation": "vendor-to", "from_kind": "org", "to_kind": "org",'
+                               ' "attributes": {"subject": "platform \\ud83d\\ude42"}}')
+        normalized, errors = validate_edge(statement, self.vocab)
+        self.assertEqual(errors, [])
+        self.assertEqual(normalized["attributes"]["subject"], "platform \U0001F642")
 
 
 if __name__ == "__main__":

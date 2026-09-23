@@ -86,15 +86,15 @@ powers sign the Final Act of the Congress of Vienna:
 | `docs/WORKED-EXAMPLE.md` | one moment carried end to end — every number computed, none illustrative |
 | `docs/how-tt-works.svg` | the model in one picture |
 | `docs/CONSUMERS.md` | the consumer contract — five obligations, and the stricter-not-looser rule |
-| `vectors/classification-verdicts.json` | 39 §4 verdict vectors — codes normative, detail strings advisory |
-| `vectors/relation-verdicts.json` | §9 edge verdicts and load-rule cases — same two tiers, generated, never hand-written |
+| `vectors/verdicts/classification-verdicts.json` | 39 §4 verdict vectors — codes normative, detail strings advisory |
+| `vectors/verdicts/relation-verdicts.json` | §9 edge verdicts and load-rule cases — same two tiers, generated, never hand-written |
 | `src/bundle.rs` | load + validate a bundle; parent chains, bridge lookup, id validity |
 | `src/envelope.rs` | RFC 8785 canonicalisation, `content_hash`, `provenance_hash` |
 | `src/distance.rs` | node-to-node and distribution-to-distribution distance |
 | `src/relations.rs` | load + validate the relations vocabulary; the edge-statement contract |
 | `TT-SPEC.md` | **the normative description** — what a conforming implementation must do. Written from this implementation, not ahead of it |
 | `GOVERNANCE.md` | how this changes — classes, pacing, retirement, migrations |
-| `vectors/` | 10 conformance vectors — the hashes an implementation must reproduce |
+| `vectors/*.json` | 10 envelope conformance vectors — the hashes an implementation must reproduce. Only envelope vectors live at this level; consumers glob it |
 | `tests/` | the suite the reference implementation passes (65 tests) |
 | `.github/workflows/ci.yml` | build · tests · clippy `-D warnings` · conformance as its own job, on every push |
 
@@ -395,7 +395,7 @@ cargo test    # 51 tests, including every conformance vector
   existed), abstention first-class, bundle string stamped on accept.
 - `tt_relations.py` — the §9 relations vocabulary: its load rules and the
   edge-statement validator, rule for rule with `src/relations.rs`, passing
-  `vectors/relation-verdicts.json` on both tiers.
+  `vectors/verdicts/relation-verdicts.json` on both tiers.
 - `tt_envelope.py` — RFC 8785 canonicalisation and both hashes, written fresh
   against the committed vectors and passing all 10 byte-for-byte in CI.
 - `classification.schema.json` — the shape, for toolchains that speak JSON

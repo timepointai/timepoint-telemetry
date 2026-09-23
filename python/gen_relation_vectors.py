@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Regenerate vectors/relation-verdicts.json from the reference validator.
+"""Regenerate vectors/verdicts/relation-verdicts.json from the reference validator.
 
 Every expected value in the vector file is computed by running tt_relations
 against the shipped artifact, never written by hand:
 
     python3 python/gen_relation_vectors.py bundle/relations-v1.0.json \
-        > vectors/relation-verdicts.json
+        > vectors/verdicts/relation-verdicts.json
 
 Three corpora, one file:
 
@@ -193,6 +193,8 @@ EDGES = [
 
 # A hand-built vocabulary with something retired in each collection.
 FIXTURE_PATCH = [
+    {"op": "replace", "path": "/version", "value": "1.1.0"},
+    {"op": "replace", "path": "/supersedes", "value": "tt-relations/1.0 v1.0.0"},
     {"op": "add", "path": "/entity_kinds/-", "value": {
         "id": "office", "label": "Office (retired, fixture only)",
         "definition": "A retired entity kind in a test fixture.",
@@ -234,9 +236,9 @@ LOADS = [
     ("inverse_label missing on a directed relation",
      [{"op": "remove", "path": "/relation_kinds/0/inverse_label"}]),
     ("retirement with neither successor nor note",
-     [{"op": "add", "path": "/entity_kinds/2/deprecated_in", "value": "1.1.0"}]),
+     [{"op": "add", "path": "/entity_kinds/2/deprecated_in", "value": "1.0.0"}]),
     ("live relations naming a retired kind",
-     [{"op": "add", "path": "/entity_kinds/3/deprecated_in", "value": "1.1.0"},
+     [{"op": "add", "path": "/entity_kinds/3/deprecated_in", "value": "1.0.0"},
       {"op": "add", "path": "/entity_kinds/3/deprecation_note", "value": "Fixture."}]),
     ("duplicate symmetric pair written in both orders",
      [{"op": "add", "path": "/relation_kinds/7/endpoints/-", "value": ["org", "person"]}]),
@@ -267,27 +269,27 @@ LOADS = [
      [{"op": "add", "path": "/relation_kinds/5/attributes/Subject",
        "value": {"type": "text", "required": False}}]),
     ("self-supersession",
-     [{"op": "add", "path": "/entity_kinds/2/deprecated_in", "value": "1.1.0"},
+     [{"op": "add", "path": "/entity_kinds/2/deprecated_in", "value": "1.0.0"},
       {"op": "add", "path": "/entity_kinds/2/superseded_by", "value": "market"}]),
     ("unknown successor",
-     [{"op": "add", "path": "/entity_kinds/2/deprecated_in", "value": "1.1.0"},
+     [{"op": "add", "path": "/entity_kinds/2/deprecated_in", "value": "1.0.0"},
       {"op": "add", "path": "/entity_kinds/2/superseded_by", "value": "territory"}]),
     ("successor in the other collection",
-     [{"op": "add", "path": "/relation_kinds/6/deprecated_in", "value": "1.1.0"},
+     [{"op": "add", "path": "/relation_kinds/6/deprecated_in", "value": "1.0.0"},
       {"op": "add", "path": "/relation_kinds/6/superseded_by", "value": "person"}]),
     ("supersession cycle, reported once",
-     [{"op": "add", "path": "/relation_kinds/6/deprecated_in", "value": "1.1.0"},
+     [{"op": "add", "path": "/relation_kinds/6/deprecated_in", "value": "1.0.0"},
       {"op": "add", "path": "/relation_kinds/6/superseded_by", "value": "competes-with"},
-      {"op": "add", "path": "/relation_kinds/9/deprecated_in", "value": "1.1.0"},
+      {"op": "add", "path": "/relation_kinds/9/deprecated_in", "value": "1.0.0"},
       {"op": "add", "path": "/relation_kinds/9/superseded_by", "value": "knows"}]),
     ("a retired relation may name a retired kind",
-     [{"op": "add", "path": "/entity_kinds/2/deprecated_in", "value": "1.1.0"},
+     [{"op": "add", "path": "/entity_kinds/2/deprecated_in", "value": "1.0.0"},
       {"op": "add", "path": "/entity_kinds/2/deprecation_note", "value": "Fixture."},
       {"op": "add", "path": "/relation_kinds/-", "value": {
           "id": "prices", "label": "prices", "inverse_label": "priced by",
           "direction": "directed", "nature": "structural",
           "endpoints": [["market", "org"]], "attributes": {}, "definition": "Fixture.",
-          "deprecated_in": "1.1.0", "deprecation_note": "Fixture."}}]),
+          "deprecated_in": "1.0.0", "deprecation_note": "Fixture."}}]),
     ("wrong schema",
      [{"op": "replace", "path": "/schema", "value": "tt-relations/2.0"}]),
     ("version not MAJOR.MINOR.PATCH, and supersedes nothing",
@@ -311,6 +313,59 @@ LOADS = [
      [{"op": "replace", "path": "/relation_kinds/0/endpoints/0", "value": ["person", "role", "org"]}]),
     ("malformed: relation_kinds missing",
      [{"op": "remove", "path": "/relation_kinds"}]),
+    # F2: supersession on live items, and cycles through them.
+    ("a live kind with a deprecation_note",
+     [{"op": "add", "path": "/entity_kinds/2/deprecation_note", "value": "Fixture."}]),
+    ("a live relation with superseded_by",
+     [{"op": "add", "path": "/relation_kinds/6/superseded_by", "value": "competes-with"}]),
+    ("a cycle through a live item: retired knows -> live competes-with -> knows",
+     [{"op": "add", "path": "/relation_kinds/6/deprecated_in", "value": "1.0.0"},
+      {"op": "add", "path": "/relation_kinds/6/superseded_by", "value": "competes-with"},
+      {"op": "add", "path": "/relation_kinds/9/superseded_by", "value": "knows"}]),
+    ("a three-item cycle, reported once",
+     [{"op": "add", "path": "/relation_kinds/6/deprecated_in", "value": "1.0.0"},
+      {"op": "add", "path": "/relation_kinds/6/superseded_by", "value": "competes-with"},
+      {"op": "add", "path": "/relation_kinds/9/deprecated_in", "value": "1.0.0"},
+      {"op": "add", "path": "/relation_kinds/9/superseded_by", "value": "allied-with"},
+      {"op": "add", "path": "/relation_kinds/7/deprecated_in", "value": "1.0.0"},
+      {"op": "add", "path": "/relation_kinds/7/superseded_by", "value": "knows"}]),
+    ("a chain into a cycle is reported once, from inside the cycle",
+     [{"op": "add", "path": "/relation_kinds/7/deprecated_in", "value": "1.0.0"},
+      {"op": "add", "path": "/relation_kinds/7/superseded_by", "value": "knows"},
+      {"op": "add", "path": "/relation_kinds/6/deprecated_in", "value": "1.0.0"},
+      {"op": "add", "path": "/relation_kinds/6/superseded_by", "value": "competes-with"},
+      {"op": "add", "path": "/relation_kinds/9/deprecated_in", "value": "1.0.0"},
+      {"op": "add", "path": "/relation_kinds/9/superseded_by", "value": "knows"}]),
+
+    # F6: closed shapes and tighter retirement.
+    ("unknown top-level field",
+     [{"op": "add", "path": "/extensions", "value": {}}]),
+    ("governance missing",
+     [{"op": "remove", "path": "/governance"}]),
+    ("unknown field on an entity kind",
+     [{"op": "add", "path": "/entity_kinds/0/parent", "value": "org"}]),
+    ("unknown field on a relation kind",
+     [{"op": "add", "path": "/relation_kinds/6/weight", "value": 1}]),
+    ("unknown field in an attribute spec",
+     [{"op": "add", "path": "/relation_kinds/5/attributes/subject/enum", "value": ["a"]}]),
+    ("a relation with no endpoint pairs",
+     [{"op": "replace", "path": "/relation_kinds/1/endpoints", "value": []}]),
+    ("deprecated_in not MAJOR.MINOR.PATCH",
+     [{"op": "add", "path": "/entity_kinds/2/deprecated_in", "value": "v1"},
+      {"op": "add", "path": "/entity_kinds/2/deprecation_note", "value": "Fixture."}]),
+    ("deprecated_in later than the release",
+     [{"op": "add", "path": "/entity_kinds/2/deprecated_in", "value": "1.0.10"},
+      {"op": "add", "path": "/entity_kinds/2/deprecation_note", "value": "Fixture."}]),
+    ("deprecated_in earlier than the release loads",
+     [{"op": "replace", "path": "/version", "value": "1.10.0"},
+      {"op": "replace", "path": "/supersedes", "value": "tt-relations/1.0 v1.9.0"},
+      {"op": "add", "path": "/entity_kinds/2/deprecated_in", "value": "1.9.0"},
+      {"op": "add", "path": "/entity_kinds/2/deprecation_note", "value": "Fixture."}]),
+    ("a blank deprecation_note",
+     [{"op": "add", "path": "/entity_kinds/2/deprecated_in", "value": "1.0.0"},
+      {"op": "add", "path": "/entity_kinds/2/deprecation_note", "value": " \u00a0 "}]),
+    ("attribute_types listing a type twice",
+     [{"op": "add", "path": "/attribute_types/-", "value": "date"}]),
 ]
 
 
@@ -359,6 +414,36 @@ def apply_patch(doc, patch):
     return doc
 
 
+# The change request's §8 list, verdict by verdict: [] accepts, otherwise the
+# multiset of codes. The generator refuses to write a corpus that disagrees.
+CR_EXPECT = {
+    1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [],
+    12: ["unknown-relation"], 13: ["unknown-relation"],
+    14: ["endpoint-pair-not-allowed"], 15: ["endpoint-pair-not-allowed"],
+    16: ["endpoint-pair-not-allowed"], 17: ["unknown-kind"], 18: ["missing-attribute"],
+    19: ["unknown-attribute"], 20: ["attribute-type"], 21: ["attribute-type"],
+    22: ["attribute-type"], 23: ["tenure-order"], 24: ["attribute-type"],
+    25: ["attribute-type"], 26: ["unknown-key"],
+    27: ["endpoint-pair-not-allowed", "unknown-attribute"], 28: ["vocabulary-mismatch"],
+}
+
+
+def _check_cr_cases(vectors):
+    seen = set()
+    for v in vectors:
+        if not v["name"].startswith("cr-"):
+            continue
+        n = int(v["name"][3:5])
+        got = sorted(r["code"] for r in v["expect"].get("rejections", []))
+        if got != sorted(CR_EXPECT[n]):
+            raise SystemExit(f"{v['name']}: the change request expects {CR_EXPECT[n]}, got {got}")
+        if (not got) and v["input"] != {k: v["expect"]["normalized"][k] for k in v["input"]}:
+            raise SystemExit(f"{v['name']}: normalized form is not the input plus the stamp")
+        seen.add(n)
+    if seen != set(CR_EXPECT):
+        raise SystemExit(f"change request cases missing: {sorted(set(CR_EXPECT) - seen)}")
+
+
 def _edge_vectors(cases, vocab):
     out = []
     for name, statement in cases:
@@ -388,6 +473,9 @@ def main(argv):
         print(f"the fixture does not load: {fixture_failures}", file=sys.stderr)
         return 1
 
+    edges = _edge_vectors(EDGES, vocab)
+    _check_cr_cases(edges)
+
     loads = []
     for name, patch in LOADS:
         _, fails = check_vocabulary(apply_patch(raw, patch))
@@ -414,10 +502,10 @@ def main(argv):
                    "shipped artifact. The fixture and every load case are the shipped artifact "
                    "plus a patch.",
         "regenerate": "python3 python/gen_relation_vectors.py bundle/relations-v1.0.json "
-                      "> vectors/relation-verdicts.json",
-        "edges": _edge_vectors(EDGES, vocab),
+                      "> vectors/verdicts/relation-verdicts.json",
+        "edges": edges,
         "fixture": {
-            "what": "the shipped artifact plus a retired entity kind (office -> role), a retired "
+            "what": "the shipped artifact as a 1.1.0 document, plus a retired entity kind (office -> role), a retired "
                     "relation with a successor (holds-post -> holds-office) and one with only a "
                     "note (acquainted-with). A test document, not a release.",
             "patch": FIXTURE_PATCH,

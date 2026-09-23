@@ -4,7 +4,7 @@
 Normative tier: accepted flag, normalized form on accept, multiset of
 rejection codes on reject. Advisory tier: detail strings byte for byte.
 The reference implementation must pass both; a port conforms on the
-normative tier alone (vectors/classification-verdicts.json, `conformance`).
+normative tier alone (vectors/verdicts/classification-verdicts.json, `conformance`).
 """
 
 import json
@@ -15,7 +15,7 @@ from tt_validate import load_bundle, validate
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
-VECTORS = os.path.join(REPO, "vectors", "classification-verdicts.json")
+VECTORS = os.path.join(REPO, "vectors", "verdicts", "classification-verdicts.json")
 BUNDLE = os.path.join(REPO, "bundle", "taxonomy-v2.1.json")
 
 

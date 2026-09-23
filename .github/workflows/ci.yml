@@ -82,7 +82,7 @@ jobs:
         run: cargo test --test bundle -- --nocapture
 
       # The relations vocabulary loads, its bytes and the taxonomy's are
-      # pinned, and relation-verdicts.json reproduces on both tiers.
+      # pinned, and vectors/verdicts/relation-verdicts.json reproduces on both tiers.
       - name: the relations vocabulary validates and its vectors reproduce
         run: cargo test --test relations -- --nocapture
 
@@ -93,6 +93,12 @@ jobs:
       - uses: actions/checkout@v4
       # stdlib-only by design: no pip, no venv, no lockfile. If this job ever
       # grows a dependency step, the on-ramp has failed its one constraint.
+      # Consumers glob top-level vectors/*.json and read each file as an
+      # envelope vector (timepoint-beta's conformance/python/check_vectors.py
+      # does). Anything else at that level breaks them; verdict corpora live in
+      # vectors/verdicts/.
+      - name: top-level vectors/*.json are envelope vectors only
+        run: cd python && python3 -m unittest -v test_tt_envelope.TopLevelLayout
       - name: envelope reproduces every vector byte-for-byte
         run: python3 python/test_tt_envelope.py
       - name: the §4 validator rejects what the spec rejects

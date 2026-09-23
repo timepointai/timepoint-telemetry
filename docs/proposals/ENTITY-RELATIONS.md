@@ -95,7 +95,7 @@ touched, and nothing existing is rewritten (section 5).
 | `bundle/taxonomy-v2.1.json` | **unchanged**. The gate checks its sha256 |
 | `src/relations.rs` | **new**: `Vocabulary::load_from_file/str` (load rules, 2.4) and `validate_edge` (contract, 2.5); re-exported from `lib.rs` |
 | `python/tt_relations.py` | **new**: stdlib-only on-ramp for the same contract, written against the vectors |
-| `vectors/relation-verdicts.json` | **new**: section 8 |
+| `vectors/verdicts/relation-verdicts.json` | **new**: section 8. Below the top level, which is envelope-only (section 6) |
 | `tests/relations.rs`, `python/test_relation_vectors.py` | **new**: load-rule negatives plus the vector walker, in both languages |
 | `Cargo.toml` | `version = "2.2.0"` |
 | `TT-SPEC.md`, `README.md`, `docs/CONSUMERS.md` | prose (Timepoint's, not governed): §1 artifact list, a new "Relations vocabulary" section, counts, consumer obligations 1 to 5 extended to the new artifact |
@@ -573,9 +573,9 @@ which includes `src/provenance.rs`. This is what beta compiles against.
 | Consumer | Pinned today | Effect of `v2.2.0` | Must change? |
 |---|---|---|---|
 | beta, never upgrades | tag `v2.1.2` | none | no |
-| beta, upgrades (T3) | → `v2.2.0` | the taxonomy bytes and version string are identical, so `tt-bundle-pin`, `tt.bundles`, classifier ETag, classification stamps and publication readings are unchanged. `SourceAttribution` and the rest of the provenance API stay available **only if** section 9 holds | no (edges are opt-in, work for E1/E2) |
+| beta, upgrades (T3) | → `v2.2.0` | the taxonomy bytes and version string are identical, so `tt-bundle-pin`, `tt.bundles`, classifier ETag, classification stamps and publication readings are unchanged. `SourceAttribution` and the rest of the provenance API stay available **only if** section 9 holds. Beta's CI also checks out the tag and runs `conformance/python/check_vectors.py`, which globs top-level `vectors/*.json` and reads each file as an envelope vector: `v2.2.0` keeps that level envelope-only (the same 10 files, byte for byte) and puts both verdict corpora in `vectors/verdicts/`, so the step passes unchanged when T3 moves its `ref` to `v2.2.0`. The `schema/source-attribution-v1.vectors.json` byte-check is unchanged too | no code change. T3 bumps the Cargo tag and the CI checkout `ref` together (edges are opt-in, work for E1/E2) |
 | Clockchain (crate by rev; wasm vendors the taxonomy) | its own revs | the vendored taxonomy hash is unchanged. The new artifact is unused unless adopted | no |
-| independent Python ports | vectors | the existing vectors are unchanged, and there is a new, optional corpus | no |
+| independent Python ports | vectors | top-level `vectors/*.json` holds the same 10 envelope vectors, byte for byte. Two verdict corpora ship under `vectors/verdicts/`: `classification-verdicts.json` (on `main` since after `v2.1.0`, first tagged in `v2.2.0`) and the new `relation-verdicts.json`. Both are optional. A port that globs the top level sees exactly what it saw at `v2.1.2` | no |
 
 Lineage notes for T3:
 
@@ -607,7 +607,7 @@ Lineage notes for T3:
 
 ## 8. Conformance vectors T2 adds (Rust and Python)
 
-`vectors/relation-verdicts.json` uses the two-tier rule of
+`vectors/verdicts/relation-verdicts.json` uses the two-tier rule of
 `classification-verdicts.json`: the verdict, the normalized form and the
 multiset of codes are normative, and the detail strings are advisory. Both
 `tests/relations.rs` and `python/test_relation_vectors.py` walk it. Each walker

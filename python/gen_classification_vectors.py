@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Regenerate vectors/classification-verdicts.json from the reference validator.
+"""Regenerate vectors/verdicts/classification-verdicts.json from the reference validator.
 
 Every expected value in the vector file is computed by running tt_validate
 against the shipped bundle — never written by hand. To regenerate after a
 spec Correction or a bundle release:
 
     python3 python/gen_classification_vectors.py bundle/taxonomy-v2.1.json \
-        > vectors/classification-verdicts.json
+        > vectors/verdicts/classification-verdicts.json
 
 The case corpus began life as the Clockchain's differential harness
 (ops/tt-differential.py in their repo), which ported tt_validate rule for

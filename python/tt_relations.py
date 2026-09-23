@@ -5,7 +5,7 @@ The Python on-ramp for `tt-relations/1.0` (bundle/relations-v1.0.json):
 entity kinds, relation kinds between entities, and the edge-statement
 contract. It mirrors `src/relations.rs` rule for rule: the same rule and
 rejection codes, the same detail strings, in the same order. Where this file
-and the vectors disagree, the vectors win (vectors/relation-verdicts.json).
+and the vectors disagree, the vectors win (vectors/verdicts/relation-verdicts.json).
 
 Two surfaces, both reject-never-repair:
 
@@ -34,6 +34,17 @@ ATTRIBUTE_TYPES = ("date", "text")
 EDGE_KEYS = ("relation", "from_kind", "to_kind", "attributes", "vocabulary")
 TEXT_MAX_SCALARS = 200
 DIRECTIONS = ("directed", "symmetric")
+
+# The closed key set at every level of the artifact. An unknown field is
+# `malformed`, as Rust's deny_unknown_fields makes it: a field nobody reads is
+# a rule nobody enforces.
+TOP_KEYS = ("schema", "version", "supersedes", "governance", "respectful_modeling",
+            "attribute_types", "entity_kinds", "relation_kinds")
+RETIRE_KEYS = ("deprecated_in", "superseded_by", "deprecation_note")
+KIND_KEYS = ("id", "label", "definition") + RETIRE_KEYS
+RELATION_KEYS = ("id", "label", "inverse_label", "direction", "nature", "endpoints",
+                 "attributes", "definition") + RETIRE_KEYS
+SPEC_KEYS = ("type", "required")
 NATURES = ("structural", "social")
 
 # The Unicode White_Space property, spelled out: Rust's str::trim uses exactly
@@ -70,9 +81,16 @@ def _shape_error(raw):
     def is_opt_str(v):
         return v is None or isinstance(v, str)
 
+    def unknown(obj, allowed, where):
+        extra = sorted(k for k in obj if k not in allowed)
+        return f"{where}: unknown field `{extra[0]}`" if extra else None
+
     if not isinstance(raw, dict):
         return "the artifact must be a JSON object"
-    for key in ("schema", "version"):
+    why = unknown(raw, TOP_KEYS, "artifact")
+    if why:
+        return why
+    for key in ("schema", "version", "governance", "respectful_modeling"):
         if not isinstance(raw.get(key), str):
             return f"`{key}` must be a string"
     if not is_opt_str(raw.get("supersedes")):
@@ -88,6 +106,9 @@ def _shape_error(raw):
         where = f"entity_kinds[{i}]"
         if not isinstance(k, dict):
             return f"{where} must be an object"
+        why = unknown(k, KIND_KEYS, where)
+        if why:
+            return why
         for key in ("id", "label", "definition"):
             if not isinstance(k.get(key), str):
                 return f"{where}.{key} must be a string"
@@ -98,6 +119,9 @@ def _shape_error(raw):
         where = f"relation_kinds[{i}]"
         if not isinstance(r, dict):
             return f"{where} must be an object"
+        why = unknown(r, RELATION_KEYS, where)
+        if why:
+            return why
         for key in ("id", "label", "direction", "nature", "definition"):
             if not isinstance(r.get(key), str):
                 return f"{where}.{key} must be a string"
@@ -113,6 +137,8 @@ def _shape_error(raw):
         if not isinstance(attrs, dict):
             return f"{where}.attributes must be an object"
         for name, spec in attrs.items():
+            if isinstance(spec, dict) and unknown(spec, SPEC_KEYS, f"{where}.attributes.{name}"):
+                return unknown(spec, SPEC_KEYS, f"{where}.attributes.{name}")
             if not (isinstance(spec, dict) and isinstance(spec.get("type"), str)
                     and isinstance(spec.get("required"), bool)):
                 return f"{where}.attributes.{name} must be {{type: string, required: bool}}"
@@ -164,9 +190,13 @@ def check_vocabulary(raw):
     elif supersedes == version_string:
         fail("bad-supersedes", f"`{supersedes}` supersedes itself")
 
+    types_seen = set()
     for t in raw["attribute_types"]:
         if t not in ATTRIBUTE_TYPES:
             fail("unsupported-attribute-type", f"attribute type `{t}` is not one of date, text")
+        if t in types_seen:
+            fail("duplicate-attribute-type", f"attribute type `{t}` is listed twice")
+        types_seen.add(t)
 
     # Rule 1: kebab-case, unique, disjoint.
     for what, items in (("entity kind", kinds_list), ("relation kind", rels_list)):
@@ -214,6 +244,8 @@ def check_vocabulary(raw):
 
         # Rule 4: endpoints name existing kinds; a live relation names no
         # retired kind; no duplicate pair (unordered when symmetric).
+        if not r["endpoints"]:
+            fail("no-endpoints", f"relation kind `{rid}` allows no endpoint pair")
         symmetric = r["direction"] == "symmetric"
         pairs = set()
         retired_named = set()
@@ -246,26 +278,41 @@ def check_vocabulary(raw):
     # Rule 6: retirement, GOVERNANCE §3, for both collections alike.
     for what, items, index in (("entity kind", kinds_list, kinds),
                                ("relation kind", rels_list, rels)):
-        retired_items = [it for it in items if retired(it)]
-        for it in retired_items:
-            s = it.get("superseded_by")
+        for it in items:
+            s, note, dep = it.get("superseded_by"), it.get("deprecation_note"), it.get("deprecated_in")
+            if dep is None:
+                if s is not None or note is not None:
+                    fail("successor-without-retirement",
+                         f"{what} `{it['id']}` has superseded_by or deprecation_note but no deprecated_in")
+                continue
+            if not _is_semver(dep):
+                fail("bad-deprecated-in",
+                     f"{what} `{it['id']}`: deprecated_in `{dep}` is not MAJOR.MINOR.PATCH")
+            elif _is_semver(version) and _semver_key(dep) > _semver_key(version):
+                fail("bad-deprecated-in",
+                     f"{what} `{it['id']}`: deprecated_in {dep} is later than this release, {version}")
             if s is not None and s == it["id"]:
                 fail("self-supersession", f"{what} `{it['id']}` supersedes itself")
             elif s is not None and s not in index:
                 fail("unknown-successor", f"{what} `{it['id']}` is superseded_by unknown `{s}`")
-            elif s is None and it.get("deprecation_note") is None:
+            elif s is None and note is None:
                 fail("retired-without-successor-or-note",
                      f"{what} `{it['id']}` is retired with neither superseded_by nor deprecation_note")
-        # A chain may pass through retired items; it may not close. Each cycle
-        # is reported once, walked from its smallest id. A one-item loop is
+            if note is not None and _trim(note) == "":
+                fail("empty-deprecation-note", f"{what} `{it['id']}` has a blank deprecation_note")
+        # No supersession chain may close, whether it runs through retired or
+        # live items. Walked from every item that names a successor; each
+        # cycle is reported once, from its smallest id. A one-item loop is
         # `self-supersession`, already reported above.
-        for it in retired_items:
+        for it in items:
+            if it.get("superseded_by") is None:
+                continue
             seen = []
             cur = it
             while cur is not None:
                 if cur["id"] in seen:
                     p = seen.index(cur["id"])
-                    if p == 0 and len(seen) > 1 and all(s >= it["id"] for s in seen):
+                    if p == 0 and len(seen) > 1 and all(x >= it["id"] for x in seen):
                         seen.append(cur["id"])
                         fail("supersession-cycle", f"{what} supersession cycle: {' -> '.join(seen)}")
                     break
@@ -435,11 +482,15 @@ def _check_value(ty, value):
     if ty == "text":
         if not isinstance(value, str):
             return "text must be a JSON string", None
+        if any(0xD800 <= ord(c) <= 0xDFFF for c in value):
+            # json.loads accepts "\ud800"; Rust's parser refuses it before the
+            # validator runs, and a lone surrogate is no Unicode scalar value.
+            return "text must not contain unpaired surrogates", None
         if any(_is_control(c) for c in value):
             return "text must not contain control characters", None
         if _trim(value) == "":
             return "text must not be empty after trimming", None
-        n = len(value)  # code points; a parsed JSON string holds no lone surrogate that Rust accepts
+        n = len(value)  # code points, which are scalar values once surrogates are refused
         if n > TEXT_MAX_SCALARS:
             return f"text is {n} Unicode scalar values; at most {TEXT_MAX_SCALARS}", None
         return None, None
@@ -496,6 +547,11 @@ def _parse_date(s):
             return None
         return (year, month, day), (year, month, day)
     return None
+
+
+def _semver_key(v):
+    """Numeric order without int(): (digit count without leading zeros, digits)."""
+    return [(len(p.lstrip("0")), p.lstrip("0")) for p in v.split(".")]
 
 
 def _is_semver(v):
