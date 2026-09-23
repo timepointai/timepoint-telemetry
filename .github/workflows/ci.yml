@@ -81,6 +81,11 @@ jobs:
       - name: the shipped bundle validates
         run: cargo test --test bundle -- --nocapture
 
+      # The relations vocabulary loads, its bytes and the taxonomy's are
+      # pinned, and relation-verdicts.json reproduces on both tiers.
+      - name: the relations vocabulary validates and its vectors reproduce
+        run: cargo test --test relations -- --nocapture
+
   python-onramp:
     name: the python on-ramp passes the same vectors
     runs-on: ubuntu-latest
@@ -94,3 +99,5 @@ jobs:
         run: python3 python/test_tt_validate.py
       - name: the classification vectors reproduce, both tiers
         run: python3 python/test_classification_vectors.py
+      - name: the relation vectors reproduce, both tiers
+        run: python3 python/test_relation_vectors.py

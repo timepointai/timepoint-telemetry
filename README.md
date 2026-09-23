@@ -82,17 +82,20 @@ powers sign the Final Act of the Congress of Vienna:
 | | |
 |---|---|
 | `bundle/taxonomy-v2.1.json` | the versioned taxonomy — 149 nodes, 2 lenses, 151 lateral edges, 26 bridges, the kernel, metric weights, design principles |
+| `bundle/relations-v1.0.json` | the relations vocabulary — 4 entity kinds, 10 relation kinds between entities (TT-SPEC §9) |
 | `docs/WORKED-EXAMPLE.md` | one moment carried end to end — every number computed, none illustrative |
 | `docs/how-tt-works.svg` | the model in one picture |
 | `docs/CONSUMERS.md` | the consumer contract — five obligations, and the stricter-not-looser rule |
 | `vectors/classification-verdicts.json` | 39 §4 verdict vectors — codes normative, detail strings advisory |
+| `vectors/relation-verdicts.json` | §9 edge verdicts and load-rule cases — same two tiers, generated, never hand-written |
 | `src/bundle.rs` | load + validate a bundle; parent chains, bridge lookup, id validity |
 | `src/envelope.rs` | RFC 8785 canonicalisation, `content_hash`, `provenance_hash` |
 | `src/distance.rs` | node-to-node and distribution-to-distribution distance |
+| `src/relations.rs` | load + validate the relations vocabulary; the edge-statement contract |
 | `TT-SPEC.md` | **the normative description** — what a conforming implementation must do. Written from this implementation, not ahead of it |
 | `GOVERNANCE.md` | how this changes — classes, pacing, retirement, migrations |
 | `vectors/` | 10 conformance vectors — the hashes an implementation must reproduce |
-| `tests/` | the suite the reference implementation passes (51 tests) |
+| `tests/` | the suite the reference implementation passes (65 tests) |
 | `.github/workflows/ci.yml` | build · tests · clippy `-D warnings` · conformance as its own job, on every push |
 
 **Where TT-SPEC and the vectors disagree, the vectors win.** A specification
@@ -121,6 +124,15 @@ guarantee that made the rename safe to ship. The name SNAG is retired; the
 chain records it so nothing written under it is orphaned. A bundle names one
 step back, so reading a record more than one release old means walking the
 chain a version at a time.
+
+**Crate v2.2.0 adds a second vocabulary and leaves the taxonomy alone.**
+`bundle/relations-v1.0.json` (`tt-relations/1.0 v1.0.0`) names the kinds of
+entity a consumer's registry holds (`person`, `org`, `market`, `role`) and ten
+relations between them (`holds-office`, `member-of`, `opposes`, …), each with a
+direction, allowed endpoints and a closed set of attributes. It ships beside the
+taxonomy, never inside it: the taxonomy file is byte-identical to 2.1.x, so no
+classification, distance or published reading moves. Relation kinds are not
+lateral edges and never enter the metric. See TT-SPEC §9.
 
 ## Start with the thing it says out loud
 
@@ -381,6 +393,9 @@ cargo test    # 51 tests, including every conformance vector
 - `tt_validate.py` — the §4 classification validator: reject-never-repair,
   typed rejections (a retired id names its successor; an unknown id never
   existed), abstention first-class, bundle string stamped on accept.
+- `tt_relations.py` — the §9 relations vocabulary: its load rules and the
+  edge-statement validator, rule for rule with `src/relations.rs`, passing
+  `vectors/relation-verdicts.json` on both tiers.
 - `tt_envelope.py` — RFC 8785 canonicalisation and both hashes, written fresh
   against the committed vectors and passing all 10 byte-for-byte in CI.
 - `classification.schema.json` — the shape, for toolchains that speak JSON
@@ -437,8 +452,9 @@ Proposals use [the change request template](.github/CHANGE_REQUEST.md).
 
 ## Status
 
-**Early and honest about it.** The taxonomy is at `2.1.0` and its identity
-guarantee is real — ids will not change meaning, and change arrives only
+**Early and honest about it.** The taxonomy is at `2.1.0`, the relations
+vocabulary at `1.0.0`, and the crate at `2.2.0`. The identity guarantee is
+real, for both vocabularies — ids will not change meaning, and change arrives only
 through the published update cycle.
 
 [TT-SPEC.md](TT-SPEC.md) is the normative description, written from the
