@@ -1,0 +1,3118 @@
+{
+  "what": "TT relations conformance vectors: tt-relations/1.0 edge-statement verdicts and load rules (docs/proposals/ENTITY-RELATIONS.md \u00a72.4, \u00a72.5, \u00a78)",
+  "vocabulary": "tt-relations/1.0 v1.0.0",
+  "vocabulary_file": "bundle/relations-v1.0.json",
+  "vocabulary_sha256": "23b0dc5627301d19f128d96152a84fed87000954e1d9fff571f8658ee81b73bc",
+  "conformance": {
+    "normative": "edges and fixture_edges: accepted, normalized (on accept), and the multiset of rejection codes (on reject). loads: whether the patched artifact loads, and the multiset of failure rules. An implementation matching these in any language conforms.",
+    "advisory": "detail strings, byte for byte, in order. Both reference implementations (src/relations.rs and python/tt_relations.py) pass this tier, except the detail of a `malformed` load failure, which is the parser's own wording."
+  },
+  "patches": "RFC 6902 subset: add, remove, replace; paths are JSON Pointers into the shipped artifact. The fixture and every load case are the shipped artifact plus a patch.",
+  "regenerate": "python3 python/gen_relation_vectors.py bundle/relations-v1.0.json > vectors/verdicts/relation-verdicts.json",
+  "edges": [
+    {
+      "name": "cr-01 holds-office person -> role, day precision",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2022-07-01"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "holds-office",
+          "from_kind": "person",
+          "to_kind": "role",
+          "attributes": {
+            "valid_from": "2022-07-01"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "cr-02 holds-office same-year tenure at year precision",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2019",
+          "valid_to": "2019"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "holds-office",
+          "from_kind": "person",
+          "to_kind": "role",
+          "attributes": {
+            "valid_from": "2019",
+            "valid_to": "2019"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "cr-03 holds-office end known, start not stated",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_to": "2024-06"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "holds-office",
+          "from_kind": "person",
+          "to_kind": "role",
+          "attributes": {
+            "valid_to": "2024-06"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "cr-04 office-of role -> org, attributes absent, normalized to {}",
+      "input": {
+        "relation": "office-of",
+        "from_kind": "role",
+        "to_kind": "org"
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "office-of",
+          "from_kind": "role",
+          "to_kind": "org",
+          "attributes": {},
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "cr-05 member-of org -> org",
+      "input": {
+        "relation": "member-of",
+        "from_kind": "org",
+        "to_kind": "org"
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "member-of",
+          "from_kind": "org",
+          "to_kind": "org",
+          "attributes": {},
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "cr-06 knows person -- person",
+      "input": {
+        "relation": "knows",
+        "from_kind": "person",
+        "to_kind": "person"
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "knows",
+          "from_kind": "person",
+          "to_kind": "person",
+          "attributes": {},
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "cr-07 allied-with org -- person, reverse of the declared pair, not reordered",
+      "input": {
+        "relation": "allied-with",
+        "from_kind": "org",
+        "to_kind": "person",
+        "attributes": {
+          "subject": "District A bond measure"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "allied-with",
+          "from_kind": "org",
+          "to_kind": "person",
+          "attributes": {
+            "subject": "District A bond measure"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "cr-08 opposes org -> org with subject",
+      "input": {
+        "relation": "opposes",
+        "from_kind": "org",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "District A bond measure"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "opposes",
+          "from_kind": "org",
+          "to_kind": "org",
+          "attributes": {
+            "subject": "District A bond measure"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "cr-09 vendor-to org -> org with subject",
+      "input": {
+        "relation": "vendor-to",
+        "from_kind": "org",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "assessment platform"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "vendor-to",
+          "from_kind": "org",
+          "to_kind": "org",
+          "attributes": {
+            "subject": "assessment platform"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "cr-10 overlapping precisions, 2020-06 to 2020",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2020-06",
+          "valid_to": "2020"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "holds-office",
+          "from_kind": "person",
+          "to_kind": "role",
+          "attributes": {
+            "valid_from": "2020-06",
+            "valid_to": "2020"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "cr-11 vocabulary cited and matching",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2022-07-01"
+        },
+        "vocabulary": "tt-relations/1.0 v1.0.0"
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "holds-office",
+          "from_kind": "person",
+          "to_kind": "role",
+          "attributes": {
+            "valid_from": "2022-07-01"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "cr-12 snake case is not aliased",
+      "input": {
+        "relation": "holds_office",
+        "from_kind": "person",
+        "to_kind": "role"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "unknown-relation",
+            "detail": "no relation kind `holds_office` in tt-relations/1.0 v1.0.0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-13 an inverse label is not an id",
+      "input": {
+        "relation": "customer-of",
+        "from_kind": "org",
+        "to_kind": "org"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "unknown-relation",
+            "detail": "no relation kind `customer-of` in tt-relations/1.0 v1.0.0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-14 holds-office role -> person, directed order matters",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "role",
+        "to_kind": "person"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "endpoint-pair-not-allowed",
+            "detail": "`holds-office` does not allow role -> person; allowed: person -> role"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-15 reports-to person -> person, reporting lines join roles",
+      "input": {
+        "relation": "reports-to",
+        "from_kind": "person",
+        "to_kind": "person"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "endpoint-pair-not-allowed",
+            "detail": "`reports-to` does not allow person -> person; allowed: role -> role"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-16 allied-with role -- org, stances never attach to a role",
+      "input": {
+        "relation": "allied-with",
+        "from_kind": "role",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "District A bond measure"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "endpoint-pair-not-allowed",
+            "detail": "`allied-with` does not allow role -- org; allowed: person -- person, org -- org, person -- org"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-17 to_kind office is not a kind",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "office"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "unknown-kind",
+            "detail": "`to_kind`: no entity kind `office` in tt-relations/1.0 v1.0.0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-18 opposes without subject",
+      "input": {
+        "relation": "opposes",
+        "from_kind": "person",
+        "to_kind": "org"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "missing-attribute",
+            "detail": "`opposes` requires attribute `subject`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-19 knows with closeness",
+      "input": {
+        "relation": "knows",
+        "from_kind": "person",
+        "to_kind": "person",
+        "attributes": {
+          "closeness": 0.9
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "unknown-attribute",
+            "detail": "`knows` has no attribute `closeness`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-20 month 13",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2022-13-01"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`valid_from`: not a date at year, month or day precision (YYYY, YYYY-MM or YYYY-MM-DD) naming a real calendar day with year >= 1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-21 prose date",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "July 2022"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`valid_from`: not a date at year, month or day precision (YYYY, YYYY-MM or YYYY-MM-DD) naming a real calendar day with year >= 1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-22 no such calendar day, 2023-02-29",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2023-02-29"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`valid_from`: not a date at year, month or day precision (YYYY, YYYY-MM or YYYY-MM-DD) naming a real calendar day with year >= 1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-23 tenure out of order, 2021 to 2020-12",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2021",
+          "valid_to": "2020-12"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "tenure-order",
+            "detail": "`valid_from` 2021 begins after `valid_to` 2020-12 ends"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-24 subject empty after trimming",
+      "input": {
+        "relation": "opposes",
+        "from_kind": "person",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "   "
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`subject`: text must not be empty after trimming"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-25 subject of 201 scalar values",
+      "input": {
+        "relation": "competes-with",
+        "from_kind": "org",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`subject`: text is 201 Unicode scalar values; at most 200"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-26 basis at top level, TT stays out of provenance",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2022-07-01"
+        },
+        "basis": "GENERATED"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "unknown-key",
+            "detail": "unknown top-level key `basis`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-27 every failure reported: wrong order and unknown attribute",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "role",
+        "to_kind": "person",
+        "attributes": {
+          "closeness": 0.9
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "endpoint-pair-not-allowed",
+            "detail": "`holds-office` does not allow role -> person; allowed: person -> role"
+          },
+          {
+            "code": "unknown-attribute",
+            "detail": "`holds-office` has no attribute `closeness`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cr-28 vocabulary names another release",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "vocabulary": "tt-relations/1.0 v0.9.0"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "vocabulary-mismatch",
+            "detail": "edge cites `tt-relations/1.0 v0.9.0`, loaded vocabulary is `tt-relations/1.0 v1.0.0`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "attributes is an array, not an object",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": [
+          "2022-07-01"
+        ]
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attributes-not-object",
+            "detail": "`attributes` must be a JSON object"
+          }
+        ]
+      }
+    },
+    {
+      "name": "attributes is null, which is not absence",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": null
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attributes-not-object",
+            "detail": "`attributes` must be a JSON object"
+          }
+        ]
+      }
+    },
+    {
+      "name": "subject of 200 multibyte scalar values (399 bytes, 201 UTF-16 units) accepts",
+      "input": {
+        "relation": "allied-with",
+        "from_kind": "person",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\ud83d\ude42"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "allied-with",
+          "from_kind": "person",
+          "to_kind": "org",
+          "attributes": {
+            "subject": "\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\ud83d\ude42"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "subject of 201 multibyte scalar values rejects",
+      "input": {
+        "relation": "allied-with",
+        "from_kind": "person",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u00e9\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\u65e5\ud83d\ude42\u65e5"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`subject`: text is 201 Unicode scalar values; at most 200"
+          }
+        ]
+      }
+    },
+    {
+      "name": "vocabulary null is a mismatch, not absence",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "vocabulary": null
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "vocabulary-mismatch",
+            "detail": "`vocabulary` must be the string `tt-relations/1.0 v1.0.0`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "all four consumer provenance keys, each an unknown key",
+      "input": {
+        "relation": "knows",
+        "from_kind": "person",
+        "to_kind": "person",
+        "basis": "GROUNDED",
+        "score": 0.8,
+        "sources": [
+          "https://example.org/minutes"
+        ],
+        "observed_at": "2026-09-01"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "unknown-key",
+            "detail": "unknown top-level key `basis`"
+          },
+          {
+            "code": "unknown-key",
+            "detail": "unknown top-level key `observed_at`"
+          },
+          {
+            "code": "unknown-key",
+            "detail": "unknown top-level key `score`"
+          },
+          {
+            "code": "unknown-key",
+            "detail": "unknown top-level key `sources`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "not an object",
+      "input": [
+        "holds-office",
+        "person",
+        "role"
+      ],
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "not-an-object",
+            "detail": "edge statement must be a JSON object"
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty object: three fields missing",
+      "input": {},
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "missing-field",
+            "detail": "`relation` is required"
+          },
+          {
+            "code": "missing-field",
+            "detail": "`from_kind` is required"
+          },
+          {
+            "code": "missing-field",
+            "detail": "`to_kind` is required"
+          }
+        ]
+      }
+    },
+    {
+      "name": "relation is not a string",
+      "input": {
+        "relation": 7,
+        "from_kind": "person",
+        "to_kind": "role"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "field-not-string",
+            "detail": "`relation` must be a string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "to_kind missing",
+      "input": {
+        "relation": "office-of",
+        "from_kind": "role"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "missing-field",
+            "detail": "`to_kind` is required"
+          }
+        ]
+      }
+    },
+    {
+      "name": "from_kind null",
+      "input": {
+        "relation": "office-of",
+        "from_kind": null,
+        "to_kind": "org"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "field-not-string",
+            "detail": "`from_kind` must be a string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "relation in title case",
+      "input": {
+        "relation": "Holds-Office",
+        "from_kind": "person",
+        "to_kind": "role"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "unknown-relation",
+            "detail": "no relation kind `Holds-Office` in tt-relations/1.0 v1.0.0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "relation spelled as its label",
+      "input": {
+        "relation": "holds office",
+        "from_kind": "person",
+        "to_kind": "role"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "unknown-relation",
+            "detail": "no relation kind `holds office` in tt-relations/1.0 v1.0.0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "kind in title case",
+      "input": {
+        "relation": "office-of",
+        "from_kind": "Role",
+        "to_kind": "org"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "unknown-kind",
+            "detail": "`from_kind`: no entity kind `Role` in tt-relations/1.0 v1.0.0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown relation: attributes are not checked against a schema it lacks",
+      "input": {
+        "relation": "holds_office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "closeness": 0.9
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "unknown-relation",
+            "detail": "no relation kind `holds_office` in tt-relations/1.0 v1.0.0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "several unknowns at once",
+      "input": {
+        "relation": "holds_office",
+        "from_kind": "human",
+        "to_kind": "office",
+        "surprise": 1
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "unknown-key",
+            "detail": "unknown top-level key `surprise`"
+          },
+          {
+            "code": "unknown-relation",
+            "detail": "no relation kind `holds_office` in tt-relations/1.0 v1.0.0"
+          },
+          {
+            "code": "unknown-kind",
+            "detail": "`from_kind`: no entity kind `human` in tt-relations/1.0 v1.0.0"
+          },
+          {
+            "code": "unknown-kind",
+            "detail": "`to_kind`: no entity kind `office` in tt-relations/1.0 v1.0.0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "allied-with person -- org, the declared order",
+      "input": {
+        "relation": "allied-with",
+        "from_kind": "person",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "District A bond measure"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "allied-with",
+          "from_kind": "person",
+          "to_kind": "org",
+          "attributes": {
+            "subject": "District A bond measure"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "competes-with person -- org, same-kind pairs only",
+      "input": {
+        "relation": "competes-with",
+        "from_kind": "person",
+        "to_kind": "org"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "endpoint-pair-not-allowed",
+            "detail": "`competes-with` does not allow person -- org; allowed: person -- person, org -- org"
+          }
+        ]
+      }
+    },
+    {
+      "name": "knows person -- org",
+      "input": {
+        "relation": "knows",
+        "from_kind": "person",
+        "to_kind": "org"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "endpoint-pair-not-allowed",
+            "detail": "`knows` does not allow person -- org; allowed: person -- person"
+          }
+        ]
+      }
+    },
+    {
+      "name": "member-of role -> org, a role is not a member",
+      "input": {
+        "relation": "member-of",
+        "from_kind": "role",
+        "to_kind": "org"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "endpoint-pair-not-allowed",
+            "detail": "`member-of` does not allow role -> org; allowed: person -> org, org -> org"
+          }
+        ]
+      }
+    },
+    {
+      "name": "governs role -> org, authority of an office is office-of plus reports-to",
+      "input": {
+        "relation": "governs",
+        "from_kind": "role",
+        "to_kind": "org"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "endpoint-pair-not-allowed",
+            "detail": "`governs` does not allow role -> org; allowed: org -> org"
+          }
+        ]
+      }
+    },
+    {
+      "name": "opposes org -> person",
+      "input": {
+        "relation": "opposes",
+        "from_kind": "org",
+        "to_kind": "person",
+        "attributes": {
+          "subject": "District A bond measure"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "opposes",
+          "from_kind": "org",
+          "to_kind": "person",
+          "attributes": {
+            "subject": "District A bond measure"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "reports-to role -> role",
+      "input": {
+        "relation": "reports-to",
+        "from_kind": "role",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2023"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "reports-to",
+          "from_kind": "role",
+          "to_kind": "role",
+          "attributes": {
+            "valid_from": "2023"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "market is a kind no 1.0.0 relation allows",
+      "input": {
+        "relation": "competes-with",
+        "from_kind": "market",
+        "to_kind": "market"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "endpoint-pair-not-allowed",
+            "detail": "`competes-with` does not allow market -- market; allowed: person -- person, org -- org"
+          }
+        ]
+      }
+    },
+    {
+      "name": "leap day in a leap year",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2024-02-29"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "holds-office",
+          "from_kind": "person",
+          "to_kind": "role",
+          "attributes": {
+            "valid_from": "2024-02-29"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "2000 is a leap year",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2000-02-29"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "holds-office",
+          "from_kind": "person",
+          "to_kind": "role",
+          "attributes": {
+            "valid_from": "2000-02-29"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "1900 is not a leap year",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "1900-02-29"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`valid_from`: not a date at year, month or day precision (YYYY, YYYY-MM or YYYY-MM-DD) naming a real calendar day with year >= 1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "year zero",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "0000"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`valid_from`: not a date at year, month or day precision (YYYY, YYYY-MM or YYYY-MM-DD) naming a real calendar day with year >= 1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "year one",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "0001"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "holds-office",
+          "from_kind": "person",
+          "to_kind": "role",
+          "attributes": {
+            "valid_from": "0001"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "unpadded month",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2022-7-01"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`valid_from`: not a date at year, month or day precision (YYYY, YYYY-MM or YYYY-MM-DD) naming a real calendar day with year >= 1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "day 31 in a 30-day month",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2022-06-31"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`valid_from`: not a date at year, month or day precision (YYYY, YYYY-MM or YYYY-MM-DD) naming a real calendar day with year >= 1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a timestamp is not a date",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2022-07-01T00:00:00Z"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`valid_from`: not a date at year, month or day precision (YYYY, YYYY-MM or YYYY-MM-DD) naming a real calendar day with year >= 1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "fullwidth digits are not ASCII digits",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "\uff12\uff10\uff12\uff12"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`valid_from`: not a date at year, month or day precision (YYYY, YYYY-MM or YYYY-MM-DD) naming a real calendar day with year >= 1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "five-digit year",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "20220"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`valid_from`: not a date at year, month or day precision (YYYY, YYYY-MM or YYYY-MM-DD) naming a real calendar day with year >= 1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a date as a JSON number",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": 2022
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`valid_from`: a date must be a JSON string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tenure of one day",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2022-07-01",
+          "valid_to": "2022-07-01"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "holds-office",
+          "from_kind": "person",
+          "to_kind": "role",
+          "attributes": {
+            "valid_from": "2022-07-01",
+            "valid_to": "2022-07-01"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "tenure ending before it starts, same precision",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2022-07-02",
+          "valid_to": "2022-07-01"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "tenure-order",
+            "detail": "`valid_from` 2022-07-02 begins after `valid_to` 2022-07-01 ends"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tenure 2021-01 to 2020",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2021-01",
+          "valid_to": "2020"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "tenure-order",
+            "detail": "`valid_from` 2021-01 begins after `valid_to` 2020 ends"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tenure 2020 to 2020-01, the year covers the month",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2020",
+          "valid_to": "2020-01"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "holds-office",
+          "from_kind": "person",
+          "to_kind": "role",
+          "attributes": {
+            "valid_from": "2020",
+            "valid_to": "2020-01"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "an ill-typed date skips the order check",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "role",
+        "attributes": {
+          "valid_from": "2021",
+          "valid_to": "2020-13"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`valid_to`: not a date at year, month or day precision (YYYY, YYYY-MM or YYYY-MM-DD) naming a real calendar day with year >= 1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "text is kept as sent, surrounding spaces included",
+      "input": {
+        "relation": "vendor-to",
+        "from_kind": "org",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "  assessment platform "
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "vendor-to",
+          "from_kind": "org",
+          "to_kind": "org",
+          "attributes": {
+            "subject": "  assessment platform "
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "text containing a newline",
+      "input": {
+        "relation": "vendor-to",
+        "from_kind": "org",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "line one\nline two"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`subject`: text must not contain control characters"
+          }
+        ]
+      }
+    },
+    {
+      "name": "text containing C1 control U+0085",
+      "input": {
+        "relation": "vendor-to",
+        "from_kind": "org",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "a\u0085b"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`subject`: text must not contain control characters"
+          }
+        ]
+      }
+    },
+    {
+      "name": "text of only no-break spaces",
+      "input": {
+        "relation": "vendor-to",
+        "from_kind": "org",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "\u00a0\u00a0"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`subject`: text must not be empty after trimming"
+          }
+        ]
+      }
+    },
+    {
+      "name": "text of only an ideographic space",
+      "input": {
+        "relation": "vendor-to",
+        "from_kind": "org",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "\u3000"
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`subject`: text must not be empty after trimming"
+          }
+        ]
+      }
+    },
+    {
+      "name": "text as a JSON number",
+      "input": {
+        "relation": "vendor-to",
+        "from_kind": "org",
+        "to_kind": "org",
+        "attributes": {
+          "subject": 42
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`subject`: text must be a JSON string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "text of only a zero-width space passes TT (a consumer lint's job)",
+      "input": {
+        "relation": "vendor-to",
+        "from_kind": "org",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "\u200b"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "vendor-to",
+          "from_kind": "org",
+          "to_kind": "org",
+          "attributes": {
+            "subject": "\u200b"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "text with a right-to-left override passes TT (a consumer lint's job)",
+      "input": {
+        "relation": "vendor-to",
+        "from_kind": "org",
+        "to_kind": "org",
+        "attributes": {
+          "subject": "bond \u202emeasure"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "vendor-to",
+          "from_kind": "org",
+          "to_kind": "org",
+          "attributes": {
+            "subject": "bond \u202emeasure"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "text of exactly 200 ASCII scalar values",
+      "input": {
+        "relation": "competes-with",
+        "from_kind": "person",
+        "to_kind": "person",
+        "attributes": {
+          "subject": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "competes-with",
+          "from_kind": "person",
+          "to_kind": "person",
+          "attributes": {
+            "subject": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "vocabulary": "tt-relations/1.0 v1.0.0"
+        }
+      }
+    },
+    {
+      "name": "required subject present but empty string",
+      "input": {
+        "relation": "allied-with",
+        "from_kind": "person",
+        "to_kind": "person",
+        "attributes": {
+          "subject": ""
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "attribute-type",
+            "detail": "`subject`: text must not be empty after trimming"
+          }
+        ]
+      }
+    }
+  ],
+  "fixture": {
+    "what": "the shipped artifact as a 1.1.0 document, plus a retired entity kind (office -> role), a retired relation with a successor (holds-post -> holds-office) and one with only a note (acquainted-with). A test document, not a release.",
+    "patch": [
+      {
+        "op": "replace",
+        "path": "/version",
+        "value": "1.1.0"
+      },
+      {
+        "op": "replace",
+        "path": "/supersedes",
+        "value": "tt-relations/1.0 v1.0.0"
+      },
+      {
+        "op": "add",
+        "path": "/entity_kinds/-",
+        "value": {
+          "id": "office",
+          "label": "Office (retired, fixture only)",
+          "definition": "A retired entity kind in a test fixture.",
+          "deprecated_in": "1.1.0",
+          "superseded_by": "role"
+        }
+      },
+      {
+        "op": "add",
+        "path": "/relation_kinds/-",
+        "value": {
+          "id": "holds-post",
+          "label": "holds post",
+          "inverse_label": "post held by",
+          "direction": "directed",
+          "nature": "structural",
+          "endpoints": [
+            [
+              "person",
+              "office"
+            ],
+            [
+              "person",
+              "role"
+            ]
+          ],
+          "attributes": {},
+          "definition": "A retired relation kind in a test fixture.",
+          "deprecated_in": "1.1.0",
+          "superseded_by": "holds-office"
+        }
+      },
+      {
+        "op": "add",
+        "path": "/relation_kinds/-",
+        "value": {
+          "id": "acquainted-with",
+          "label": "acquainted with",
+          "direction": "symmetric",
+          "nature": "social",
+          "endpoints": [
+            [
+              "person",
+              "person"
+            ]
+          ],
+          "attributes": {},
+          "definition": "A retired relation kind in a test fixture.",
+          "deprecated_in": "1.1.0",
+          "deprecation_note": "Retired in a test fixture; nothing replaces it."
+        }
+      }
+    ]
+  },
+  "fixture_edges": [
+    {
+      "name": "retired relation names its successor",
+      "input": {
+        "relation": "holds-post",
+        "from_kind": "person",
+        "to_kind": "role"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "retired-relation",
+            "detail": "relation `holds-post` retired in 1.1.0; use `holds-office`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "retired relation and retired kind together",
+      "input": {
+        "relation": "holds-post",
+        "from_kind": "person",
+        "to_kind": "office"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "retired-relation",
+            "detail": "relation `holds-post` retired in 1.1.0; use `holds-office`"
+          },
+          {
+            "code": "retired-kind",
+            "detail": "`to_kind`: entity kind `office` retired in 1.1.0; use `role`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "retired kind under a live relation",
+      "input": {
+        "relation": "holds-office",
+        "from_kind": "person",
+        "to_kind": "office"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "retired-kind",
+            "detail": "`to_kind`: entity kind `office` retired in 1.1.0; use `role`"
+          },
+          {
+            "code": "endpoint-pair-not-allowed",
+            "detail": "`holds-office` does not allow person -> office; allowed: person -> role"
+          }
+        ]
+      }
+    },
+    {
+      "name": "retired relation with no successor gives its note",
+      "input": {
+        "relation": "acquainted-with",
+        "from_kind": "person",
+        "to_kind": "person"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "retired-relation",
+            "detail": "relation `acquainted-with` retired in 1.1.0; no successor: Retired in a test fixture; nothing replaces it."
+          }
+        ]
+      }
+    },
+    {
+      "name": "the fixture's live surface still accepts",
+      "input": {
+        "relation": "knows",
+        "from_kind": "person",
+        "to_kind": "person"
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "relation": "knows",
+          "from_kind": "person",
+          "to_kind": "person",
+          "attributes": {},
+          "vocabulary": "tt-relations/1.0 v1.1.0"
+        }
+      }
+    }
+  ],
+  "loads": [
+    {
+      "name": "the shipped artifact loads",
+      "patch": [],
+      "expect": {
+        "loads": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "duplicate relation id",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/-",
+          "value": {
+            "id": "knows",
+            "label": "knows",
+            "direction": "symmetric",
+            "nature": "social",
+            "endpoints": [
+              [
+                "person",
+                "person"
+              ]
+            ],
+            "attributes": {},
+            "definition": "A second knows."
+          }
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "duplicate-id",
+            "detail": "relation kind id `knows` appears twice"
+          }
+        ]
+      }
+    },
+    {
+      "name": "endpoint naming an unknown kind",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/relation_kinds/0/endpoints/0/1",
+          "value": "office"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "unknown-endpoint-kind",
+            "detail": "relation kind `holds-office` names unknown entity kind `office`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inverse_label on a symmetric relation",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/inverse_label",
+          "value": "known by"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "inverse-label-mismatch",
+            "detail": "relation kind `knows` is symmetric and has an inverse_label"
+          }
+        ]
+      }
+    },
+    {
+      "name": "inverse_label missing on a directed relation",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/relation_kinds/0/inverse_label"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "inverse-label-mismatch",
+            "detail": "relation kind `holds-office` is directed and has no inverse_label"
+          }
+        ]
+      }
+    },
+    {
+      "name": "retirement with neither successor nor note",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecated_in",
+          "value": "1.0.0"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "retired-without-successor-or-note",
+            "detail": "entity kind `market` is retired with neither superseded_by nor deprecation_note"
+          }
+        ]
+      }
+    },
+    {
+      "name": "live relations naming a retired kind",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/3/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/3/deprecation_note",
+          "value": "Fixture."
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "retired-endpoint-kind",
+            "detail": "live relation kind `holds-office` names retired entity kind `role`"
+          },
+          {
+            "rule": "retired-endpoint-kind",
+            "detail": "live relation kind `office-of` names retired entity kind `role`"
+          },
+          {
+            "rule": "retired-endpoint-kind",
+            "detail": "live relation kind `reports-to` names retired entity kind `role`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "duplicate symmetric pair written in both orders",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/7/endpoints/-",
+          "value": [
+            "org",
+            "person"
+          ]
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "duplicate-endpoint-pair",
+            "detail": "relation kind `allied-with` lists org -> person twice"
+          }
+        ]
+      }
+    },
+    {
+      "name": "duplicate directed pair",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/0/endpoints/-",
+          "value": [
+            "person",
+            "role"
+          ]
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "duplicate-endpoint-pair",
+            "detail": "relation kind `holds-office` lists person -> role twice"
+          }
+        ]
+      }
+    },
+    {
+      "name": "attribute type outside attribute_types",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/relation_kinds/0/attributes/valid_from/type",
+          "value": "datetime"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "unknown-attribute-type",
+            "detail": "relation kind `holds-office`: attribute `valid_from` has type `datetime`, not in attribute_types"
+          }
+        ]
+      }
+    },
+    {
+      "name": "attribute_types naming a type nobody can check",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/attribute_types/-",
+          "value": "number"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "unsupported-attribute-type",
+            "detail": "attribute type `number` is not one of date, text"
+          }
+        ]
+      }
+    },
+    {
+      "name": "relation id not kebab-case",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/relation_kinds/0/id",
+          "value": "holds_office"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "id-not-kebab",
+            "detail": "relation kind id `holds_office` is not kebab-case"
+          }
+        ]
+      }
+    },
+    {
+      "name": "entity kind id not kebab-case",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/-",
+          "value": {
+            "id": "Place",
+            "label": "Place",
+            "definition": "Fixture."
+          }
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "id-not-kebab",
+            "detail": "entity kind id `Place` is not kebab-case"
+          }
+        ]
+      }
+    },
+    {
+      "name": "relation id equal to a kind id",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/relation_kinds/6/id",
+          "value": "role"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "ids-not-disjoint",
+            "detail": "`role` is both an entity kind and a relation kind"
+          }
+        ]
+      }
+    },
+    {
+      "name": "blank entity kind label",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entity_kinds/0/label",
+          "value": " \u3000 "
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "empty-label",
+            "detail": "entity kind `person` has no label"
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty relation definition",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/relation_kinds/1/definition",
+          "value": ""
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "empty-definition",
+            "detail": "relation kind `office-of` has no definition"
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty inverse_label",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/relation_kinds/1/inverse_label",
+          "value": " "
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "empty-label",
+            "detail": "relation kind `office-of` has an empty inverse_label"
+          }
+        ]
+      }
+    },
+    {
+      "name": "direction outside the set",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/relation_kinds/6/direction",
+          "value": "undirected"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-direction",
+            "detail": "relation kind `knows`: direction `undirected` is not directed or symmetric"
+          }
+        ]
+      }
+    },
+    {
+      "name": "nature outside the set",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/relation_kinds/6/nature",
+          "value": "personal"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-nature",
+            "detail": "relation kind `knows`: nature `personal` is not structural or social"
+          }
+        ]
+      }
+    },
+    {
+      "name": "attribute name not snake_case",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/5/attributes/Subject",
+          "value": {
+            "type": "text",
+            "required": false
+          }
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-attribute-name",
+            "detail": "relation kind `vendor-to`: attribute name `Subject` does not match ^[a-z][a-z0-9_]*$"
+          }
+        ]
+      }
+    },
+    {
+      "name": "self-supersession",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/superseded_by",
+          "value": "market"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "self-supersession",
+            "detail": "entity kind `market` supersedes itself"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown successor",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/superseded_by",
+          "value": "territory"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "unknown-successor",
+            "detail": "entity kind `market` is superseded_by unknown `territory`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "successor in the other collection",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/superseded_by",
+          "value": "person"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "unknown-successor",
+            "detail": "relation kind `knows` is superseded_by unknown `person`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "supersession cycle, reported once",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/superseded_by",
+          "value": "competes-with"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/9/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/9/superseded_by",
+          "value": "knows"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "supersession-cycle",
+            "detail": "relation kind supersession cycle: competes-with -> knows -> competes-with"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a retired relation may name a retired kind",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecation_note",
+          "value": "Fixture."
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/-",
+          "value": {
+            "id": "prices",
+            "label": "prices",
+            "inverse_label": "priced by",
+            "direction": "directed",
+            "nature": "structural",
+            "endpoints": [
+              [
+                "market",
+                "org"
+              ]
+            ],
+            "attributes": {},
+            "definition": "Fixture.",
+            "deprecated_in": "1.0.0",
+            "deprecation_note": "Fixture."
+          }
+        }
+      ],
+      "expect": {
+        "loads": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "wrong schema",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/schema",
+          "value": "tt-relations/2.0"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-schema",
+            "detail": "schema is `tt-relations/2.0`, expected `tt-relations/1.0`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "version not MAJOR.MINOR.PATCH, and supersedes nothing",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.0"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-version",
+            "detail": "version `1.0` is not MAJOR.MINOR.PATCH without leading zeros"
+          },
+          {
+            "rule": "bad-supersedes",
+            "detail": "version 1.0 must name the release it supersedes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "1.0.0 superseding something",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/supersedes",
+          "value": "tt-relations/1.0 v0.9.0"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-supersedes",
+            "detail": "1.0.0 is the first release and supersedes nothing, not `tt-relations/1.0 v0.9.0`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "1.1.0 superseding nothing",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.1.0"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-supersedes",
+            "detail": "version 1.1.0 must name the release it supersedes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "1.1.0 superseding itself",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.1.0"
+        },
+        {
+          "op": "replace",
+          "path": "/supersedes",
+          "value": "tt-relations/1.0 v1.1.0"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-supersedes",
+            "detail": "`tt-relations/1.0 v1.1.0` supersedes itself"
+          }
+        ]
+      }
+    },
+    {
+      "name": "1.1.0 one step back loads",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.1.0"
+        },
+        {
+          "op": "replace",
+          "path": "/supersedes",
+          "value": "tt-relations/1.0 v1.0.0"
+        }
+      ],
+      "expect": {
+        "loads": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "several failures at once",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/relation_kinds/6/nature",
+          "value": "personal"
+        },
+        {
+          "op": "replace",
+          "path": "/relation_kinds/7/id",
+          "value": "knows"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "duplicate-id",
+            "detail": "relation kind id `knows` appears twice"
+          },
+          {
+            "rule": "bad-nature",
+            "detail": "relation kind `knows`: nature `personal` is not structural or social"
+          }
+        ]
+      }
+    },
+    {
+      "name": "malformed: required is not a boolean",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/relation_kinds/7/attributes/subject/required",
+          "value": "yes"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "malformed",
+            "detail": "relation_kinds[7].attributes.subject must be {type: string, required: bool}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "malformed: an endpoint of three kinds",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/relation_kinds/0/endpoints/0",
+          "value": [
+            "person",
+            "role",
+            "org"
+          ]
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "malformed",
+            "detail": "relation_kinds[0].endpoints must be an array of [from_kind, to_kind] pairs"
+          }
+        ]
+      }
+    },
+    {
+      "name": "malformed: relation_kinds missing",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/relation_kinds"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "malformed",
+            "detail": "`relation_kinds` must be an array"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a live kind with a deprecation_note",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecation_note",
+          "value": "Fixture."
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "successor-without-retirement",
+            "detail": "entity kind `market` has superseded_by or deprecation_note but no deprecated_in"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a live relation with superseded_by",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/superseded_by",
+          "value": "competes-with"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "successor-without-retirement",
+            "detail": "relation kind `knows` has superseded_by or deprecation_note but no deprecated_in"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a cycle through a live item: retired knows -> live competes-with -> knows",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/superseded_by",
+          "value": "competes-with"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/9/superseded_by",
+          "value": "knows"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "successor-without-retirement",
+            "detail": "relation kind `competes-with` has superseded_by or deprecation_note but no deprecated_in"
+          },
+          {
+            "rule": "supersession-cycle",
+            "detail": "relation kind supersession cycle: competes-with -> knows -> competes-with"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a three-item cycle, reported once",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/superseded_by",
+          "value": "competes-with"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/9/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/9/superseded_by",
+          "value": "allied-with"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/7/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/7/superseded_by",
+          "value": "knows"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "supersession-cycle",
+            "detail": "relation kind supersession cycle: allied-with -> knows -> competes-with -> allied-with"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a chain into a cycle is reported once, from inside the cycle",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/7/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/7/superseded_by",
+          "value": "knows"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/superseded_by",
+          "value": "competes-with"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/9/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/relation_kinds/9/superseded_by",
+          "value": "knows"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "supersession-cycle",
+            "detail": "relation kind supersession cycle: competes-with -> knows -> competes-with"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown top-level field",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/extensions",
+          "value": {}
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "malformed",
+            "detail": "artifact: unknown field `extensions`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "governance missing",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/governance"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "malformed",
+            "detail": "`governance` must be a string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown field on an entity kind",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/0/parent",
+          "value": "org"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "malformed",
+            "detail": "entity_kinds[0]: unknown field `parent`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown field on a relation kind",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/6/weight",
+          "value": 1
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "malformed",
+            "detail": "relation_kinds[6]: unknown field `weight`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown field in an attribute spec",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/relation_kinds/5/attributes/subject/enum",
+          "value": [
+            "a"
+          ]
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "malformed",
+            "detail": "relation_kinds[5].attributes.subject: unknown field `enum`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a relation with no endpoint pairs",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/relation_kinds/1/endpoints",
+          "value": []
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "no-endpoints",
+            "detail": "relation kind `office-of` allows no endpoint pair"
+          }
+        ]
+      }
+    },
+    {
+      "name": "deprecated_in not MAJOR.MINOR.PATCH",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecated_in",
+          "value": "v1"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecation_note",
+          "value": "Fixture."
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-deprecated-in",
+            "detail": "entity kind `market`: deprecated_in `v1` is not MAJOR.MINOR.PATCH without leading zeros"
+          }
+        ]
+      }
+    },
+    {
+      "name": "deprecated_in later than the release",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecated_in",
+          "value": "1.0.10"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecation_note",
+          "value": "Fixture."
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-deprecated-in",
+            "detail": "entity kind `market`: deprecated_in 1.0.10 is later than this release, 1.0.0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "deprecated_in earlier than the release loads",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.10.0"
+        },
+        {
+          "op": "replace",
+          "path": "/supersedes",
+          "value": "tt-relations/1.0 v1.9.0"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecated_in",
+          "value": "1.9.0"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecation_note",
+          "value": "Fixture."
+        }
+      ],
+      "expect": {
+        "loads": true,
+        "failures": []
+      }
+    },
+    {
+      "name": "a blank deprecation_note",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecated_in",
+          "value": "1.0.0"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecation_note",
+          "value": " \u00a0 "
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "empty-deprecation-note",
+            "detail": "entity kind `market` has a blank deprecation_note"
+          }
+        ]
+      }
+    },
+    {
+      "name": "attribute_types listing a type twice",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/attribute_types/-",
+          "value": "date"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "duplicate-attribute-type",
+            "detail": "attribute type `date` is listed twice"
+          }
+        ]
+      }
+    },
+    {
+      "name": "blank governance",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/governance",
+          "value": "  "
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "empty-governance",
+            "detail": "governance is blank"
+          }
+        ]
+      }
+    },
+    {
+      "name": "blank respectful_modeling",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/respectful_modeling",
+          "value": ""
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "empty-respectful-modeling",
+            "detail": "respectful_modeling is blank"
+          }
+        ]
+      }
+    },
+    {
+      "name": "version with a leading zero",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.01.0"
+        },
+        {
+          "op": "replace",
+          "path": "/supersedes",
+          "value": "tt-relations/1.0 v1.0.0"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-version",
+            "detail": "version `1.01.0` is not MAJOR.MINOR.PATCH without leading zeros"
+          }
+        ]
+      }
+    },
+    {
+      "name": "deprecated_in with a leading zero",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecated_in",
+          "value": "1.00.0"
+        },
+        {
+          "op": "add",
+          "path": "/entity_kinds/2/deprecation_note",
+          "value": "Fixture."
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-deprecated-in",
+            "detail": "entity kind `market`: deprecated_in `1.00.0` is not MAJOR.MINOR.PATCH without leading zeros"
+          }
+        ]
+      }
+    },
+    {
+      "name": "supersedes with a leading zero",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.1.0"
+        },
+        {
+          "op": "replace",
+          "path": "/supersedes",
+          "value": "tt-relations/1.0 v01.0.0"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-supersedes",
+            "detail": "`tt-relations/1.0 v01.0.0` does not name a release as `tt-relations/1.0 vMAJOR.MINOR.PATCH`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "supersedes naming another schema",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.1.0"
+        },
+        {
+          "op": "replace",
+          "path": "/supersedes",
+          "value": "tt-ontology/1.0 v2.1.0"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-supersedes",
+            "detail": "`tt-ontology/1.0 v2.1.0` does not name a release as `tt-relations/1.0 vMAJOR.MINOR.PATCH`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "supersedes naming a later release",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.1.0"
+        },
+        {
+          "op": "replace",
+          "path": "/supersedes",
+          "value": "tt-relations/1.0 v1.2.0"
+        }
+      ],
+      "expect": {
+        "loads": false,
+        "failures": [
+          {
+            "rule": "bad-supersedes",
+            "detail": "`tt-relations/1.0 v1.2.0` is not earlier than this release, 1.1.0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "a part that is exactly 0 is not a leading zero",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.0.10"
+        },
+        {
+          "op": "replace",
+          "path": "/supersedes",
+          "value": "tt-relations/1.0 v1.0.9"
+        }
+      ],
+      "expect": {
+        "loads": true,
+        "failures": []
+      }
+    }
+  ]
+}

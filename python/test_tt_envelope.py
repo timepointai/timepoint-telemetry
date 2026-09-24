@@ -35,13 +35,43 @@ def _make_test(path):
     return test
 
 
-# Envelope vectors only — classification-verdicts.json is the §4 corpus with
-# its own shape and its own test (test_classification_vectors.py).
-_paths = sorted(p for p in VECTORS_DIR.glob("*.json")
-                if p.name != "classification-verdicts.json")
+# Top-level vectors/*.json are envelope vectors and nothing else: consumers
+# glob that directory and read every file as one (TopLevelLayout below). The
+# verdict corpora live in vectors/verdicts/ with their own walkers.
+_paths = sorted(VECTORS_DIR.glob("*.json"))
 assert len(_paths) == 10, f"expected 10 envelope vectors, found {len(_paths)}"
 for _p in _paths:
     setattr(Vectors, f"test_{_p.stem.replace('-', '_')}", _make_test(_p))
+
+
+class TopLevelLayout(unittest.TestCase):
+    """Top-level vectors/*.json are a published interface, not just our files.
+
+    Consumers glob that directory and read every file as an envelope vector:
+    timepoint-beta's conformance/python/check_vectors.py reads v["name"],
+    v["input"]["payload" | "provenance"], v["expected_canonical"] and
+    v["expected_hash"] from each. Any other shape at this level crashes them,
+    so other corpora live in subdirectories (vectors/verdicts/).
+    """
+
+    def test_every_top_level_file_is_an_envelope_vector(self):
+        self.assertEqual(len(_paths), 10)
+        for path in _paths:
+            with self.subTest(path.name):
+                v = json.loads(path.read_text(encoding="utf-8"))
+                self.assertIsInstance(v, dict)
+                self.assertIsInstance(v.get("name"), str)
+                self.assertIsInstance(v.get("input"), dict)
+                self.assertEqual(len(set(v["input"]) & {"payload", "provenance"}), 1,
+                                 "input holds exactly one of payload | provenance")
+                self.assertIsInstance(v.get("expected_canonical"), str)
+                self.assertIsInstance(v.get("expected_hash"), str)
+                self.assertTrue(v["expected_hash"].startswith("sha256:"))
+
+    def test_verdict_corpora_are_below_the_top_level(self):
+        verdicts = VECTORS_DIR / "verdicts"
+        self.assertEqual(sorted(p.name for p in verdicts.glob("*.json")),
+                         ["classification-verdicts.json", "relation-verdicts.json"])
 
 
 class TypedErrors(unittest.TestCase):

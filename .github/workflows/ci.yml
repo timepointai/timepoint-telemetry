@@ -81,6 +81,11 @@ jobs:
       - name: the shipped bundle validates
         run: cargo test --test bundle -- --nocapture
 
+      # The relations vocabulary loads, its bytes and the taxonomy's are
+      # pinned, and vectors/verdicts/relation-verdicts.json reproduces on both tiers.
+      - name: the relations vocabulary validates and its vectors reproduce
+        run: cargo test --test relations -- --nocapture
+
   python-onramp:
     name: the python on-ramp passes the same vectors
     runs-on: ubuntu-latest
@@ -88,9 +93,24 @@ jobs:
       - uses: actions/checkout@v4
       # stdlib-only by design: no pip, no venv, no lockfile. If this job ever
       # grows a dependency step, the on-ramp has failed its one constraint.
+      # Consumers glob top-level vectors/*.json and read each file as an
+      # envelope vector (timepoint-beta's conformance/python/check_vectors.py
+      # does). Anything else at that level breaks them; verdict corpora live in
+      # vectors/verdicts/.
+      - name: top-level vectors/*.json are envelope vectors only
+        run: cd python && python3 -m unittest -v test_tt_envelope.TopLevelLayout
       - name: envelope reproduces every vector byte-for-byte
         run: python3 python/test_tt_envelope.py
       - name: the §4 validator rejects what the spec rejects
         run: python3 python/test_tt_validate.py
       - name: the classification vectors reproduce, both tiers
         run: python3 python/test_classification_vectors.py
+      - name: the relation vectors reproduce, both tiers
+        run: python3 python/test_relation_vectors.py
+      # The adoption pass reads a consumer's database. No database here: its
+      # parser is tested fail-closed on canned psql output, hostile values
+      # included.
+      - name: the relations adoption pass compiles
+        run: python3 -m py_compile tools/relations-adoption/relations_adoption.py
+      - name: the relations adoption pass parses fail-closed
+        run: python3 tools/relations-adoption/test_relations_adoption.py

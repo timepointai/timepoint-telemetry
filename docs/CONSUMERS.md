@@ -57,6 +57,41 @@ not believed. A bundle-derivable field allowed to drift from the bundle is a
 config echo — the value survives long after the source it was copied from has
 moved.
 
+### The same five, for the relations vocabulary
+
+`bundle/relations-v1.0.json` (TT-SPEC §9) is a second pinned artifact, and
+each obligation applies to it unchanged:
+
+1. **Pin it and check its bytes**, separately from the taxonomy. Its sha256 at
+   `1.0.0` is `23b0dc5627301d19f128d96152a84fed87000954e1d9fff571f8658ee81b73bc`.
+   A consumer that seeds its own tables from it (a `relation_kinds` table, say)
+   records which version it seeded from, and checks the seed against the
+   artifact.
+2. **Validate against the whole vocabulary.** A relation kind you do not use
+   is valid and undeclared; one outside the vocabulary does not exist.
+3. **Resolve retirement on read, reject it on write.** Nothing is retired in
+   `1.0.0`; the rule is the taxonomy's, for kinds and relations alike.
+4. **Reject, never repair.** An edge statement that fails is thrown back whole.
+   Do not reorder a symmetric pair to make it fit, pad `2019` to
+   `2019-01-01`, or trim a `subject`.
+5. **Derive vocabulary facts.** A relation's `nature`, `direction` and allowed
+   endpoints come from the pinned artifact. Stored per edge, they are checked
+   against it. The same goes for an endpoint's kind, and here TT cannot help:
+   it never sees entity ids, so the consumer checks that both endpoints exist,
+   that their stored kinds are the `from_kind` and `to_kind` the statement
+   declares, and that they are two different entities.
+
+TT's `text` type checks shape only (TT-SPEC §9.1). Text that is invisible, such
+as only a zero-width space, or that carries bidirectional controls passes TT.
+Lint it at write time; beta's K2 rubric is where that lives. The same lint
+judges what a `subject` says (TT-SPEC §9.4).
+
+A consumer that walks the vectors: top-level `vectors/*.json` are envelope
+vectors only, and stay that way. The verdict corpora
+(`vectors/verdicts/classification-verdicts.json` and
+`vectors/verdicts/relation-verdicts.json`) have their own shapes and live
+below that level.
+
 ## Stricter is allowed; looser is not
 
 A consumer may refuse what TT permits. It may never accept what TT rejects.
@@ -101,7 +136,11 @@ implementation details; images do not extend TT's claim hash or evidence rules.
 
 Coordinates and calendars (`occurs_at` is an opaque string — TT-SPEC §7),
 deduplication and merge policy, batch semantics, title hygiene, provenance
-completeness rules, storage schemas, retry and queue behavior. Consumers own
+completeness rules, storage schemas, retry and queue behavior. For relations:
+an edge's basis, score, sources and `observed_at`, and how edges are stored
+(TT's edge contract rejects all four fields, so a consumer strips them before
+asking). Two consumers already model provenance differently, and both are
+conforming. Consumers own
 these. TT's identity rule has one consequence worth naming here: two payloads
 with different labels are two identities — a dedup policy that merges them
 silently has erased a distinction the hash was built to keep. Refusing a
