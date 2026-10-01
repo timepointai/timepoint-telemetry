@@ -116,11 +116,11 @@ declares the step immediately behind it:
 "governance": "structure fluid, identity frozen — ids never change; structural change = semver bump"
 ```
 
-**v2.2.0 is the current release, a Growth release**: two Lens A species,
+**Taxonomy v2.2.0 is the current release, a Growth release**: two Lens A species,
 `procurement-and-contract-award` (a buyer formally awards, signs or renews a
 contract with an outside supplier) and `public-program-adoption` (a public body
 adopts, funds, starts or ends a public program by its own administrative or
-budget decision, short of enacting a law). Nothing else moved: no lateral edge
+budget decision, not by a law that changes the legal order). Nothing else moved: no lateral edge
 or bridge was added, so every distance between existing nodes is unchanged and
 no stored reading changes meaning. It ships in crate v2.3.0.
 
@@ -134,7 +134,7 @@ chain records it so nothing written under it is orphaned. A bundle names one
 step back, so reading a record more than one release old means walking the
 chain a version at a time.
 
-**Crate v2.2.0 adds a second vocabulary and leaves the taxonomy alone.**
+**Crate tag v2.2.0 (taxonomy 2.1.0) adds a second vocabulary and leaves the taxonomy alone.**
 `bundle/relations-v1.0.json` (`tt-relations/1.0 v1.0.0`) names the kinds of
 entity a consumer's registry holds (`person`, `org`, `market`, `role`) and ten
 relations between them (`holds-office`, `member-of`, `opposes`, …), each with a

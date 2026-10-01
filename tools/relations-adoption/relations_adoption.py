@@ -52,7 +52,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
 TAXONOMY = os.path.join(REPO, "bundle", "taxonomy-v2.2.json")
 RELATIONS = os.path.join(REPO, "bundle", "relations-v1.0.json")
-TAXONOMY_SHA256 = "a825ee9da5163876e99cf7e383c2e481fa3c4039a231c39a3dc463e54427d878"
+TAXONOMY_SHA256 = "d70812582ea080985a1f7778a67336b5c006bb2e9d7f77ae0c980f6193e52574"
 RELATIONS_SHA256 = "23b0dc5627301d19f128d96152a84fed87000954e1d9fff571f8658ee81b73bc"
 
 # The string assertions a role, an office or a link to an org is written as today (§3).

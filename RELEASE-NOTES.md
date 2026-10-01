@@ -15,7 +15,8 @@ it carries are different numbers.
     formally awards, signs or renews a contract with an outside supplier.
   - `public-program-adoption` (under `politics-governance-and-law`): a public
     body adopts, funds, starts or ends a public program by its own
-    administrative or budget decision, short of enacting a law.
+    administrative or budget decision, not by a law that creates or changes
+    the legal order.
 - 149 → 151 nodes; Lens A 79 → 81; species 87 → 89. Lateral edges (151),
   bridges (26), branches, the kernel and the metric weights are unchanged.
 - **No lateral edge and no bridge was added, deliberately.** All 11,026
@@ -23,11 +24,13 @@ it carries are different numbers.
   in `tests/growth.rs`), and no existing shadow or published reading moves.
 - File renamed `bundle/taxonomy-v2.1.json` → `bundle/taxonomy-v2.2.json`, as at
   every earlier bump; `supersedes` = `tt-ontology/1.0 v2.1.0`; sha256
-  `a825ee9da5163876e99cf7e383c2e481fa3c4039a231c39a3dc463e54427d878`
+  `d70812582ea080985a1f7778a67336b5c006bb2e9d7f77ae0c980f6193e52574`
   (pinned by `tests/relations.rs`).
 - **The Python validator now accepts one step back**, as `Bundle::is_this_release`
   does: a citation of the loaded release or the one it supersedes is valid and
-  kept as written; two steps back is still `bundle-mismatch`.
+  kept as written; two steps back is still `bundle-mismatch`. A reading that
+  cites v2.0.0 was one step back under v2.1.0 and is two steps back now: its
+  content stays valid, and its citation resolves by walking the chain.
 - `tools/taxonomy-growth/check.py`: the report-only migration pass.
 
 ### For consumers

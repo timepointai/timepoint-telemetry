@@ -40,7 +40,7 @@ nodes appended to their branch groups:
  "definition": "A buyer — a government body, public institution or company — formally awards, signs or renews a contract with an outside supplier for goods, services or works: tender awards, supply and service contracts, and multi-year service agreements. Not the purchase of a company."}
 {"id": "public-program-adoption", "lens": "A", "level": "species",
  "parent": "politics-governance-and-law", "label": "Public Program Adoption",
- "definition": "A government body or public institution formally adopts, funds, starts or ends a public program, service or initiative by its own administrative or budget decision, without enacting a law: program rollouts, budget decisions and grants that fund a program, and decisions to discontinue one."}
+ "definition": "A government body or public institution formally adopts, funds, starts or ends a public program, service or initiative by its own administrative or budget decision, not by a law that creates or changes the legal order: program rollouts, budget decisions and grants that fund a program, and decisions to discontinue one."}
 ```
 
 Result: 151 nodes; Lens A 81 (6 branches, 28 species, 47 subspecies); Lens B
@@ -79,9 +79,9 @@ politics).
 **`procurement-and-contract-award`:** an air ministry's production order for
 fighter aircraft; a space agency awarding a crewed-spacecraft contract; a
 defense department awarding a development or cloud-computing contract; a dam
-or subway construction contract award; a water or power concession to a
-private operator; a bloc's advance purchase agreement for vaccine doses; an
-airline's aircraft order; a hospital network renewing a managed-IT contract; a
+or subway construction contract award; a utility's supply contract with a
+private operator; a health ministry's advance purchase agreement for vaccine
+doses; an airline's aircraft order; a hospital network renewing a managed-IT contract; a
 school body signing a multi-year agreement for an outside provider's program.
 *Not:* a bank acquiring a rival (corporate milestone), a trade pact (trade
 policy), a transit line opening (infrastructure), a staff union accord (labor).
@@ -89,8 +89,8 @@ policy), a transit line opening (infrastructure), a staff union accord (labor).
 **`public-program-adoption`:** a health department starting a national
 screening program; a treasury announcing and funding a demand-support scheme;
 a budget cancelling a space program; a government launching school meals or
-household electrification; a digital-residency program; a cabinet approving a
-rail line; a city council budget that funds a pre-kindergarten pilot; a
+household electrification; a digital-residency program; a cabinet adopting a
+national rail-building program; a city council budget that funds a pre-kindergarten pilot; a
 research council funding a multi-year grant program. *Not:* the act creating a
 national health service (legislation), the ministry's supply contract that
 follows (procurement), a tram inauguration (infrastructure), appointing a
@@ -140,7 +140,7 @@ release notes claim any count.
 
 | # | Divergence | Verdict |
 |---|---|---|
-| D1 | Readings citing v2.1.0 versus the v2.2.0 bundle | Store. Every v2.1.0-valid id is valid under v2.2.0 with the same lens and meaning. The citation stays `v2.1.0`, a true record of what produced it, and is accepted one step back (`Bundle::is_this_release`; the Python validator now agrees, see below). |
+| D1 | Readings citing v2.1.0 versus the v2.2.0 bundle | Store. (A reading citing v2.0.0 was one step back under v2.1.0 and is two steps back now: its content stays valid, and its citation resolves by walking the chain, as at every release.) Every v2.1.0-valid id is valid under v2.2.0 with the same lens and meaning. The citation stays `v2.1.0`, a true record of what produced it, and is accepted one step back (`Bundle::is_this_release`; the Python validator now agrees, see below). |
 | D2 | Stored abstentions on states the new nodes would now cover | Store, untouched. An abstention is a true reading of the vocabulary it cites. Rewriting it would fabricate a reading no v2.1.0 reader produced. A consumer may re-read such a state as a new reading citing v2.2.0 and keep the old one; that is consumer work, not a TT migration. |
 | D3 | Action-only readings with Lens B `negotiation-and-agreement`, whose shadow is the treaty node | Store, untouched. A bridge to the new nodes would change derived shadows and needs its own proposal. |
 

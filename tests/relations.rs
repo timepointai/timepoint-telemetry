@@ -24,7 +24,7 @@ const RELATIONS_SHA256: &str = "23b0dc5627301d19f128d96152a84fed87000954e1d9fff5
 const TAXONOMY_V2_1_SHA256: &str = "31ed385e26522a5b548f7404f7757ee370ed9783dbd550b05cd69e89e9462113";
 
 /// sha256 of `bundle/taxonomy-v2.2.json` as released with crate v2.3.0.
-const TAXONOMY_SHA256: &str = "a825ee9da5163876e99cf7e383c2e481fa3c4039a231c39a3dc463e54427d878";
+const TAXONOMY_SHA256: &str = "d70812582ea080985a1f7778a67336b5c006bb2e9d7f77ae0c980f6193e52574";
 
 fn path(rel: &str) -> String {
     format!("{ROOT}/{rel}")
