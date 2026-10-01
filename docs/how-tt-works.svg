@@ -84,7 +84,7 @@
 
   <!-- The bundle -->
   <rect x="355" y="320" width="600" height="250" rx="6" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1"/>
-  <text x="370" y="344" class="sans t13">The bundle &#8212; tt-ontology/1.0 &#183; taxonomy v2.1.0 &#183; 149 nodes</text>
+  <text x="370" y="344" class="sans t13">The bundle &#8212; tt-ontology/1.0 &#183; taxonomy v2.2.0 &#183; 151 nodes</text>
   <text x="370" y="361" class="sans b105 gray">an id never changes meaning; structure grows on a published update cycle &#8212; a semver bump</text>
 
   <!-- Lens B -->
@@ -99,7 +99,7 @@
   <rect x="715" y="376" width="224" height="128" rx="5" class="card"/>
   <text x="727" y="398" class="sans t115">Lens A &#8212; Recorded Public Events</text>
   <text x="727" y="416" class="sans b11 gray it">what did the record keep?</text>
-  <text x="727" y="440" class="sans b11">6 branches &#183; 79 nodes</text>
+  <text x="727" y="440" class="sans b11">6 branches &#183; 81 nodes</text>
   <text x="727" y="462" class="mono m95 gray">conflict-and-warfare &#183; economy-</text>
   <text x="727" y="475" class="mono m95 gray">trade-and-labor &#183; politics-&#8230;</text>
 

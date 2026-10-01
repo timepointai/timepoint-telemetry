@@ -1,6 +1,61 @@
 # Release notes
 
-## v2.2.0 (not yet tagged)
+## v2.3.0 (crate) — taxonomy `tt-ontology/1.0 v2.2.0` (not yet tagged)
+
+Class: **Growth**, daily window. Proposal:
+[docs/proposals/PROCUREMENT-AND-PROGRAM-ADOPTION.md](docs/proposals/PROCUREMENT-AND-PROGRAM-ADOPTION.md).
+The crate is 2.3.0 because tag `v2.2.0` already exists and ships taxonomy
+2.1.0; this crate ships taxonomy 2.2.0. A crate tag and the taxonomy version
+it carries are different numbers.
+
+### What ships
+
+- **Two Lens A species, and no other change to the taxonomy.**
+  - `procurement-and-contract-award` (under `economy-trade-and-labor`): a buyer
+    formally awards, signs or renews a contract with an outside supplier.
+  - `public-program-adoption` (under `politics-governance-and-law`): a public
+    body adopts, funds, starts or ends a public program by its own
+    administrative or budget decision, not by a law that creates or changes
+    the legal order.
+- 149 → 151 nodes; Lens A 79 → 81; species 87 → 89. Lateral edges (151),
+  bridges (26), branches, the kernel and the metric weights are unchanged.
+- **No lateral edge and no bridge was added, deliberately.** All 11,026
+  distances between v2.1.0 nodes are unchanged (checked against golden digests
+  in `tests/growth.rs`), and no existing shadow or published reading moves.
+- File renamed `bundle/taxonomy-v2.1.json` → `bundle/taxonomy-v2.2.json`, as at
+  every earlier bump; `supersedes` = `tt-ontology/1.0 v2.1.0`; sha256
+  `d70812582ea080985a1f7778a67336b5c006bb2e9d7f77ae0c980f6193e52574`
+  (pinned by `tests/relations.rs`).
+- **The Python validator now accepts one step back**, as `Bundle::is_this_release`
+  does: a citation of the loaded release or the one it supersedes is valid and
+  kept as written; two steps back is still `bundle-mismatch`. A reading that
+  cites v2.0.0 was one step back under v2.1.0 and is two steps back now: its
+  content stays valid, and its citation resolves by walking the chain.
+- `tools/taxonomy-growth/check.py`: the report-only migration pass.
+
+### For consumers
+
+- Required: bump the pinned tag to `v2.3.0` and the vendored path to
+  `bundle/taxonomy-v2.2.json`, and re-check its sha256 (docs/CONSUMERS.md).
+- Not required: no id changed meaning, nothing was deleted, no stored reading
+  needs rewriting. Readings citing `v2.1.0` remain true records.
+- Optional: a consumer may re-read states that previously abstained as new
+  readings citing v2.2.0, keeping the old reading.
+
+### The migration: Store only
+
+No Prune, no Synthesize; the report-only pass finds 0 rewrites (dry run in the
+proposal, §5).
+
+### Not yet done
+
+- **Utilization is not measured**: the read against the one known consumer
+  deployment was not run. Zero means "nobody told us".
+- A bridge from `negotiation-and-agreement` to the new nodes is not proposed;
+  existing shadows still read the treaty node.
+- Contract cancellation is not covered by `procurement-and-contract-award`.
+
+## v2.2.0
 
 Class: **Growth**, daily window. Proposal:
 [docs/proposals/ENTITY-RELATIONS.md](docs/proposals/ENTITY-RELATIONS.md).

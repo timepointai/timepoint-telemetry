@@ -2,7 +2,7 @@
 
 The same object at every step — no section introduces a new example. Every
 hash, distance and refusal below was computed by `tt-core` against
-`bundle/taxonomy-v2.1.json`; nothing is illustrative or approximate. If you
+`bundle/taxonomy-v2.2.json`; nothing is illustrative or approximate. If you
 recompute and get different bytes, one of us has a bug, and the
 [vectors](../vectors/) decide who.
 

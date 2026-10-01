@@ -23,8 +23,12 @@ Two behaviours TT-SPEC §4 does not pin down, resolved conservatively here and
 flagged for the spec:
   * `abstain: true` alongside non-empty lens masses rejects (`abstain-with-mass`)
     — §4.4 blesses abstention "with empty lenses" and says nothing else.
-  * a `bundle` citation naming a different release than the loaded bundle
-    rejects (`bundle-mismatch`) — §4.5 requires the citation to mean something.
+  * a `bundle` citation naming a release other than the loaded bundle or the
+    one it supersedes rejects (`bundle-mismatch`) — §4.5 requires the citation
+    to mean something. One step back is accepted, as `Bundle::is_this_release`
+    does (TT-SPEC §1), and the citation is kept: a reading stays a record of the
+    vocabulary that made it. Ids are still checked against the loaded bundle;
+    this file cannot know the superseded release's own id set.
 """
 
 import json
@@ -53,6 +57,7 @@ def load_bundle(path):
         }
     return {
         "version_string": f"{raw['schema']} v{raw['version']}",
+        "supersedes": raw.get("supersedes"),
         "nodes": nodes,
     }
 
@@ -82,7 +87,8 @@ def validate(classification, bundle):
         abstain = False
 
     cited = classification.get("bundle")
-    if cited is not None and cited != bundle["version_string"]:
+    this_release = (bundle["version_string"], bundle.get("supersedes"))
+    if cited is not None and cited not in this_release:
         reject("bundle-mismatch",
                f"classification cites `{cited}`, loaded bundle is `{bundle['version_string']}`")
 
@@ -130,7 +136,9 @@ def validate(classification, bundle):
         "lens_b": dict(lenses["lens_b"]),
         "lens_a": dict(lenses["lens_a"]),
         "abstain": abstain,
-        "bundle": bundle["version_string"],  # stamped, whether or not it was sent (§4.5)
+        # Stamped when unsent (§4.5); a citation of this release or the one it
+        # supersedes is kept as written.
+        "bundle": cited if cited is not None else bundle["version_string"],
     }
     return normalized, []
 

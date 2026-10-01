@@ -5,7 +5,7 @@ Every expected value in the vector file is computed by running tt_validate
 against the shipped bundle — never written by hand. To regenerate after a
 spec Correction or a bundle release:
 
-    python3 python/gen_classification_vectors.py bundle/taxonomy-v2.1.json \
+    python3 python/gen_classification_vectors.py bundle/taxonomy-v2.2.json \
         > vectors/verdicts/classification-verdicts.json
 
 The case corpus began life as the Clockchain's differential harness
@@ -28,7 +28,8 @@ import sys
 
 from tt_validate import load_bundle, validate
 
-VERSION_STRING = "tt-ontology/1.0 v2.1.0"
+VERSION_STRING = "tt-ontology/1.0 v2.2.0"
+SUPERSEDED = "tt-ontology/1.0 v2.1.0"
 
 CASES = [
     ("abstention", {"lens_a": {}, "lens_b": {}, "abstain": True, "bundle": VERSION_STRING}),
@@ -64,6 +65,22 @@ CASES = [
     ("lens not an object", {"lens_a": [], "lens_b": {}}),
     ("bundle names another release", {"lens_a": {}, "lens_b": {}, "abstain": True,
                                       "bundle": "tt-ontology/1.0 v2.0.0"}),
+    ("bundle names the superseded release", {"lens_a": {}, "lens_b": {}, "abstain": True,
+                                             "bundle": SUPERSEDED}),
+    # v2.2.0 surface (Growth): the two Lens A species.
+    ("procurement and contract award at mass 1",
+     {"lens_a": {"procurement-and-contract-award": 1.0}, "lens_b": {}}),
+    ("public program adoption at mass 1",
+     {"lens_a": {"public-program-adoption": 1.0}, "lens_b": {}}),
+    ("both v2.2.0 species, split mass",
+     {"lens_a": {"procurement-and-contract-award": 0.5, "public-program-adoption": 0.5},
+      "lens_b": {"negotiation-and-agreement": 1.0}}),
+    ("v2.2.0 species with its branch (TT permits)",
+     {"lens_a": {"economy-trade-and-labor": 0.3, "procurement-and-contract-award": 0.7}}),
+    ("procurement and contract award under lens_b",
+     {"lens_b": {"procurement-and-contract-award": 1.0}}),
+    ("public program adoption under lens_b",
+     {"lens_b": {"public-program-adoption": 1.0}}),
     ("not an object", [1, 2, 3]),
     ("several failures at once", {"lens_a": {"not-a-node": 5.0}, "abstain": True, "surprise": 1}),
     ("integer mass, out of range", {"lens_a": {"conflict-and-warfare": 5}}),
@@ -109,7 +126,7 @@ def main(argv):
                         "details render numbers as Python's repr() does — that is "
                         "reference-implementation habit made visible, not design.",
         },
-        "regenerate": "python3 python/gen_classification_vectors.py bundle/taxonomy-v2.1.json",
+        "regenerate": "python3 python/gen_classification_vectors.py bundle/taxonomy-v2.2.json",
         "vectors": vectors,
     }
     json.dump(doc, sys.stdout, indent=2)

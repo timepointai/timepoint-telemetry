@@ -145,7 +145,7 @@ impl Bundle {
     }
 
     /// The bundle graph with every shortest path solved. Built on first call
-    /// (149 Dijkstras, ~178 KB) and shared thereafter.
+    /// (one Dijkstra per node; 151 in taxonomy v2.2.0) and shared thereafter.
     pub fn distances(&self) -> &crate::distance::DistanceIndex {
         self.distances
             .get_or_init(|| crate::distance::DistanceIndex::build(self))

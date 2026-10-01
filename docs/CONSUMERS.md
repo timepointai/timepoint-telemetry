@@ -22,8 +22,8 @@ What is not legitimate is a copy of the taxonomy that nothing byte-checks: an
 unverified copy is a fork with extra steps.
 
 **2. Validate against the whole bundle, not your subset.**
-A consumer that adopts 91 of the 149 node ids still validates incoming ids
-against all 149. Validity and declaration are different questions: an id
+A consumer that adopts 91 of the 151 node ids still validates incoming ids
+against all 151. Validity and declaration are different questions: an id
 outside your subset but inside the bundle is *valid and undeclared* (answer
 with silence, or adopt it); an id outside the bundle *does not exist* (answer
 loudly). A boundary that cannot tell those two apart has collapsed a finding

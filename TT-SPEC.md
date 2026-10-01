@@ -1,6 +1,6 @@
 # TT-SPEC — Timepoint Telemetry, normatively
 
-**Applies to:** `tt-ontology/1.0 v2.1.0` and `tt-relations/1.0 v1.0.0` · crate `tt-core` 2.2.0
+**Applies to:** `tt-ontology/1.0 v2.2.0` and `tt-relations/1.0 v1.0.0` · crate `tt-core` 2.3.0
 **Status:** normative. Where this document and the code disagree, **the committed
 conformance vectors win** — see §6.
 
@@ -38,21 +38,22 @@ TT is four artifacts that ship together:
 | **The metric** | how near two records are in meaning |
 | **The relations vocabulary** | entity kinds, relation kinds between entities, and the edge-statement contract (§9) |
 
-A crate release (`v2.2.0`) versions the set it ships. Each versioned artifact
+A crate release (`v2.3.0`) versions the set it ships. Each versioned artifact
 carries its own version string, and a record cites the artifact it was
-validated against: crate 2.2.0 ships the taxonomy at `2.1.0`, byte for byte
-the file 2.1.x shipped, and the relations vocabulary at `1.0.0`.
+validated against: crate 2.3.0 ships the taxonomy at `2.2.0` and the relations
+vocabulary at `1.0.0`. Crate 2.2.0 shipped the taxonomy at `2.1.0`: a crate tag
+and the taxonomy version it carries are different numbers.
 
 A release is identified by `"<schema> v<version>"` — for this one,
-`tt-ontology/1.0 v2.1.0`. That string is the ETag a server serves the bundle
+`tt-ontology/1.0 v2.2.0`. That string is the ETag a server serves the bundle
 under and the value a record cites to say which vocabulary made it.
 
 **Lineage is one step back.** A bundle names the release it supersedes and no
 further:
 
 ```json
-{ "schema": "tt-ontology/1.0", "version": "2.1.0",
-  "supersedes": "tt-ontology/1.0 v2.0.0" }
+{ "schema": "tt-ontology/1.0", "version": "2.2.0",
+  "supersedes": "tt-ontology/1.0 v2.1.0" }
 ```
 
 Reading a record more than one release old therefore means walking the chain a
@@ -71,10 +72,10 @@ are different questions and neither reduces to the other.
 
 | Lens | Asks | Branches | Nodes |
 |---|---|---|---|
-| **A — Recorded Public Events** | what did the record keep? | 6 | 79 |
+| **A — Recorded Public Events** | what did the record keep? | 6 | 81 |
 | **B — Human Action & Behavior** | what were people doing? | 9 | 70 |
 
-149 nodes total: 15 branches, 87 species, 47 subspecies. **The two lenses are
+151 nodes total: 15 branches, 89 species, 47 subspecies. **The two lenses are
 disjoint components of the graph.** There is no path from one to the other
 except a bridge (§2.4), and a node id belongs to exactly one lens — an id
 offered under the wrong lens is not a mistake to be corrected, it is unknown
@@ -215,7 +216,7 @@ A classification is **not a category**. It is a mass distribution over each lens
 { "lens_b": { "negotiation-and-agreement": 0.55, "deciding-and-judging": 0.25 },
   "lens_a": { "corporate-founding-and-milestone": 0.6 },
   "abstain": false,
-  "bundle": "tt-ontology/1.0 v2.1.0" }
+  "bundle": "tt-ontology/1.0 v2.2.0" }
 ```
 
 ### §4.1 The rules

@@ -114,3 +114,7 @@ jobs:
         run: python3 -m py_compile tools/relations-adoption/relations_adoption.py
       - name: the relations adoption pass parses fail-closed
         run: python3 tools/relations-adoption/test_relations_adoption.py
+      # Report-only migration pass for taxonomy Growth: nothing moved, nothing
+      # would be rewritten, and it fails the edits it exists to catch.
+      - name: the taxonomy growth check passes the release and fails what it must
+        run: python3 tools/taxonomy-growth/test_check.py

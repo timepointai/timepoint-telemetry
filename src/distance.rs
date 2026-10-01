@@ -61,7 +61,7 @@ pub fn distance(
 /// Dijkstra per call. That is correct and it is why nothing ever used it: the
 /// metric the taxonomy defines — and the 151 lateral edges that exist only to
 /// feed it — sat unreachable behind a per-call cost nobody wanted to pay in a
-/// request path. Solving all pairs once is 149 Dijkstras over ~300 edges and
+/// request path. Solving all pairs once is one Dijkstra per node over ~300 edges and
 /// about 178 KB held, so the metric becomes something a surface can ask
 /// thousands of times while assembling a document.
 ///
@@ -210,7 +210,7 @@ mod tests {
     fn real_bundle() -> Bundle {
         Bundle::load_from_file(concat!(
             env!("CARGO_MANIFEST_DIR"),
-            "/bundle/taxonomy-v2.1.json"
+            "/bundle/taxonomy-v2.2.json"
         ))
         .expect("vendored bundle loads")
     }

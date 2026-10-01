@@ -6,7 +6,7 @@ use serde_json::{Value, json};
 use tt_core::{Bundle, TtError};
 
 fn bundle_path() -> String {
-    format!("{}/bundle/taxonomy-v2.1.json", env!("CARGO_MANIFEST_DIR"))
+    format!("{}/bundle/taxonomy-v2.2.json", env!("CARGO_MANIFEST_DIR"))
 }
 
 fn load_real() -> Bundle {
@@ -45,15 +45,15 @@ fn node_index(v: &Value, id: &str) -> usize {
 fn vendored_bundle_loads_with_exact_validate_py_counts() {
     let b = load_real();
 
-    assert_eq!(b.version_string(), "tt-ontology/1.0 v2.1.0");
+    assert_eq!(b.version_string(), "tt-ontology/1.0 v2.2.0");
     assert_eq!(b.schema, "tt-ontology/1.0");
-    assert_eq!(b.version, "2.1.0");
-    // v2.1.0 is the first Structure release: ONE retirement, nothing removed.
-    // Every count below is asserted unchanged — a retired node stays in the
-    // bundle forever; what ends is its eligibility for new work.
-    assert_eq!(b.supersedes.as_deref(), Some("tt-ontology/1.0 v2.0.0"));
+    assert_eq!(b.version, "2.2.0");
+    // v2.1.0 was the first Structure release: ONE retirement, nothing removed;
+    // a retired node stays in the bundle forever. v2.2.0 is Growth: two Lens A
+    // species and nothing else (tests/growth.rs checks the rest is unchanged).
+    assert_eq!(b.supersedes.as_deref(), Some("tt-ontology/1.0 v2.1.0"));
 
-    assert_eq!(b.nodes.len(), 149, "nodes total");
+    assert_eq!(b.nodes.len(), 151, "nodes total");
     assert_eq!(b.lateral_edges.len(), 151, "lateral edges total");
     assert_eq!(b.bridges.len(), 26, "bridges");
     assert_eq!(b.kernel.len(), 3, "kernel members");
@@ -65,11 +65,11 @@ fn vendored_bundle_loads_with_exact_validate_py_counts() {
             .count()
     };
     assert_eq!(count("A", "branch"), 6, "Lens A branch");
-    assert_eq!(count("A", "species"), 26, "Lens A species");
+    assert_eq!(count("A", "species"), 28, "Lens A species");
     assert_eq!(count("A", "subspecies"), 47, "Lens A subspecies");
     assert_eq!(
         b.nodes.iter().filter(|n| n.lens == "A").count(),
-        79,
+        81,
         "Lens A total"
     );
     assert_eq!(count("B", "branch"), 9, "Lens B branch");
@@ -112,18 +112,18 @@ fn vendored_bundle_loads_with_exact_validate_py_counts() {
 
     // The verbatim document survives loading (servers hand it out unchanged).
     assert_eq!(b.raw["schema"], "tt-ontology/1.0");
-    assert_eq!(b.raw["supersedes"], "tt-ontology/1.0 v2.0.0");
+    assert_eq!(b.raw["supersedes"], "tt-ontology/1.0 v2.1.0");
     assert!(b.raw.get("design_principles").is_some());
 
     // The chain is now typed, so it can be asked rather than eyeballed: this
     // release answers to its own id AND to the one it replaced.
-    assert!(b.is_this_release("tt-ontology/1.0 v2.1.0"));
+    assert!(b.is_this_release("tt-ontology/1.0 v2.2.0"));
     assert!(
-        b.is_this_release("tt-ontology/1.0 v2.0.0"),
+        b.is_this_release("tt-ontology/1.0 v2.1.0"),
         "the step behind counts"
     );
     assert!(
-        !b.is_this_release("clockchain-taxonomy/1.0 v1.1.0-alpha.1"),
+        !b.is_this_release("tt-ontology/1.0 v2.0.0"),
         "two steps back does NOT — walking further needs the intervening bundle, \
          and answering yes here would claim a reach the format does not have"
     );
