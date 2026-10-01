@@ -186,7 +186,7 @@ fn a_supersession_cycle_is_caught_at_load_not_survived() {
 fn the_shipped_bundle_retires_exactly_one_node_with_a_successor() {
     let b = Bundle::load_from_file(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/bundle/taxonomy-v2.1.json"
+        "/bundle/taxonomy-v2.2.json"
     ))
     .expect("the shipped bundle loads");
     let retired: Vec<_> = b.deprecated();

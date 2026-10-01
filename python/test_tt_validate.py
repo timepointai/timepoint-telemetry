@@ -11,7 +11,7 @@ import unittest
 
 import tt_validate
 
-BUNDLE_PATH = pathlib.Path(__file__).resolve().parent.parent / "bundle" / "taxonomy-v2.1.json"
+BUNDLE_PATH = pathlib.Path(__file__).resolve().parent.parent / "bundle" / "taxonomy-v2.2.json"
 BUNDLE = tt_validate.load_bundle(str(BUNDLE_PATH))
 
 VIENNA = {
@@ -29,7 +29,7 @@ class Accepts(unittest.TestCase):
     def test_worked_moment_classification(self):
         normalized, errors = tt_validate.validate(VIENNA, BUNDLE)
         self.assertEqual(errors, [])
-        self.assertEqual(normalized["bundle"], "tt-ontology/1.0 v2.1.0")
+        self.assertEqual(normalized["bundle"], "tt-ontology/1.0 v2.2.0")
 
     def test_abstention_is_publishable(self):
         normalized, errors = tt_validate.validate({"abstain": True}, BUNDLE)
@@ -55,9 +55,19 @@ class Accepts(unittest.TestCase):
         self.assertEqual(emitted, again)
 
     def test_matching_bundle_citation_accepted(self):
-        c = dict(VIENNA, bundle="tt-ontology/1.0 v2.1.0")
+        c = dict(VIENNA, bundle="tt-ontology/1.0 v2.2.0")
         _, errors = tt_validate.validate(c, BUNDLE)
         self.assertEqual(errors, [])
+
+    def test_citation_of_the_superseded_release_accepted_and_kept(self):
+        # One step back, as Bundle::is_this_release: a v2.1.0 reading stays valid
+        # and keeps citing the vocabulary that made it.
+        c = dict(VIENNA, bundle="tt-ontology/1.0 v2.1.0")
+        normalized, errors = tt_validate.validate(c, BUNDLE)
+        self.assertEqual(errors, [])
+        self.assertEqual(normalized["bundle"], "tt-ontology/1.0 v2.1.0")
+        again, errors = tt_validate.validate(normalized, BUNDLE)
+        self.assertEqual((again, errors), (normalized, []))
 
 
 class Rejects(unittest.TestCase):

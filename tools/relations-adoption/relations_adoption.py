@@ -50,9 +50,9 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
-TAXONOMY = os.path.join(REPO, "bundle", "taxonomy-v2.1.json")
+TAXONOMY = os.path.join(REPO, "bundle", "taxonomy-v2.2.json")
 RELATIONS = os.path.join(REPO, "bundle", "relations-v1.0.json")
-TAXONOMY_SHA256 = "31ed385e26522a5b548f7404f7757ee370ed9783dbd550b05cd69e89e9462113"
+TAXONOMY_SHA256 = "a825ee9da5163876e99cf7e383c2e481fa3c4039a231c39a3dc463e54427d878"
 RELATIONS_SHA256 = "23b0dc5627301d19f128d96152a84fed87000954e1d9fff571f8658ee81b73bc"
 
 # The string assertions a role, an office or a link to an org is written as today (§3).
@@ -65,7 +65,8 @@ BASES = ("ACCUMULATED", "GENERATED", "GROUNDED")
 # code on beta's cr/coord writes a `frame` artifact any more.
 D3_KINDS = ("cockpit_doc", "frame")
 # Every taxonomy version string a published bundle has carried or named, read
-# from this repository's history: tt-ontology/1.0 v2.1.0 (tags v2.1.0-v2.1.2),
+# from this repository's history: tt-ontology/1.0 v2.2.0 (tag v2.3.0),
+# tt-ontology/1.0 v2.1.0 (tags v2.1.0-v2.2.0),
 # v2.0.0 (tag v2.0.0), snag-ontology/1.0 v1.1.0 (the first commit, which v2.0.0
 # supersedes) and clockchain-taxonomy/1.0 v1.1.0-alpha.1 (which v1.1.0
 # supersedes). D5 prints only these. Any other stored string, however
@@ -75,6 +76,7 @@ PUBLISHED_TAXONOMY_VERSIONS = (
     "snag-ontology/1.0 v1.1.0",
     "tt-ontology/1.0 v2.0.0",
     "tt-ontology/1.0 v2.1.0",
+    "tt-ontology/1.0 v2.2.0",
 )
 TABLES = ("entity.assertions", "entity.entities", "run.artifacts", "run.moments", "tt.verdicts")
 OTHER, UNSTAMPED = "(other)", "<unstamped>"
@@ -301,7 +303,7 @@ def report(deployment, taxonomy_vs, relations_vs, kinds, present, figs, res, app
     w(f"TT RELATIONS v{relations_vs.split(' v')[1]} ADOPTION REPORT — REPORT-ONLY (nothing written)")
     w(f"deployment: {deployment}")
     w(f"taxonomy loaded by this tool: {taxonomy_vs} sha256 {TAXONOMY_SHA256[:8]}… "
-      "(unchanged: TT's copy is byte-identical to v2.1.2's)")
+      "(the taxonomy file this tool pins; the relations vocabulary is independent of it)")
     w(f"relations loaded by this tool: {relations_vs} sha256 {RELATIONS_SHA256[:8]}…")
     w("tables absent (not measured, never reported as 0): " + (", ".join(absent) if absent else "none"))
 

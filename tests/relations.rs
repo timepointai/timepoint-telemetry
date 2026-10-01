@@ -17,8 +17,14 @@ const ROOT: &str = env!("CARGO_MANIFEST_DIR");
 const RELATIONS_SHA256: &str = "23b0dc5627301d19f128d96152a84fed87000954e1d9fff571f8658ee81b73bc";
 
 /// sha256 of `bundle/taxonomy-v2.1.json`, identical at 16227a9, 7afbc3b (v2.1.2)
-/// and v2.2.0. Shipping a separate vocabulary must leave these bytes alone.
-const TAXONOMY_SHA256: &str = "31ed385e26522a5b548f7404f7757ee370ed9783dbd550b05cd69e89e9462113";
+/// and v2.2.0. Shipping the relations vocabulary left these bytes alone; the
+/// file is gone from the tree since taxonomy v2.2.0 (crate v2.3.0) and the
+/// constant stays as history.
+#[allow(dead_code)]
+const TAXONOMY_V2_1_SHA256: &str = "31ed385e26522a5b548f7404f7757ee370ed9783dbd550b05cd69e89e9462113";
+
+/// sha256 of `bundle/taxonomy-v2.2.json` as released with crate v2.3.0.
+const TAXONOMY_SHA256: &str = "a825ee9da5163876e99cf7e383c2e481fa3c4039a231c39a3dc463e54427d878";
 
 fn path(rel: &str) -> String {
     format!("{ROOT}/{rel}")
@@ -113,9 +119,11 @@ fn the_shipped_bytes_are_pinned() {
     assert_eq!(corpus()["vocabulary_sha256"], RELATIONS_SHA256);
 }
 
+/// A taxonomy release is a new file with new bytes, never an edit: the shipped
+/// bytes are pinned so a change to them cannot slip in without a version.
 #[test]
-fn the_taxonomy_bytes_are_untouched() {
-    assert_eq!(sha256_file("bundle/taxonomy-v2.1.json"), TAXONOMY_SHA256);
+fn the_taxonomy_bytes_are_pinned() {
+    assert_eq!(sha256_file("bundle/taxonomy-v2.2.json"), TAXONOMY_SHA256);
 }
 
 /// Every id, direction, nature, endpoint pair and attribute, spelled out. The

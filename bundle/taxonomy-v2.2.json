@@ -1,7 +1,7 @@
 {
   "schema": "tt-ontology/1.0",
-  "version": "2.1.0",
-  "supersedes": "tt-ontology/1.0 v2.0.0",
+  "version": "2.2.0",
+  "supersedes": "tt-ontology/1.0 v2.1.0",
   "governance": "structure fluid, identity frozen — ids never change; structural change = semver bump",
   "metric": {
     "hierarchy_edge_weight": 1.0,
@@ -247,6 +247,14 @@
       "definition": "Forced or formal dissolution/disbanding of a legislative body."
     },
     {
+      "id": "public-program-adoption",
+      "lens": "A",
+      "level": "species",
+      "parent": "politics-governance-and-law",
+      "label": "Public Program Adoption",
+      "definition": "A government body or public institution formally adopts, funds, starts or ends a public program, service or initiative by its own administrative or budget decision, without enacting a law: program rollouts, budget decisions and grants that fund a program, and decisions to discontinue one."
+    },
+    {
       "id": "conflict-and-warfare",
       "lens": "A",
       "level": "branch",
@@ -453,6 +461,14 @@
       "parent": "economy-trade-and-labor",
       "label": "Trade & Transport Infrastructure",
       "definition": "Openings of railways and transport lines that expanded commerce and the movement of goods and labor."
+    },
+    {
+      "id": "procurement-and-contract-award",
+      "lens": "A",
+      "level": "species",
+      "parent": "economy-trade-and-labor",
+      "label": "Procurement & Contract Award",
+      "definition": "A buyer — a government body, public institution or company — formally awards, signs or renews a contract with an outside supplier for goods, services or works: tender awards, supply and service contracts, and multi-year service agreements. Not the purchase of a company."
     },
     {
       "id": "culture-religion-arts-and-ideas",

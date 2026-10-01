@@ -1,11 +1,11 @@
 {
   "what": "TT classification conformance vectors \u2014 TT-SPEC \u00a74 verdicts",
-  "bundle": "tt-ontology/1.0 v2.1.0",
+  "bundle": "tt-ontology/1.0 v2.2.0",
   "conformance": {
     "normative": "accepted, normalized (on accept), and the multiset of rejection codes (on reject). An implementation matching these in any language conforms.",
     "advisory": "rejection detail strings, byte for byte. The reference implementation passes this tier; ports may opt in. The details render numbers as Python's repr() does \u2014 that is reference-implementation habit made visible, not design."
   },
-  "regenerate": "python3 python/gen_classification_vectors.py bundle/taxonomy-v2.1.json",
+  "regenerate": "python3 python/gen_classification_vectors.py bundle/taxonomy-v2.2.json",
   "vectors": [
     {
       "name": "abstention",
@@ -13,7 +13,7 @@
         "lens_a": {},
         "lens_b": {},
         "abstain": true,
-        "bundle": "tt-ontology/1.0 v2.1.0"
+        "bundle": "tt-ontology/1.0 v2.2.0"
       },
       "expect": {
         "accepted": true,
@@ -21,7 +21,7 @@
           "lens_b": {},
           "lens_a": {},
           "abstain": true,
-          "bundle": "tt-ontology/1.0 v2.1.0"
+          "bundle": "tt-ontology/1.0 v2.2.0"
         }
       }
     },
@@ -38,7 +38,7 @@
           "lens_b": {},
           "lens_a": {},
           "abstain": true,
-          "bundle": "tt-ontology/1.0 v2.1.0"
+          "bundle": "tt-ontology/1.0 v2.2.0"
         }
       }
     },
@@ -58,7 +58,7 @@
             "conflict-and-warfare": 1.0
           },
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.1.0"
+          "bundle": "tt-ontology/1.0 v2.2.0"
         }
       }
     },
@@ -78,7 +78,7 @@
           },
           "lens_a": {},
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.1.0"
+          "bundle": "tt-ontology/1.0 v2.2.0"
         }
       }
     },
@@ -102,7 +102,7 @@
             "governance-and-popular-politics": 0.6
           },
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.1.0"
+          "bundle": "tt-ontology/1.0 v2.2.0"
         }
       }
     },
@@ -123,7 +123,7 @@
             "rulership-and-succession": 0.7
           },
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.1.0"
+          "bundle": "tt-ontology/1.0 v2.2.0"
         }
       }
     },
@@ -146,7 +146,7 @@
             "siege-and-sack": 0.4
           },
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.1.0"
+          "bundle": "tt-ontology/1.0 v2.2.0"
         }
       }
     },
@@ -448,7 +448,146 @@
         "rejections": [
           {
             "code": "bundle-mismatch",
-            "detail": "classification cites `tt-ontology/1.0 v2.0.0`, loaded bundle is `tt-ontology/1.0 v2.1.0`"
+            "detail": "classification cites `tt-ontology/1.0 v2.0.0`, loaded bundle is `tt-ontology/1.0 v2.2.0`"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bundle names the superseded release",
+      "input": {
+        "lens_a": {},
+        "lens_b": {},
+        "abstain": true,
+        "bundle": "tt-ontology/1.0 v2.1.0"
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "lens_b": {},
+          "lens_a": {},
+          "abstain": true,
+          "bundle": "tt-ontology/1.0 v2.1.0"
+        }
+      }
+    },
+    {
+      "name": "procurement and contract award at mass 1",
+      "input": {
+        "lens_a": {
+          "procurement-and-contract-award": 1.0
+        },
+        "lens_b": {}
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "lens_b": {},
+          "lens_a": {
+            "procurement-and-contract-award": 1.0
+          },
+          "abstain": false,
+          "bundle": "tt-ontology/1.0 v2.2.0"
+        }
+      }
+    },
+    {
+      "name": "public program adoption at mass 1",
+      "input": {
+        "lens_a": {
+          "public-program-adoption": 1.0
+        },
+        "lens_b": {}
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "lens_b": {},
+          "lens_a": {
+            "public-program-adoption": 1.0
+          },
+          "abstain": false,
+          "bundle": "tt-ontology/1.0 v2.2.0"
+        }
+      }
+    },
+    {
+      "name": "both v2.2.0 species, split mass",
+      "input": {
+        "lens_a": {
+          "procurement-and-contract-award": 0.5,
+          "public-program-adoption": 0.5
+        },
+        "lens_b": {
+          "negotiation-and-agreement": 1.0
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "lens_b": {
+            "negotiation-and-agreement": 1.0
+          },
+          "lens_a": {
+            "procurement-and-contract-award": 0.5,
+            "public-program-adoption": 0.5
+          },
+          "abstain": false,
+          "bundle": "tt-ontology/1.0 v2.2.0"
+        }
+      }
+    },
+    {
+      "name": "v2.2.0 species with its branch (TT permits)",
+      "input": {
+        "lens_a": {
+          "economy-trade-and-labor": 0.3,
+          "procurement-and-contract-award": 0.7
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "lens_b": {},
+          "lens_a": {
+            "economy-trade-and-labor": 0.3,
+            "procurement-and-contract-award": 0.7
+          },
+          "abstain": false,
+          "bundle": "tt-ontology/1.0 v2.2.0"
+        }
+      }
+    },
+    {
+      "name": "procurement and contract award under lens_b",
+      "input": {
+        "lens_b": {
+          "procurement-and-contract-award": 1.0
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "wrong-lens",
+            "detail": "lens_b.procurement-and-contract-award: id is lens A, offered under lens B"
+          }
+        ]
+      }
+    },
+    {
+      "name": "public program adoption under lens_b",
+      "input": {
+        "lens_b": {
+          "public-program-adoption": 1.0
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "wrong-lens",
+            "detail": "lens_b.public-program-adoption: id is lens A, offered under lens B"
           }
         ]
       }
@@ -695,7 +834,7 @@
             "religious-life": 0.2
           },
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.1.0"
+          "bundle": "tt-ontology/1.0 v2.2.0"
         }
       }
     },

@@ -1,0 +1,9 @@
+{"lens_a": {}, "lens_b": {}, "abstain": true, "bundle": "tt-ontology/1.0 v2.1.0"}
+{"lens_a": {}, "lens_b": {"negotiation-and-agreement": 0.8}, "abstain": false, "bundle": "tt-ontology/1.0 v2.1.0"}
+{"lens_a": {"economy-trade-and-labor": 0.6}, "lens_b": {"deciding-and-judging": 0.4}, "abstain": false, "bundle": "tt-ontology/1.0 v2.1.0"}
+{"lens_a": {"treaty-alliance-and-peace-accord": 0.7}, "lens_b": {"negotiation-and-agreement": 0.5}, "abstain": false, "bundle": "tt-ontology/1.0 v2.1.0"}
+{"lens_a": {"legislation-edicts-and-decrees": 1.0}, "lens_b": {}, "abstain": false}
+{"lens_a": {}, "lens_b": {}, "abstain": true}
+{"lens_a": {"conflict-and-warfare": 1.0}, "lens_b": {}, "abstain": false, "bundle": "tt-ontology/1.0 v2.0.0"}
+{"lens_a": {"not-a-real-node": 1.0}, "lens_b": {}, "abstain": false, "bundle": "tt-ontology/1.0 v2.1.0"}
+{"lens_a": {}, "lens_b": {"everyday-movement-and-commute": 1.0}, "abstain": false, "bundle": "tt-ontology/1.0 v2.1.0"}

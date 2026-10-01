@@ -16,7 +16,7 @@ from tt_validate import load_bundle, validate
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 VECTORS = os.path.join(REPO, "vectors", "verdicts", "classification-verdicts.json")
-BUNDLE = os.path.join(REPO, "bundle", "taxonomy-v2.1.json")
+BUNDLE = os.path.join(REPO, "bundle", "taxonomy-v2.2.json")
 
 
 class ClassificationVectors(unittest.TestCase):
