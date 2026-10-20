@@ -81,7 +81,7 @@ powers sign the Final Act of the Congress of Vienna:
 
 | | |
 |---|---|
-| `bundle/taxonomy-v2.2.json` | the versioned taxonomy — 151 nodes, 2 lenses, 151 lateral edges, 26 bridges, the kernel, metric weights, design principles |
+| `bundle/taxonomy-v2.3.json` | the versioned taxonomy — 153 nodes, 2 lenses, 151 lateral edges, 26 bridges, the kernel, metric weights, design principles |
 | `bundle/relations-v1.0.json` | the relations vocabulary — 4 entity kinds, 10 relation kinds between entities (TT-SPEC §9) |
 | `docs/WORKED-EXAMPLE.md` | one moment carried end to end — every number computed, none illustrative |
 | `docs/how-tt-works.svg` | the model in one picture |
@@ -116,13 +116,22 @@ declares the step immediately behind it:
 "governance": "structure fluid, identity frozen — ids never change; structural change = semver bump"
 ```
 
-**Taxonomy v2.2.0 is the current release, a Growth release**: two Lens A species,
+**Taxonomy v2.3.0 is the current release, a Growth release**: two Lens A
+subspecies, `monetary-policy-decision` (under `money-and-finance`: a central bank
+or monetary authority formally decides and announces its policy settings,
+including a decision to leave them unchanged) and `court-ruling` (under
+`law-and-justice`: a court formally decides a case or a question of law and
+issues its judgment or opinion). Nothing else moved: no lateral edge or bridge
+was added, so every distance between existing nodes is unchanged and no stored
+reading changes meaning. It ships in crate v2.4.0.
+
+**Taxonomy v2.2.0 was a Growth release too**: two Lens A species,
 `procurement-and-contract-award` (a buyer formally awards, signs or renews a
 contract with an outside supplier) and `public-program-adoption` (a public body
 adopts, funds, starts or ends a public program by its own administrative or
 budget decision, not by a law that changes the legal order). Nothing else moved: no lateral edge
 or bridge was added, so every distance between existing nodes is unchanged and
-no stored reading changes meaning. It ships in crate v2.3.0.
+no stored reading changes meaning. It shipped in crate v2.3.0.
 
 **v2.1.0 was the first Structure release**: it retires
 `everyday-movement-and-commute` into `journey-and-travel` — the id stays in the
@@ -206,7 +215,7 @@ graph.](docs/how-tt-works.svg)
 
 | Lens | Asks | Branches | Nodes |
 |---|---|---|---|
-| **A — Recorded Public Events** | what did the record keep? | 6 | 81 |
+| **A — Recorded Public Events** | what did the record keep? | 6 | 83 |
 | **B — Human Action & Behavior** | what were people doing? | 9 | 70 |
 
 The lenses are disjoint components of the graph. Within a lens, every pair of
@@ -377,7 +386,7 @@ tt-core = { git = "https://github.com/timepointai/timepoint-telemetry" }
 ```
 
 ```rust
-let bundle = tt_core::Bundle::load_from_file("bundle/taxonomy-v2.2.json")?;
+let bundle = tt_core::Bundle::load_from_file("bundle/taxonomy-v2.3.json")?;
 
 // Is this id real, and what does it mean?
 let node = bundle.node("courtship-and-falling-in-love").unwrap();
@@ -461,8 +470,8 @@ Proposals use [the change request template](.github/CHANGE_REQUEST.md).
 
 ## Status
 
-**Early and honest about it.** The taxonomy is at `2.2.0`, the relations
-vocabulary at `1.0.0`, and the crate at `2.3.0`. The identity guarantee is
+**Early and honest about it.** The taxonomy is at `2.3.0`, the relations
+vocabulary at `1.0.0`, and the crate at `2.4.0`. The identity guarantee is
 real, for both vocabularies — ids will not change meaning, and change arrives only
 through the published update cycle.
 

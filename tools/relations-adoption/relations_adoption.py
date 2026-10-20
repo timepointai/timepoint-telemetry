@@ -50,9 +50,9 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
-TAXONOMY = os.path.join(REPO, "bundle", "taxonomy-v2.2.json")
+TAXONOMY = os.path.join(REPO, "bundle", "taxonomy-v2.3.json")
 RELATIONS = os.path.join(REPO, "bundle", "relations-v1.0.json")
-TAXONOMY_SHA256 = "d70812582ea080985a1f7778a67336b5c006bb2e9d7f77ae0c980f6193e52574"
+TAXONOMY_SHA256 = "c84817144c6ed99431bcee63a7bbfe6338facf51a3573c0cda4562331df1e1c1"
 RELATIONS_SHA256 = "23b0dc5627301d19f128d96152a84fed87000954e1d9fff571f8658ee81b73bc"
 
 # The string assertions a role, an office or a link to an org is written as today (§3).
@@ -65,7 +65,8 @@ BASES = ("ACCUMULATED", "GENERATED", "GROUNDED")
 # code on beta's cr/coord writes a `frame` artifact any more.
 D3_KINDS = ("cockpit_doc", "frame")
 # Every taxonomy version string a published bundle has carried or named, read
-# from this repository's history: tt-ontology/1.0 v2.2.0 (tag v2.3.0),
+# from this repository's history: tt-ontology/1.0 v2.3.0 (tag v2.4.0),
+# tt-ontology/1.0 v2.2.0 (tag v2.3.0),
 # tt-ontology/1.0 v2.1.0 (tags v2.1.0-v2.2.0),
 # v2.0.0 (tag v2.0.0), snag-ontology/1.0 v1.1.0 (the first commit, which v2.0.0
 # supersedes) and clockchain-taxonomy/1.0 v1.1.0-alpha.1 (which v1.1.0
@@ -77,6 +78,7 @@ PUBLISHED_TAXONOMY_VERSIONS = (
     "tt-ontology/1.0 v2.0.0",
     "tt-ontology/1.0 v2.1.0",
     "tt-ontology/1.0 v2.2.0",
+    "tt-ontology/1.0 v2.3.0",
 )
 TABLES = ("entity.assertions", "entity.entities", "run.artifacts", "run.moments", "tt.verdicts")
 OTHER, UNSTAMPED = "(other)", "<unstamped>"

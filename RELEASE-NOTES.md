@@ -1,6 +1,94 @@
 # Release notes
 
-## v2.3.0 (crate) — taxonomy `tt-ontology/1.0 v2.2.0` (not yet tagged)
+## v2.4.0 (crate) — taxonomy `tt-ontology/1.0 v2.3.0` (not yet tagged)
+
+Class: **Growth**, daily window. Proposal:
+[docs/proposals/MONETARY-POLICY-AND-COURT-RULING.md](docs/proposals/MONETARY-POLICY-AND-COURT-RULING.md).
+The crate is 2.4.0 because tag `v2.3.0` already exists and ships taxonomy
+2.2.0; this crate ships taxonomy 2.3.0.
+
+### What ships
+
+- **Two Lens A subspecies, and no other change to the taxonomy.**
+  - `monetary-policy-decision` (under `money-and-finance`): a central bank or
+    monetary authority formally decides and announces its policy settings,
+    including a decision to leave them unchanged. Setting a policy rate is
+    always this event; a new currency or a one-time currency reform stays
+    `currency-and-monetary-reform`.
+  - `court-ruling` (under `law-and-justice`): a court formally decides a case
+    or a question of law and issues its judgment or opinion. A proceeding
+    against a person, with its verdict and penalty, stays
+    `trials-and-political-punishment`.
+- 151 → 153 nodes; Lens A 81 → 83; subspecies 47 → 49. Lateral edges (151),
+  bridges (26), branches, the kernel and the metric weights are unchanged.
+- **No lateral edge and no bridge was added, deliberately.** All 11,325
+  distances between v2.2.0 nodes, and so all 11,026 between v2.1.0 nodes, are
+  unchanged (checked against golden digests of both releases in
+  `tests/growth.rs`).
+- File renamed `bundle/taxonomy-v2.2.json` → `bundle/taxonomy-v2.3.json`, as at
+  every earlier bump; `supersedes` = `tt-ontology/1.0 v2.2.0`; sha256
+  `c84817144c6ed99431bcee63a7bbfe6338facf51a3573c0cda4562331df1e1c1`
+  (pinned by `tests/relations.rs`; the v2.2.0 pin stays there as history).
+- Classification vectors regenerated: 46 → 54, with the new surface and the
+  two-steps-back case.
+
+### Exception: v2.1.0 citations become two steps back
+
+GOVERNANCE §7 asks that everything valid under the previous version stay valid.
+**Content does**: every reading valid under v2.2.0 is valid under v2.3.0, and
+no id or distance moved. **One kind of citation does not**: a reading stamped
+`tt-ontology/1.0 v2.1.0` was one step back under v2.2.0 and is two steps back
+now, so `Bundle::is_this_release` and the Python validator answer
+`bundle-mismatch` for it, as TT-SPEC §1 specifies.
+
+This is accepted, for three reasons:
+
+1. **It is the format working as specified, not a regression.** Lineage is one
+   step by design: answering yes two steps back would claim a reach the format
+   does not have. Any Growth release moves the oldest accepted citation.
+2. **Precedent.** v2.2.0 (crate v2.3.0) shipped the same loss for v2.0.0
+   citations, stated in its notes, and no consumer was harmed.
+3. **Nothing is rewritten or lost.** A v2.1.0 reading is still a true record;
+   its citation resolves by walking the chain one release at a time (v2.1.0 →
+   v2.2.0 → v2.3.0), and its content is valid under v2.3.0. The rehearsal
+   counts five such citations and rewrites none.
+
+A consumer that validates stored v2.1.0 citations against the loaded bundle
+should walk the chain, or re-stamp nothing and keep validating them against
+the bundle that made them.
+
+### For consumers
+
+- Required: bump the pinned tag to `v2.4.0` and the vendored path to
+  `bundle/taxonomy-v2.3.json`, and re-check its sha256 (docs/CONSUMERS.md).
+- Not required: no id changed meaning, nothing was deleted, no stored reading
+  needs rewriting.
+- Optional: re-read endpoints that previously abstained or misread as new
+  readings citing v2.3.0, keeping the old reading.
+- **Condition for scoring by distance:** these are scheduled events. A replay
+  that runs to the meeting date reads as the same node at distance 0 whatever
+  the outcome was. Check the outcome separately before counting such a match
+  as reaching the endpoint (proposal §7, R2).
+- **Consumer conditions:** adoption should pair with that outcome check and an
+  endpoint reader at least as capable as `anthropic/claude-haiku-5.5`. Under
+  `anthropic/claude-haiku-4.5` the condition control ("Bank Rate is below 3%")
+  misread as `monetary-policy-decision` in 1 of 3 runs, and the ECB endpoints
+  still abstain in some runs; under haiku-5.5 the condition abstains 2/2
+  (proposal §3, §7 R1).
+
+### The migration: Store only
+
+No Prune, no Synthesize; the report-only pass finds 0 rewrites (proposal §5).
+
+### Not yet done
+
+- **Utilization is not measured.** Reading the one known consumer's stored
+  readings needs its database, and no credential for it was used to prepare
+  this release. Zero means "nobody told us".
+- Commodity output decisions, intergovernmental resolutions and official
+  statistics releases were proposed and cut: no record yet shows the gap.
+
+## v2.3.0 (crate) — taxonomy `tt-ontology/1.0 v2.2.0`
 
 Class: **Growth**, daily window. Proposal:
 [docs/proposals/PROCUREMENT-AND-PROGRAM-ADOPTION.md](docs/proposals/PROCUREMENT-AND-PROGRAM-ADOPTION.md).

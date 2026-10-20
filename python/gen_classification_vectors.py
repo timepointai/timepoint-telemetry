@@ -5,7 +5,7 @@ Every expected value in the vector file is computed by running tt_validate
 against the shipped bundle — never written by hand. To regenerate after a
 spec Correction or a bundle release:
 
-    python3 python/gen_classification_vectors.py bundle/taxonomy-v2.2.json \
+    python3 python/gen_classification_vectors.py bundle/taxonomy-v2.3.json \
         > vectors/verdicts/classification-verdicts.json
 
 The case corpus began life as the Clockchain's differential harness
@@ -28,8 +28,9 @@ import sys
 
 from tt_validate import load_bundle, validate
 
-VERSION_STRING = "tt-ontology/1.0 v2.2.0"
-SUPERSEDED = "tt-ontology/1.0 v2.1.0"
+VERSION_STRING = "tt-ontology/1.0 v2.3.0"
+SUPERSEDED = "tt-ontology/1.0 v2.2.0"
+TWO_BACK = "tt-ontology/1.0 v2.1.0"
 
 CASES = [
     ("abstention", {"lens_a": {}, "lens_b": {}, "abstain": True, "bundle": VERSION_STRING}),
@@ -67,6 +68,8 @@ CASES = [
                                       "bundle": "tt-ontology/1.0 v2.0.0"}),
     ("bundle names the superseded release", {"lens_a": {}, "lens_b": {}, "abstain": True,
                                              "bundle": SUPERSEDED}),
+    ("bundle names the release two steps back", {"lens_a": {}, "lens_b": {}, "abstain": True,
+                                                 "bundle": TWO_BACK}),
     # v2.2.0 surface (Growth): the two Lens A species.
     ("procurement and contract award at mass 1",
      {"lens_a": {"procurement-and-contract-award": 1.0}, "lens_b": {}}),
@@ -81,6 +84,22 @@ CASES = [
      {"lens_b": {"procurement-and-contract-award": 1.0}}),
     ("public program adoption under lens_b",
      {"lens_b": {"public-program-adoption": 1.0}}),
+    # v2.3.0 surface (Growth): the two Lens A subspecies.
+    ("monetary policy decision at mass 1",
+     {"lens_a": {"monetary-policy-decision": 1.0}, "lens_b": {}}),
+    ("court ruling at mass 1",
+     {"lens_a": {"court-ruling": 1.0}, "lens_b": {}}),
+    ("monetary policy decision with its parent (TT permits)",
+     {"lens_a": {"money-and-finance": 0.3, "monetary-policy-decision": 0.7}}),
+    ("court ruling with its parent (TT permits)",
+     {"lens_a": {"law-and-justice": 0.4, "court-ruling": 0.6}}),
+    ("monetary policy decision with a deciding action",
+     {"lens_a": {"monetary-policy-decision": 1.0}, "lens_b": {"deciding-and-judging": 1.0},
+      "bundle": VERSION_STRING}),
+    ("monetary policy decision under lens_b",
+     {"lens_b": {"monetary-policy-decision": 1.0}}),
+    ("court ruling under lens_b",
+     {"lens_b": {"court-ruling": 1.0}}),
     ("not an object", [1, 2, 3]),
     ("several failures at once", {"lens_a": {"not-a-node": 5.0}, "abstain": True, "surprise": 1}),
     ("integer mass, out of range", {"lens_a": {"conflict-and-warfare": 5}}),
@@ -126,7 +145,7 @@ def main(argv):
                         "details render numbers as Python's repr() does — that is "
                         "reference-implementation habit made visible, not design.",
         },
-        "regenerate": "python3 python/gen_classification_vectors.py bundle/taxonomy-v2.2.json",
+        "regenerate": "python3 python/gen_classification_vectors.py bundle/taxonomy-v2.3.json",
         "vectors": vectors,
     }
     json.dump(doc, sys.stdout, indent=2)

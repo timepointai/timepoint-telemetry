@@ -1,7 +1,7 @@
 {
   "schema": "tt-ontology/1.0",
-  "version": "2.2.0",
-  "supersedes": "tt-ontology/1.0 v2.1.0",
+  "version": "2.3.0",
+  "supersedes": "tt-ontology/1.0 v2.2.0",
   "governance": "structure fluid, identity frozen — ids never change; structural change = semver bump",
   "metric": {
     "hierarchy_edge_weight": 1.0,
@@ -197,6 +197,14 @@
       "parent": "law-and-justice",
       "label": "Trials & Political Punishment",
       "definition": "Judicial or extrajudicial proceedings and their penalties — trials, tribunals, proscriptions, executions, and exile of political figures."
+    },
+    {
+      "id": "court-ruling",
+      "lens": "A",
+      "level": "subspecies",
+      "parent": "law-and-justice",
+      "label": "Court Ruling & Opinion",
+      "definition": "A court formally decides a case or a question of law and issues its judgment or opinion: rulings of supreme, constitutional and appellate courts, and judgments of international courts. A proceeding against a person, with its verdict and penalty, is a trial, not this event, whoever the defendant is; an appellate or constitutional ruling on such a case is this event. Not the enactment of a law."
     },
     {
       "id": "governance-and-popular-politics",
@@ -405,6 +413,14 @@
       "parent": "money-and-finance",
       "label": "Currency & Monetary Reform",
       "definition": "Introduction of new currencies and monetary stabilization measures, often responding to inflation or reparations crises."
+    },
+    {
+      "id": "monetary-policy-decision",
+      "lens": "A",
+      "level": "subspecies",
+      "parent": "money-and-finance",
+      "label": "Monetary Policy Decision",
+      "definition": "A central bank or monetary authority formally decides and announces its policy settings at a policy meeting or between meetings: a policy interest rate such as a bank rate or target range, reserve requirements, or asset purchases and sales, including a decision to leave them unchanged. Setting a policy rate is always this event, even when the decision is taken to stabilize prices or the currency. Not the introduction of a new currency, and not a one-time package of currency or monetary stabilization measures that replaces or revalues the money itself."
     },
     {
       "id": "trade-policy-and-economic-governance",
