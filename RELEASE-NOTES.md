@@ -69,6 +69,12 @@ the bundle that made them.
   that runs to the meeting date reads as the same node at distance 0 whatever
   the outcome was. Check the outcome separately before counting such a match
   as reaching the endpoint (proposal §7, R2).
+- **Consumer conditions:** adoption should pair with that outcome check and an
+  endpoint reader at least as capable as `anthropic/claude-haiku-5.5`. Under
+  `anthropic/claude-haiku-4.5` the condition control ("Bank Rate is below 3%")
+  misread as `monetary-policy-decision` in 1 of 3 runs, and the ECB endpoints
+  still abstain in some runs; under haiku-5.5 the condition abstains 2/2
+  (proposal §3, §7 R1).
 
 ### The migration: Store only
 

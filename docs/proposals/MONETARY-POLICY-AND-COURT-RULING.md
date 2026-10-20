@@ -126,14 +126,45 @@ What this shows:
   records) and a reader that misreads (the re-reading) are both answering a
   question the vocabulary does not let them answer.
 - **Under v2.3.0 both node types read cleanly and stably**, at 0.9–1.0.
-- **Controls do not move**, and the condition still abstains, so the new
-  definitions are not catch-alls.
-- **What it does not show:** why the stored readings abstained rather than
-  misread. The re-reading did not reproduce those abstentions on any endpoint,
-  including the G20 control, whose node already exists. The consumer's
-  production reader model or its frame summary differs from the re-reading.
-  That is a consumer question (§8), not a vocabulary one: whichever way the
-  reader fails today, it has no node that holds.
+- **Controls do not move.** Under haiku-5.5 the condition still abstains
+  (2/2), so the new definitions are not catch-alls for that reader.
+- **What this run does not show:** why the stored readings abstained rather
+  than misread. Under haiku-5.5 the re-reading did not reproduce those
+  abstentions on any endpoint, including the G20 control, whose node already
+  exists. The production reader is a different model; the next run uses it.
+
+**Production reader re-reading.** The consumer's production reader is
+`anthropic/claude-haiku-4.5` (its `TP_HELPER_MODEL`). Same prompt, catalog and
+context, against v2.2.0 and against the shipped two-node bundle (sha256
+`c84817144c6ed99431bcee63a7bbfe6338facf51a3573c0cda4562331df1e1c1`), 3 runs per
+endpoint and bundle, $0.43:
+
+| Endpoint | v2.2.0 (Lens A) | v2.3.0 (Lens A) |
+|---|---|---|
+| BoE Bank Rate decision on 2026-11-05 | abstain 3/3 | `monetary-policy-decision` 3/3 |
+| ECB changes its rate at least once in a window | abstain 3/3 | `monetary-policy-decision` 2/3; abstain 1/3 |
+| ECB deposit rate decision on 2026-10-29 | abstain 3/3 | `monetary-policy-decision` 1/3; abstain 2/3 |
+| US Supreme Court opinion by 2027-07-31 | abstain 3/3 | `court-ruling` 3/3 |
+| A G20 country holds a national election (control) | `elections-and-official-selection` 3/3 | same, 3/3 |
+| UK general election on 2029-05-03 (control) | `elections-and-official-selection` 3/3 | same, 3/3 |
+| Bank Rate is below 3% on 2027-06-30 (condition) | abstain 3/3 | **`monetary-policy-decision` 1/3**; abstain 2/3 |
+
+What this adds:
+
+- **The stored abstentions reproduce.** Under v2.2.0 the production reader
+  abstains 3/3 on every rate-decision and court endpoint, as the stored records
+  did, while both election controls read cleanly. The G20 abstention in the
+  consumer's records (run `4d3a99ab`) did not reproduce, so it is not evidence
+  for or against this release.
+- **Under v2.3.0 the production reader finds the new homes**, fully for the
+  BoE and Supreme Court endpoints and partly for the two ECB endpoints, which
+  still abstain in 1/3 and 2/3 runs.
+- **The condition misreads once.** Under haiku-4.5 "Bank Rate is below 3%" read
+  as `monetary-policy-decision` in 1 of 3 runs: a state taken for the act that
+  sets it. See R1 for the consumer-side mitigations.
+- An earlier haiku-4.5 run used the five-node *draft* wording and stopped at
+  its spend cap; it is superseded by this run on the shipped bundle and is not
+  cited as evidence.
 
 ## 4. Utilization
 
@@ -184,9 +215,19 @@ keeping the old reading.
 
 ## 7. Risk to blind-check honesty
 
-**R1. Readers pushed to guess.** Lowered. Each definition requires a formal act
-by a named kind of institution and names its neighbour's actual wording in a
-"Not" clause. The condition control abstains under v2.3.0 as under v2.2.0.
+**R1. Readers pushed to guess.** Lowered, not removed. Each definition requires
+a formal act by a named kind of institution and names its neighbour's actual
+wording in a "Not" clause. The condition control abstains under v2.3.0 under
+haiku-5.5 (2/2). Under haiku-4.5, the consumer's current production reader, it
+misreads as `monetary-policy-decision` in 1 of 3 runs. Consumer-side
+mitigations:
+
+- **The outcome check** (timepoint-beta PR #181): a replay counts as reaching a
+  scheduled-event endpoint only when a blind judgment finds its ending matches
+  the target's outcome or threshold clause, so a condition misread as the
+  decision still has to meet the condition's threshold.
+- **A stronger reader:** moving the consumer's reader to haiku-5.5 is
+  recommended to its operator.
 
 **R2. Proximity guaranteed by the calendar. The taxonomy cannot fix this.**
 Telemetry records the *type* of an event, not its outcome. A blind replay that
@@ -208,10 +249,15 @@ The two new nodes are 5.6 apart.
 
 ## 8. Consumer notes for timepoint-beta (adoption, not part of this release)
 
+**Consumer conditions.** Adoption should pair with (1) the outcome check
+(timepoint-beta PR #181, R2 and R1), and (2) an endpoint reader at least as
+capable as `anthropic/claude-haiku-5.5`. Under `anthropic/claude-haiku-4.5`
+the ECB endpoints still abstain in some runs and the condition control
+misreads once in three (§3).
+
 - Bump the pin to tag `v2.4.0` and the vendored path to `bundle/taxonomy-v2.3.json`; re-check the sha256.
 - `portal_no_route.rs` holds a deliberate tripwire for this gap; it becomes a positive test.
 - R2 must be resolved before portal walks count these nodes as reached.
 - The stored abstentions above stay as they are; a re-run is a new run.
-- The stored abstentions were not reproduced by the controlled re-reading
-  (§3). The consumer should compare its production reader model and endpoint
-  summary with the re-reading.
+- The stored abstentions reproduce under the production reader, haiku-4.5,
+  and not under haiku-5.5 (§3).
