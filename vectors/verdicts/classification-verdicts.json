@@ -1,11 +1,11 @@
 {
   "what": "TT classification conformance vectors \u2014 TT-SPEC \u00a74 verdicts",
-  "bundle": "tt-ontology/1.0 v2.2.0",
+  "bundle": "tt-ontology/1.0 v2.3.0",
   "conformance": {
     "normative": "accepted, normalized (on accept), and the multiset of rejection codes (on reject). An implementation matching these in any language conforms.",
     "advisory": "rejection detail strings, byte for byte. The reference implementation passes this tier; ports may opt in. The details render numbers as Python's repr() does \u2014 that is reference-implementation habit made visible, not design."
   },
-  "regenerate": "python3 python/gen_classification_vectors.py bundle/taxonomy-v2.2.json",
+  "regenerate": "python3 python/gen_classification_vectors.py bundle/taxonomy-v2.3.json",
   "vectors": [
     {
       "name": "abstention",
@@ -13,7 +13,7 @@
         "lens_a": {},
         "lens_b": {},
         "abstain": true,
-        "bundle": "tt-ontology/1.0 v2.2.0"
+        "bundle": "tt-ontology/1.0 v2.3.0"
       },
       "expect": {
         "accepted": true,
@@ -21,7 +21,7 @@
           "lens_b": {},
           "lens_a": {},
           "abstain": true,
-          "bundle": "tt-ontology/1.0 v2.2.0"
+          "bundle": "tt-ontology/1.0 v2.3.0"
         }
       }
     },
@@ -38,7 +38,7 @@
           "lens_b": {},
           "lens_a": {},
           "abstain": true,
-          "bundle": "tt-ontology/1.0 v2.2.0"
+          "bundle": "tt-ontology/1.0 v2.3.0"
         }
       }
     },
@@ -58,7 +58,7 @@
             "conflict-and-warfare": 1.0
           },
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.2.0"
+          "bundle": "tt-ontology/1.0 v2.3.0"
         }
       }
     },
@@ -78,7 +78,7 @@
           },
           "lens_a": {},
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.2.0"
+          "bundle": "tt-ontology/1.0 v2.3.0"
         }
       }
     },
@@ -102,7 +102,7 @@
             "governance-and-popular-politics": 0.6
           },
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.2.0"
+          "bundle": "tt-ontology/1.0 v2.3.0"
         }
       }
     },
@@ -123,7 +123,7 @@
             "rulership-and-succession": 0.7
           },
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.2.0"
+          "bundle": "tt-ontology/1.0 v2.3.0"
         }
       }
     },
@@ -146,7 +146,7 @@
             "siege-and-sack": 0.4
           },
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.2.0"
+          "bundle": "tt-ontology/1.0 v2.3.0"
         }
       }
     },
@@ -448,7 +448,7 @@
         "rejections": [
           {
             "code": "bundle-mismatch",
-            "detail": "classification cites `tt-ontology/1.0 v2.0.0`, loaded bundle is `tt-ontology/1.0 v2.2.0`"
+            "detail": "classification cites `tt-ontology/1.0 v2.0.0`, loaded bundle is `tt-ontology/1.0 v2.3.0`"
           }
         ]
       }
@@ -459,7 +459,7 @@
         "lens_a": {},
         "lens_b": {},
         "abstain": true,
-        "bundle": "tt-ontology/1.0 v2.1.0"
+        "bundle": "tt-ontology/1.0 v2.2.0"
       },
       "expect": {
         "accepted": true,
@@ -467,8 +467,26 @@
           "lens_b": {},
           "lens_a": {},
           "abstain": true,
-          "bundle": "tt-ontology/1.0 v2.1.0"
+          "bundle": "tt-ontology/1.0 v2.2.0"
         }
+      }
+    },
+    {
+      "name": "bundle names the release two steps back",
+      "input": {
+        "lens_a": {},
+        "lens_b": {},
+        "abstain": true,
+        "bundle": "tt-ontology/1.0 v2.1.0"
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "bundle-mismatch",
+            "detail": "classification cites `tt-ontology/1.0 v2.1.0`, loaded bundle is `tt-ontology/1.0 v2.3.0`"
+          }
+        ]
       }
     },
     {
@@ -487,7 +505,7 @@
             "procurement-and-contract-award": 1.0
           },
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.2.0"
+          "bundle": "tt-ontology/1.0 v2.3.0"
         }
       }
     },
@@ -507,7 +525,7 @@
             "public-program-adoption": 1.0
           },
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.2.0"
+          "bundle": "tt-ontology/1.0 v2.3.0"
         }
       }
     },
@@ -533,7 +551,7 @@
             "public-program-adoption": 0.5
           },
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.2.0"
+          "bundle": "tt-ontology/1.0 v2.3.0"
         }
       }
     },
@@ -554,7 +572,7 @@
             "procurement-and-contract-award": 0.7
           },
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.2.0"
+          "bundle": "tt-ontology/1.0 v2.3.0"
         }
       }
     },
@@ -588,6 +606,147 @@
           {
             "code": "wrong-lens",
             "detail": "lens_b.public-program-adoption: id is lens A, offered under lens B"
+          }
+        ]
+      }
+    },
+    {
+      "name": "monetary policy decision at mass 1",
+      "input": {
+        "lens_a": {
+          "monetary-policy-decision": 1.0
+        },
+        "lens_b": {}
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "lens_b": {},
+          "lens_a": {
+            "monetary-policy-decision": 1.0
+          },
+          "abstain": false,
+          "bundle": "tt-ontology/1.0 v2.3.0"
+        }
+      }
+    },
+    {
+      "name": "court ruling at mass 1",
+      "input": {
+        "lens_a": {
+          "court-ruling": 1.0
+        },
+        "lens_b": {}
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "lens_b": {},
+          "lens_a": {
+            "court-ruling": 1.0
+          },
+          "abstain": false,
+          "bundle": "tt-ontology/1.0 v2.3.0"
+        }
+      }
+    },
+    {
+      "name": "monetary policy decision with its parent (TT permits)",
+      "input": {
+        "lens_a": {
+          "money-and-finance": 0.3,
+          "monetary-policy-decision": 0.7
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "lens_b": {},
+          "lens_a": {
+            "money-and-finance": 0.3,
+            "monetary-policy-decision": 0.7
+          },
+          "abstain": false,
+          "bundle": "tt-ontology/1.0 v2.3.0"
+        }
+      }
+    },
+    {
+      "name": "court ruling with its parent (TT permits)",
+      "input": {
+        "lens_a": {
+          "law-and-justice": 0.4,
+          "court-ruling": 0.6
+        }
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "lens_b": {},
+          "lens_a": {
+            "law-and-justice": 0.4,
+            "court-ruling": 0.6
+          },
+          "abstain": false,
+          "bundle": "tt-ontology/1.0 v2.3.0"
+        }
+      }
+    },
+    {
+      "name": "monetary policy decision with a deciding action",
+      "input": {
+        "lens_a": {
+          "monetary-policy-decision": 1.0
+        },
+        "lens_b": {
+          "deciding-and-judging": 1.0
+        },
+        "bundle": "tt-ontology/1.0 v2.3.0"
+      },
+      "expect": {
+        "accepted": true,
+        "normalized": {
+          "lens_b": {
+            "deciding-and-judging": 1.0
+          },
+          "lens_a": {
+            "monetary-policy-decision": 1.0
+          },
+          "abstain": false,
+          "bundle": "tt-ontology/1.0 v2.3.0"
+        }
+      }
+    },
+    {
+      "name": "monetary policy decision under lens_b",
+      "input": {
+        "lens_b": {
+          "monetary-policy-decision": 1.0
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "wrong-lens",
+            "detail": "lens_b.monetary-policy-decision: id is lens A, offered under lens B"
+          }
+        ]
+      }
+    },
+    {
+      "name": "court ruling under lens_b",
+      "input": {
+        "lens_b": {
+          "court-ruling": 1.0
+        }
+      },
+      "expect": {
+        "accepted": false,
+        "rejections": [
+          {
+            "code": "wrong-lens",
+            "detail": "lens_b.court-ruling: id is lens A, offered under lens B"
           }
         ]
       }
@@ -834,7 +993,7 @@
             "religious-life": 0.2
           },
           "abstain": false,
-          "bundle": "tt-ontology/1.0 v2.2.0"
+          "bundle": "tt-ontology/1.0 v2.3.0"
         }
       }
     },

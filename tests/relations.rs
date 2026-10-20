@@ -23,8 +23,14 @@ const RELATIONS_SHA256: &str = "23b0dc5627301d19f128d96152a84fed87000954e1d9fff5
 #[allow(dead_code)]
 const TAXONOMY_V2_1_SHA256: &str = "31ed385e26522a5b548f7404f7757ee370ed9783dbd550b05cd69e89e9462113";
 
-/// sha256 of `bundle/taxonomy-v2.2.json` as released with crate v2.3.0.
-const TAXONOMY_SHA256: &str = "d70812582ea080985a1f7778a67336b5c006bb2e9d7f77ae0c980f6193e52574";
+/// sha256 of `bundle/taxonomy-v2.2.json` as released with crate v2.3.0. The
+/// file is gone from the tree since taxonomy v2.3.0 (crate v2.4.0) and the
+/// constant stays as history.
+#[allow(dead_code)]
+const TAXONOMY_V2_2_SHA256: &str = "d70812582ea080985a1f7778a67336b5c006bb2e9d7f77ae0c980f6193e52574";
+
+/// sha256 of `bundle/taxonomy-v2.3.json` as released with crate v2.4.0.
+const TAXONOMY_SHA256: &str = "c84817144c6ed99431bcee63a7bbfe6338facf51a3573c0cda4562331df1e1c1";
 
 fn path(rel: &str) -> String {
     format!("{ROOT}/{rel}")
@@ -123,7 +129,7 @@ fn the_shipped_bytes_are_pinned() {
 /// bytes are pinned so a change to them cannot slip in without a version.
 #[test]
 fn the_taxonomy_bytes_are_pinned() {
-    assert_eq!(sha256_file("bundle/taxonomy-v2.2.json"), TAXONOMY_SHA256);
+    assert_eq!(sha256_file("bundle/taxonomy-v2.3.json"), TAXONOMY_SHA256);
 }
 
 /// Every id, direction, nature, endpoint pair and attribute, spelled out. The
