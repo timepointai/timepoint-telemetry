@@ -89,7 +89,9 @@ event. Not the enactment of a law.
 ### Coverage left out by design
 
 - Conditions ("Bank Rate is below 3% on a date") are states, not events, and
-  must still abstain (§3: they do).
+  must still abstain. Under haiku-5.5 they do (2/2); under the production
+  reader, haiku-4.5, the condition misread as `monetary-policy-decision` in
+  1 of 3 runs (§3, §7 R1).
 - Commodity output decisions, intergovernmental resolutions and statistics
   releases stay uncovered until a record shows the gap.
 
@@ -125,7 +127,8 @@ What this shows:
   readings land on a currency *reform*. A reader that abstains (the stored
   records) and a reader that misreads (the re-reading) are both answering a
   question the vocabulary does not let them answer.
-- **Under v2.3.0 both node types read cleanly and stably**, at 0.9–1.0.
+- **Under haiku-5.5 and v2.3.0 both node types read cleanly and stably**, at
+  0.9–1.0. Under haiku-4.5 they do not read stably (see the table above).
 - **Controls do not move.** Under haiku-5.5 the condition still abstains
   (2/2), so the new definitions are not catch-alls for that reader.
 - **What this run does not show:** why the stored readings abstained rather
@@ -152,8 +155,9 @@ endpoint and bundle, $0.43:
 What this adds:
 
 - **The stored abstentions reproduce.** Under v2.2.0 the production reader
-  abstains 3/3 on every rate-decision and court endpoint, as the stored records
-  did, while both election controls read cleanly. The G20 abstention in the
+  abstains 3/3 on every rate-decision and court endpoint. That matches the
+  three endpoints with stored records (BoE, ECB window, Supreme Court); the
+  scheduled-ECB endpoint has no stored record to compare. Meanwhile both election controls read cleanly. The G20 abstention in the
   consumer's records (run `4d3a99ab`) did not reproduce, so it is not evidence
   for or against this release.
 - **Under v2.3.0 the production reader finds the new homes**, fully for the
